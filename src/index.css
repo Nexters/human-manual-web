@@ -32,4 +32,5 @@
 body {
   font-family: var(--font-sans);
   color: var(--color-base);
+  background-color: var(--color-gray-02);
 }
