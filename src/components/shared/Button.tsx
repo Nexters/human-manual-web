@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
 type ButtonProps = {
-  variant?: "solid" | "outline";
+  variant?: "solid" | "outline" | "point";
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
 export default function Button({ variant = "solid", className, ...props }: ButtonProps) {
@@ -15,6 +15,7 @@ export default function Button({ variant = "solid", className, ...props }: Butto
         "disabled:cursor-not-allowed disabled:opacity-40",
         variant === "solid" && "bg-main text-white",
         variant === "outline" && "border-main text-main border bg-white",
+        variant === "point" && "bg-point text-white",
         className,
       )}
       {...props}

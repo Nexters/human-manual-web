@@ -25,3 +25,11 @@ export const Outline: Story = {
 export const OutlineDisabled: Story = {
   args: { variant: "outline", disabled: true },
 };
+
+export const Point: Story = {
+  args: { variant: "point" },
+};
+
+export const PointDisabled: Story = {
+  args: { variant: "point", disabled: true },
+};
