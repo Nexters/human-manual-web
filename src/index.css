@@ -1,1 +1,35 @@
 @import "tailwindcss";
+@import "pretendard/dist/web/variable/pretendardvariable.css";
+
+@theme {
+  --font-sans: "Pretendard Variable", sans-serif;
+
+  /* Main & Semantic */
+  --color-main: #0131ff;
+  --color-point: #ff85d1;
+  --color-sub-1: #fe9b00;
+  --color-sub-2: #ffcc01;
+  --color-sub-3: #b4f861;
+  --color-sub-4: #ff3ab4;
+  --color-sub-5: #ffe7f6;
+
+  /* Base text */
+  --color-base: #1f2024;
+
+  /* Gray scale (light -> dark) */
+  --color-gray-00: #f9fafb;
+  --color-gray-01: #f2f4f6;
+  --color-gray-02: #e5e8eb;
+  --color-gray-03: #d1d6db;
+  --color-gray-04: #b0b8c1;
+  --color-gray-05: #8b95a1;
+  --color-gray-06: #6b7684;
+  --color-gray-07: #4e5968;
+  --color-gray-08: #333d4b;
+  --color-gray-09: #191f28;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-base);
+}
