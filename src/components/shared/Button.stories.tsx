@@ -12,8 +12,16 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Solid: Story = {};
 
-export const Disabled: Story = {
+export const SolidDisabled: Story = {
   args: { disabled: true },
+};
+
+export const Outline: Story = {
+  args: { variant: "outline" },
+};
+
+export const OutlineDisabled: Story = {
+  args: { variant: "outline", disabled: true },
 };
