@@ -4,6 +4,7 @@ import OnboardingPage from "@/pages/OnboardingPage";
 import QuestionPage from "@/pages/QuestionPage";
 import UnboxingPage from "@/pages/UnboxingPage";
 import ResultPage from "@/pages/ResultPage";
+import CompatibilityPage from "@/pages/CompatibilityPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 
 export const router = createBrowserRouter([
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
       { path: "/question", element: <QuestionPage /> },
       { path: "/unboxing", element: <UnboxingPage /> },
       { path: "/result", element: <ResultPage /> },
+      { path: "/compatibility", element: <CompatibilityPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
