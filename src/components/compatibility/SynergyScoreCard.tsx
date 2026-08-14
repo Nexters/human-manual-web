@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import Chip from "@/components/shared/Chip";
 import Typography from "@/components/shared/Typography";
 import { cn } from "@/lib/cn";
@@ -15,6 +16,43 @@ const SIZE = 96;
 const STROKE_WIDTH = 8;
 const RADIUS = (SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+const ANIMATION_DURATION_MS = 1000;
+
+function useCountUpOnVisible<T extends HTMLElement>(target: number) {
+  const [value, setValue] = useState(0);
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    let frame: number;
+
+    const tick = (start: number) => (now: number) => {
+      const progress = Math.min((now - start) / ANIMATION_DURATION_MS, 1);
+      const eased = 1 - (1 - progress) ** 3;
+      setValue(Math.round(target * eased));
+      if (progress < 1) frame = requestAnimationFrame(tick(start));
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        frame = requestAnimationFrame(tick(performance.now()));
+        observer.disconnect();
+      },
+      { threshold: 0.4 },
+    );
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  }, [target]);
+
+  return { value, ref };
+}
 
 export default function SynergyScoreCard({
   score,
@@ -23,10 +61,12 @@ export default function SynergyScoreCard({
   tags,
   className,
 }: SynergyScoreCardProps) {
-  const offset = CIRCUMFERENCE * (1 - Math.min(Math.max(score, 0), 100) / 100);
+  const target = Math.min(Math.max(score, 0), 100);
+  const { value: animatedScore, ref } = useCountUpOnVisible<HTMLDivElement>(target);
+  const offset = CIRCUMFERENCE * (1 - animatedScore / 100);
 
   return (
-    <div className={cn("flex flex-col gap-4 rounded-[10px] bg-white p-4", className)}>
+    <div ref={ref} className={cn("flex flex-col gap-4 rounded-[10px] bg-white p-4", className)}>
       <div className="flex items-center gap-3">
         <div className="relative size-24 shrink-0">
           <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="-rotate-90 size-full">
@@ -52,7 +92,7 @@ export default function SynergyScoreCard({
             />
           </svg>
           <span className="text-main absolute inset-0 flex items-center justify-center text-[31px] font-semibold tracking-[-1.2px]">
-            {score}
+            {animatedScore}
           </span>
         </div>
         <div className="flex flex-col gap-1">
