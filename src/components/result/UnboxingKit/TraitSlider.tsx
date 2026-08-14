@@ -48,23 +48,27 @@ export default function TraitSlider({
 
       {/* Description Box */}
       {isOpen && (
-        <div className="flex flex-col gap-2 rounded-[10px] bg-gray-00 p-4">
-          <div className="flex gap-2">
-            <Typography variant="me3" className="text-gray-09 font-semibold shrink-0">
-              {label1}형
-            </Typography>
-            <Typography variant="me3" className="text-gray-07">
-              {description1}
-            </Typography>
-          </div>
-          <div className="flex gap-2">
-            <Typography variant="me3" className="text-point font-semibold shrink-0">
-              {label2}형
-            </Typography>
-            <Typography variant="me3" className="text-gray-07">
-              {description2}
-            </Typography>
-          </div>
+        <div className="rounded-[10px] bg-white p-4">
+          <ul className="flex flex-col gap-3">
+            <li className="flex items-start gap-2">
+              <span className="text-gray-08 pt-0.5">•</span>
+              <Typography variant="me3" className="text-gray-08 min-w-16 shrink-0">
+                {label1}형
+              </Typography>
+              <Typography variant="me3" className="text-gray-05">
+                {description1}
+              </Typography>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-gray-08 pt-0.5">•</span>
+              <Typography variant="me3" className="text-gray-08 min-w-16 shrink-0">
+                {label2}형
+              </Typography>
+              <Typography variant="me3" className="text-gray-05">
+                {description2}
+              </Typography>
+            </li>
+          </ul>
         </div>
       )}
     </div>
