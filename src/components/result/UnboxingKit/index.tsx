@@ -1,4 +1,5 @@
 import Typography from "@/components/shared/Typography";
+import SectionTitle from "@/components/result/SectionTitle";
 import TraitSlider from "./TraitSlider";
 import TraitTypeCard from "./TraitTypeCard";
 
@@ -29,13 +30,8 @@ export default function UnboxingKit() {
 
   return (
     <div className="flex flex-col gap-6 px-5 py-8 bg-gray-00">
-      {/* Title */}
-      <Typography variant="h2" className="text-center text-gray-09">
-        UNBOXING KIT
-      </Typography>
-      <Typography variant="me2" className="text-center text-gray-07">
-        나는 어떤 장난감이에요
-      </Typography>
+      {/* ----- 상단 타이틀 섹션 ----- */}
+      <SectionTitle title="UNBOXING KIT" subtitle="나는 어떤 장난감이에요" />
 
       {/* Trait Sliders */}
       <div className="flex flex-col gap-6">
@@ -48,7 +44,8 @@ export default function UnboxingKit() {
       {/* Info Text */}
       <div className="rounded-[10px] bg-white p-4">
         <Typography variant="me3" className="text-gray-08 leading-relaxed">
-          밥이 궁금해지면 탱구어 달려가 장난감과 함께하는 당신파를 위정고, 또 두가지 개기가 자칠 범을 새로게.
+          밥이 궁금해지면 탱구어 달려가 장난감과 함께하는 당신파를 위정고, 또 두가지 개기가 자칠
+          범을 새로게.
         </Typography>
       </div>
 

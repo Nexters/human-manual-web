@@ -1,4 +1,4 @@
-import Typography from "@/components/shared/Typography";
+import SectionTitle from "@/components/result/SectionTitle";
 import InfoCard from "@/components/shared/InfoCard";
 
 // ------- KeyFeatures UI ------
@@ -28,13 +28,8 @@ export default function KeyFeatures() {
 
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
-      {/* Title */}
-      <Typography variant="h2" className="text-center text-gray-09 uppercase">
-        KEY FEATURES
-      </Typography>
-      <Typography variant="me2" className="text-center text-gray-07">
-        어떤 특징이 가지고 있나요?
-      </Typography>
+      {/* ----- 상단 타이틀 섹션 ----- */}
+      <SectionTitle title="KEY FEATURES" subtitle="어떤 특징이 가지고 있나요?" />
 
       {/* Feature Image Placeholder */}
       <div className="w-full aspect-video bg-gray-02 rounded-[12px] flex items-center justify-center">

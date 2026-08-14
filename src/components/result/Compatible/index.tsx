@@ -1,4 +1,5 @@
 import Typography from "@/components/shared/Typography";
+import SectionTitle from "@/components/result/SectionTitle";
 import Chip from "@/components/shared/Chip";
 import Button from "@/components/shared/Button";
 
@@ -21,13 +22,8 @@ export default function Compatible() {
 
   return (
     <div className="flex flex-col gap-6 px-5 py-8 bg-gray-00">
-      {/* Title */}
-      <Typography variant="h2" className="text-center text-gray-09 uppercase">
-        COMPATIBLE
-      </Typography>
-      <Typography variant="me2" className="text-center text-gray-07">
-        나와 잘 맞는 친구 궁합
-      </Typography>
+      {/* ----- 상단 타이틀 섹션 ----- */}
+      <SectionTitle title="COMPATIBLE" subtitle="나와 잘 맞는 친구 궁합" />
 
       {/* Category Chips */}
       <div className="flex gap-2 justify-center">

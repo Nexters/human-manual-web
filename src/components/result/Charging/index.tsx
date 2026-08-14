@@ -1,4 +1,5 @@
 import Typography from "@/components/shared/Typography";
+import SectionTitle from "@/components/result/SectionTitle";
 import GaugeArc from "./GaugeArc";
 
 // ------- Charging UI ------
@@ -11,13 +12,8 @@ export default function Charging() {
 
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
-      {/* Title */}
-      <Typography variant="h2" className="text-center text-gray-09 uppercase">
-        CHARGING
-      </Typography>
-      <Typography variant="me2" className="text-center text-gray-07">
-        충전 방법
-      </Typography>
+      {/* ----- 상단 타이틀 섹션 ----- */}
+      <SectionTitle title="CHARGING" subtitle="충전 방법" />
 
       {/* Gauge */}
       <div className="flex flex-col items-center gap-4">

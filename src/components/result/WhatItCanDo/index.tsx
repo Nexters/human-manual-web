@@ -1,4 +1,5 @@
 import Typography from "@/components/shared/Typography";
+import SectionTitle from "@/components/result/SectionTitle";
 import { cn } from "@/lib/cn";
 
 // ------- WhatItCanDo UI ------
@@ -12,13 +13,8 @@ export default function WhatItCanDo() {
 
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
-      {/* Title */}
-      <Typography variant="h2" className="text-center text-gray-09 uppercase">
-        WHAT IT CAN DO
-      </Typography>
-      <Typography variant="me2" className="text-center text-gray-07">
-        이렇게 다뤄주세요
-      </Typography>
+      {/* ----- 상단 타이틀 섹션 ----- */}
+      <SectionTitle title="WHAT IT CAN DO" subtitle="이렇게 다뤄주세요" />
 
       {/* Features List */}
       <div className="flex flex-col gap-3">
@@ -27,7 +23,7 @@ export default function WhatItCanDo() {
             key={feature}
             className={cn(
               "flex items-center gap-4 rounded-[10px] bg-gray-00 p-4",
-              "border border-gray-02"
+              "border border-gray-02",
             )}
           >
             <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-main">
