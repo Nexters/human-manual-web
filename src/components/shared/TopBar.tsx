@@ -9,7 +9,12 @@ type TopBarProps = {
 
 export default function TopBar({ title, onBack, className }: TopBarProps) {
   return (
-    <div className={cn("relative flex h-[60px] items-center justify-center px-5", className)}>
+    <div
+      className={cn(
+        "bg-white sticky top-0 z-10 flex h-[60px] items-center justify-center px-5",
+        className,
+      )}
+    >
       {onBack && (
         <button
           type="button"
