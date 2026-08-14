@@ -50,8 +50,7 @@ export default function TraitSlider({
       {isOpen && (
         <div className="rounded-[10px] bg-white p-4">
           <ul className="flex flex-col gap-3">
-            <li className="flex items-start gap-2">
-              <span className="text-gray-08 pt-0.5">•</span>
+            <li className="flex items-start before:mr-2 before:text-gray-08 before:content-['•']">
               <Typography variant="me3" className="text-gray-08 min-w-16 shrink-0">
                 {label1}형
               </Typography>
@@ -59,8 +58,7 @@ export default function TraitSlider({
                 {description1}
               </Typography>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="text-gray-08 pt-0.5">•</span>
+            <li className="flex items-start before:mr-2 before:text-gray-08 before:content-['•']">
               <Typography variant="me3" className="text-gray-08 min-w-16 shrink-0">
                 {label2}형
               </Typography>
