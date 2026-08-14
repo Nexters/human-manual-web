@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
 import Chip from "@/components/shared/Chip";
 import Typography from "@/components/shared/Typography";
+import { useCountUpOnVisible } from "@/hooks/useCountUpOnVisible";
 import { cn } from "@/lib/cn";
 
 type SynergyScoreCardProps = {
@@ -16,43 +16,6 @@ const SIZE = 96;
 const STROKE_WIDTH = 8;
 const RADIUS = (SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-const ANIMATION_DURATION_MS = 1000;
-
-function useCountUpOnVisible<T extends HTMLElement>(target: number) {
-  const [value, setValue] = useState(0);
-  const ref = useRef<T>(null);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    let frame: number;
-
-    const tick = (start: number) => (now: number) => {
-      const progress = Math.min((now - start) / ANIMATION_DURATION_MS, 1);
-      const eased = 1 - (1 - progress) ** 3;
-      setValue(Math.round(target * eased));
-      if (progress < 1) frame = requestAnimationFrame(tick(start));
-    };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        frame = requestAnimationFrame(tick(performance.now()));
-        observer.disconnect();
-      },
-      { threshold: 0.4 },
-    );
-    observer.observe(node);
-
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(frame);
-    };
-  }, [target]);
-
-  return { value, ref };
-}
 
 export default function SynergyScoreCard({
   score,
