@@ -33,3 +33,11 @@ export const Point: Story = {
 export const PointDisabled: Story = {
   args: { variant: "point", disabled: true },
 };
+
+export const Ghost: Story = {
+  args: { variant: "ghost", children: "SKIP" },
+};
+
+export const GhostDisabled: Story = {
+  args: { variant: "ghost", children: "SKIP", disabled: true },
+};

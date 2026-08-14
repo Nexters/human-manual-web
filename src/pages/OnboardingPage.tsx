@@ -99,7 +99,7 @@ export default function OnboardingPage() {
       <div className="relative flex h-full min-h-dvh flex-col overflow-hidden">
         <img src={notebookBg} alt="" className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-black/30" />
-        <div className="relative mt-auto flex flex-col gap-6 px-5 pb-10">
+        <div className="relative flex flex-1 flex-col justify-between px-5 pt-[95px] pb-10">
           <SpeechBubble
             message={
               <div className="flex flex-col gap-1">
@@ -115,7 +115,9 @@ export default function OnboardingPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <Button disabled={!name.trim()} onClick={() => navigate("/question")}>
+        </div>
+        <div className="relative px-5 pb-10">
+          <Button className="w-full" disabled={!name.trim()} onClick={() => navigate("/question")}>
             다음
           </Button>
         </div>
@@ -131,17 +133,29 @@ export default function OnboardingPage() {
       <img src={intro.background} alt="" className="absolute inset-0 size-full object-cover" />
       <div className="absolute inset-0 bg-white/10" />
       {introIndex > 0 && (
-        <button
+        <motion.button
+          whileTap={{ scale: 0.95 }}
           type="button"
           aria-label="뒤로가기"
           onClick={() => setStep(introOrder[introIndex - 1])}
           className="relative z-10 mt-[15px] ml-5 text-white"
         >
           <ChevronLeftIcon className="size-[30px]" />
-        </button>
+        </motion.button>
       )}
       <div className="relative flex flex-1 items-center justify-center">
-        <img src={intro.character} alt="" className="w-[260px]" />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="h-[360px] w-[260px] overflow-hidden"
+          >
+            <img src={intro.character} alt="" className="size-full object-cover" />
+          </motion.div>
+        </AnimatePresence>
       </div>
       <div className="relative flex flex-col gap-6 px-5 pb-5">
         <AnimatePresence mode="wait">
@@ -156,13 +170,13 @@ export default function OnboardingPage() {
           </motion.div>
         </AnimatePresence>
         <div className="flex gap-3">
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            className="w-[104px] shrink-0"
             onClick={() => setStep("name-input")}
-            className="bg-gray-01 text-gray-05 h-[54px] w-[104px] shrink-0 rounded-[10px] text-[20px] font-bold tracking-[-0.8px]"
           >
             SKIP
-          </button>
+          </Button>
           <Button
             className="flex-1"
             onClick={() => {
