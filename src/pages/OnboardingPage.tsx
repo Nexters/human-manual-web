@@ -7,6 +7,7 @@ import Typography from "@/components/shared/Typography";
 import TextField from "@/components/shared/TextField";
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
 import SpeechBubble from "@/components/onboarding/SpeechBubble";
+import { useImagePreload } from "@/hooks/useImagePreload";
 import { cn } from "@/lib/cn";
 import logo from "@/assets/img/logo.png";
 import splashBunny from "@/assets/img/splash-bunny.png";
@@ -50,6 +51,8 @@ const introSteps: Record<
   },
 };
 
+const introCharacterImages = [characterGreeting, characterSurprised, characterGuide];
+
 export default function OnboardingPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>("splash-logo");
@@ -60,6 +63,9 @@ export default function OnboardingPage() {
     const timer = setTimeout(() => setStep("splash-cta"), 2000);
     return () => clearTimeout(timer);
   }, [step]);
+
+  // 인트로 스텝의 무거운 GIF를 스플래시 노출 시간 동안 미리 받아둔다.
+  useImagePreload(introCharacterImages);
 
   if (step === "splash-logo" || step === "splash-cta") {
     return (
