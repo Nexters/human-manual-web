@@ -2,6 +2,8 @@ import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
 import TraitSlider from "./TraitSlider";
 import TraitTypeCard from "./TraitTypeCard";
+import boxImg from "@/assets/images/result/unboxing/box.png";
+import magicStickImg from "@/assets/images/result/unboxing/magic_stick.png";
 
 // ------- UnboxingKit UI ------
 export default function UnboxingKit() {
@@ -13,8 +15,8 @@ export default function UnboxingKit() {
       chip2: "거리조절형",
       chip2Color: "sub-1" as const,
       description:
-        "해기 지면 비동수 에너지가 충족되는 타입. 앞두기 자칠 범을 새로게 걸었던 목표지를 위정고, 또 두가지 페기가 자칠 범을 새로게.",
-      iconEmoji: "📦",
+        "당신은 애정과 관심을 아낌없이 표현하고, 감정도 솔직하게 드러내요. 마음을 크게 담은 만큼 작은 반응에도 쉽게 기뻐하거나 서운해지는 취급주의 상자예요.",
+      image: boxImg,
     },
     {
       title: "마술봉",
@@ -23,29 +25,54 @@ export default function UnboxingKit() {
       chip2: "에겐형",
       chip2Color: "sub-4" as const,
       description:
-        "당신은 궁금함 생기면 달려가 새로운 경험에 뛰어드는 유형이 아닐까요 새로운 곳 경험에 데려 두가지 개기가 자칠 범을 새로게.",
-      iconEmoji: "✨",
+        "당신은 호기심이 생기면 망설이지 않고 새로운 경험에 뛰어들어요. 평범한 순간도 자신만의 방식으로 흥미롭게 바꾸는 모습이 마술봉과 닮았어요.",
+      image: magicStickImg,
     },
   ];
 
   return (
-    <div className="flex flex-col gap-6 px-5 py-8 bg-gray-00">
+    <div className="flex flex-col gap-6 px-5 py-8  mt-[30px]">
       {/* ----- 상단 타이틀 섹션 ----- */}
       <SectionTitle title="UNBOXING KIT" subtitle="나는 어떤 장난감이에요" />
 
       {/* Trait Sliders */}
       <div className="flex flex-col gap-6">
-        <TraitSlider label1="밀착" label2="거리조절" value={65} />
-        <TraitSlider label1="탐색" label2="직진" value={45} />
-        <TraitSlider label1="탐험" label2="루틴" value={72} />
-        <TraitSlider label1="테토" label2="에겐" value={58} />
+        <TraitSlider
+          label1="밀착"
+          label2="거리조절"
+          value={65}
+          description1="자주 연락해야 안심, 같이 있는 게 충전"
+          description2="각자의 시간 필수, 애정과 독립은 별개"
+        />
+        <TraitSlider
+          label1="탐색"
+          label2="직진"
+          value={45}
+          description1="호기심이 생기면 이리저리 살펴보기"
+          description2="한 가지를 집중해서 파고들기"
+        />
+        <TraitSlider
+          label1="탐험"
+          label2="루틴"
+          value={72}
+          description1="새로운 것에 도전하는 것이 재미"
+          description2="익숙한 것이 편하고 안전해"
+        />
+        <TraitSlider
+          label1="테토"
+          label2="에겐"
+          value={58}
+          description1="변화가 많고 예측 불가능한 성격"
+          description2="일관되고 예측 가능한 성격"
+        />
       </div>
 
       {/* Info Text */}
       <div className="rounded-[10px] bg-white p-4">
         <Typography variant="me3" className="text-gray-08 leading-relaxed">
-          밥이 궁금해지면 탱구어 달려가 장난감과 함께하는 당신파를 위정고, 또 두가지 개기가 자칠
-          범을 새로게.
+          밤이 깊어질수록 텐션이 올라가는 장난꾸러기. 해가 지면 비로소 에너지가 충전되는 타입.
+          엉뚱한 장난과 재치 있는 말로 조용하던 분위기를 뒤집고, 모두가 지칠 때쯤 신나게 놀기
+          시작해요.
         </Typography>
       </div>
 
@@ -60,7 +87,7 @@ export default function UnboxingKit() {
             chip2={trait.chip2}
             chip2Color={trait.chip2Color}
             description={trait.description}
-            iconEmoji={trait.iconEmoji}
+            image={trait.image}
           />
         ))}
       </div>

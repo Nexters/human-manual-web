@@ -9,7 +9,7 @@ type TraitTypeCardProps = {
   chip2: string;
   chip2Color: "point" | "sub-1" | "sub-2" | "sub-3" | "sub-4" | "sub-5";
   description: string;
-  iconEmoji?: string;
+  image: string;
 };
 
 const chipBgMap: Record<string, string> = {
@@ -28,13 +28,13 @@ export default function TraitTypeCard({
   chip2,
   chip2Color,
   description,
-  iconEmoji = "📦",
+  image,
 }: TraitTypeCardProps) {
   return (
     <div className="flex flex-col gap-4 rounded-[12px] border border-gray-02 bg-white p-4">
       {/* Icon + Title */}
       <div className="flex items-center gap-3">
-        <span className="text-2xl">{iconEmoji}</span>
+        <img src={image} alt={title} className="w-10 h-10 object-contain" />
         <Typography variant="sb3" className="text-gray-09">
           {title}
         </Typography>

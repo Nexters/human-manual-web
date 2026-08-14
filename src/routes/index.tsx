@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
       { path: "/", element: <OnboardingPage /> },
       { path: "/question", element: <QuestionPage /> },
       { path: "/unboxing", element: <UnboxingPage /> },
-      { path: "/result", element: <ResultPage /> },
+      { path: "/result/:id", element: <ResultPage /> },
       { path: "/compatibility", element: <CompatibilityPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
