@@ -14,10 +14,10 @@ export default function CompatibilityPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <TopBar title="친구와의 궁합" onBack={() => navigate(-1)} />
+    <div className="bg-gray-00 flex min-h-dvh flex-col">
+      <TopBar title="친구와의 궁합" onBack={() => navigate(-1)} className="bg-gray-00" />
 
-      <div className="flex flex-1 flex-col gap-8 px-5 pb-8">
+      <div className="flex flex-1 flex-col gap-8 px-5 pt-[54px] pb-8">
         <div className="flex justify-center gap-2">
           <MatchupProfileCard
             variant="me"
