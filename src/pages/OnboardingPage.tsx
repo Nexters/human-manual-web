@@ -7,6 +7,7 @@ import Typography from "@/components/shared/Typography";
 import TextField from "@/components/shared/TextField";
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
 import SpeechBubble from "@/components/onboarding/SpeechBubble";
+import { cn } from "@/lib/cn";
 import logo from "@/assets/img/logo.png";
 import splashBunny from "@/assets/img/splash-bunny.png";
 import onboardingBg from "@/assets/img/onboarding-bg.jpg";
@@ -132,17 +133,15 @@ export default function OnboardingPage() {
     <div className="relative flex h-full min-h-dvh flex-col overflow-hidden">
       <img src={intro.background} alt="" className="absolute inset-0 size-full object-cover" />
       <div className="absolute inset-0 bg-white/10" />
-      {introIndex > 0 && (
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          type="button"
-          aria-label="뒤로가기"
-          onClick={() => setStep(introOrder[introIndex - 1])}
-          className="relative z-10 mt-[15px] ml-5 text-white"
-        >
-          <ChevronLeftIcon className="size-[30px]" />
-        </motion.button>
-      )}
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        type="button"
+        aria-label="뒤로가기"
+        onClick={() => introIndex > 0 && setStep(introOrder[introIndex - 1])}
+        className={cn("relative z-10 mt-[15px] ml-5 text-white", introIndex === 0 && "invisible")}
+      >
+        <ChevronLeftIcon className="size-[30px]" />
+      </motion.button>
       <div className="relative flex flex-1 items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.div
