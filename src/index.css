@@ -29,6 +29,11 @@
   --color-gray-09: #191f28;
 }
 
+html,
+body {
+  overscroll-behavior: none;
+}
+
 body {
   font-family: var(--font-sans);
   color: var(--color-base);
