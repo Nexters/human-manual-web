@@ -44,7 +44,7 @@ export default function Charging({ charging }: ChargingProps) {
         </div>
 
         {/* Description */}
-        <Typography variant="sb3" className="text-center text-gray-08">
+        <Typography variant="sb3" className="text-center text-gray-08 break-keep">
           {description}
         </Typography>
       </div>
@@ -61,7 +61,7 @@ export default function Charging({ charging }: ChargingProps) {
               alt={activity.label}
               className="size-20 shrink-0"
             />
-            <Typography variant="me3" className="text-center text-gray-08 text-xs">
+            <Typography variant="me3" className="text-center text-gray-08 text-xs break-keep">
               {activity.label}
             </Typography>
           </div>

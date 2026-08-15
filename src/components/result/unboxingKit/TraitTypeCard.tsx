@@ -38,7 +38,7 @@ export default function TraitTypeCard({
         <Typography variant="sb3" className="text-main">
           왜 {title}인가요?
         </Typography>
-        <Typography variant="me3" className="text-gray-06">
+        <Typography variant="me3" className="text-gray-06 break-keep">
           {description}
         </Typography>
       </div>

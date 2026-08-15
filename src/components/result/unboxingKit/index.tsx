@@ -69,10 +69,10 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
 
       {/* Info Text */}
       <div className="flex flex-col justify-center gap-2 rounded-[10px] bg-gray-01 p-4 mt-[40px]">
-        <Typography variant="sb3" className="text-gray-09 text-center">
+        <Typography variant="sb3" className="text-gray-09 text-center break-keep">
           {title}
         </Typography>
-        <Typography variant="me2" className="text-center text-gray-07">
+        <Typography variant="me2" className="text-center text-gray-07 break-keep">
           {description}
         </Typography>
       </div>

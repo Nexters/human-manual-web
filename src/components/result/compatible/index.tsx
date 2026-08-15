@@ -75,7 +75,7 @@ export default function Compatible() {
               <Typography variant="h2" className="text-gray-08">
                 {character.name}
               </Typography>
-              <Typography variant="me3" className="text-center text-gray-07">
+              <Typography variant="me3" className="text-center text-gray-07 break-keep">
                 {character.description}
               </Typography>
             </div>

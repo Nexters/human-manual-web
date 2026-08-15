@@ -74,7 +74,7 @@ export default function TraitSlider({
               <Typography variant="me3" className="text-gray-08 min-w-16 shrink-0">
                 {label1}형
               </Typography>
-              <Typography variant="me3" className="text-gray-05">
+              <Typography variant="me3" className="text-gray-05 break-keep">
                 {description1}
               </Typography>
             </li>
@@ -82,7 +82,7 @@ export default function TraitSlider({
               <Typography variant="me3" className="text-gray-08 min-w-16 shrink-0">
                 {label2}형
               </Typography>
-              <Typography variant="me3" className="text-gray-05">
+              <Typography variant="me3" className="text-gray-05 break-keep">
                 {description2}
               </Typography>
             </li>

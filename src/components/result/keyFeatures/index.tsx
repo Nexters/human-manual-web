@@ -43,10 +43,10 @@ export default function KeyFeatures({ features, characterId }: KeyFeaturesProps)
               <img src={getFeatureIcon(index)} alt="" className="size-8 object-contain" />
             </div>
             <div className="flex flex-col gap-1">
-              <Typography variant="sb4" className="text-gray-09">
+              <Typography variant="sb4" className="text-gray-09 break-keep">
                 {feature.title}
               </Typography>
-              <Typography variant="me4" className="text-gray-06">
+              <Typography variant="me4" className="text-gray-06 break-keep">
                 {feature.description}
               </Typography>
             </div>

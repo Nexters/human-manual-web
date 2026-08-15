@@ -55,11 +55,11 @@ export default function Hero({
         </div>
 
         <div className="flex flex-col items-center gap-1 text-center">
-          <Typography variant="sb2" className="text-white">
+          <Typography variant="sb2" className="text-white break-keep">
             {subtitle}
           </Typography>
           <p
-            className="text-[40px] leading-[1] font-normal tracking-[-0.04em] text-white"
+            className="text-[40px] leading-[1] font-normal tracking-[-0.04em] text-white break-keep"
             style={{ fontFamily: "'RixInooAriDuri', var(--font-sans)" }}
           >
             {title}

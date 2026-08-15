@@ -21,7 +21,7 @@ export default function Warning({ warnings }: WarningProps) {
             className="flex h-[46px] items-center gap-4 rounded-[10px] bg-gray-01 px-4"
           >
             <img src={errorIcon} alt="" className="size-9 shrink-0" />
-            <Typography variant="me2" className="text-gray-07">
+            <Typography variant="me2" className="text-gray-07 break-keep">
               {warning}
             </Typography>
           </div>
