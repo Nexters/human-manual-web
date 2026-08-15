@@ -2,15 +2,12 @@ import errorIcon from "@/assets/images/result/error.png";
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
 
-// ------- Warning UI ------
-export default function Warning() {
-  const warnings = [
-    "똑같은 일만 반복시켜요",
-    "선택을 지나치게 제한해요",
-    "재미없는 분위기를 오래 끌어요",
-    "아이디어를 시작부터 막아버려요",
-  ];
+interface WarningProps {
+  warnings: string[];
+}
 
+// ------- Warning UI ------
+export default function Warning({ warnings }: WarningProps) {
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
       {/* ----- 상단 타이틀 섹션 ----- */}
