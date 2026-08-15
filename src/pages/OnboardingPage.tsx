@@ -106,7 +106,7 @@ export default function OnboardingPage() {
       <div className="relative flex h-full min-h-dvh flex-col overflow-hidden">
         <img src={notebookBg} alt="" className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-black/30" />
-        <div className="relative flex flex-1 flex-col justify-between px-5 pt-[95px] pb-10">
+        <div className="relative flex flex-1 flex-col px-5 pt-[95px] pb-10">
           <SpeechBubble
             message={
               <div className="flex flex-col gap-1">
@@ -117,11 +117,13 @@ export default function OnboardingPage() {
               </div>
             }
           />
+          <div className="flex-1" />
           <TextField
             placeholder="이름을 입력해주세요"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
+          <div className="flex-1" />
         </div>
         <div className="relative px-5 pb-10">
           <Button className="w-full" disabled={!name.trim()} onClick={() => navigate("/question")}>
@@ -148,7 +150,7 @@ export default function OnboardingPage() {
       >
         <ChevronLeftIcon className="size-[30px]" />
       </motion.button>
-      <div className="relative flex flex-1 items-center justify-center">
+      <div className="relative flex flex-1 items-end justify-center pb-[6px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
