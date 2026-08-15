@@ -7,7 +7,7 @@ type TraitSliderProps = {
   label2: string;
   /**
    * label1 기준 점수(0~100). 50 이상이면 label1 쪽이, 미만이면 label2 쪽이 우세로 강조된다.
-   * 0 또는 100은 원본 축 값이 0(미측정/데이터 없음)이었다는 뜻이므로 중립으로 처리한다.
+   * 0은 원본 축 값이 0(미측정/데이터 없음)이었다는 뜻이므로 중립으로 처리한다.
    */
   value: number;
   description1: string;
@@ -22,7 +22,7 @@ export default function TraitSlider({
   description2,
 }: TraitSliderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const isNeutral = value === 0 || value === 100;
+  const isNeutral = value === 0;
   const isLabel1Dominant = value >= 50;
 
   return (
