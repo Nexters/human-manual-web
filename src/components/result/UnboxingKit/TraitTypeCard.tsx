@@ -5,9 +5,7 @@ import { cn } from "@/lib/cn";
 type TraitTypeCardProps = {
   title: string;
   chip1: string;
-  chip1Color: "point" | "sub-1" | "sub-2" | "sub-3" | "sub-4" | "sub-5";
   chip2: string;
-  chip2Color: "point" | "sub-1" | "sub-2" | "sub-3" | "sub-4" | "sub-5";
   description: string;
   image: string;
 };
@@ -24,9 +22,7 @@ const chipBgMap: Record<string, string> = {
 export default function TraitTypeCard({
   title,
   chip1,
-  chip1Color,
   chip2,
-  chip2Color,
   description,
   image,
 }: TraitTypeCardProps) {
@@ -39,8 +35,8 @@ export default function TraitTypeCard({
           {title}
         </Typography>
         <div className="flex gap-2">
-          <Chip className={cn("text-xs", chipBgMap[chip1Color])}>{chip1}</Chip>
-          <Chip className={cn("text-xs", chipBgMap[chip2Color])}>{chip2}</Chip>
+          <Chip className={cn("text-xs", chipBgMap["sub-5"])}>{chip1}</Chip>
+          <Chip className={cn("text-xs", chipBgMap["sub-5"])}>{chip2}</Chip>
         </div>
       </div>
 

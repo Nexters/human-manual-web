@@ -11,9 +11,7 @@ export default function UnboxingKit() {
     {
       title: "취급주의 상자",
       chip1: "직진형",
-      chip1Color: "sub-2" as const,
       chip2: "거리조절형",
-      chip2Color: "sub-1" as const,
       description:
         "당신은 애정과 관심을 아낌없이 표현하고, 감정도 솔직하게 드러내요. 마음을 크게 담은 만큼 작은 반응에도 쉽게 기뻐하거나 서운해지는 취급주의 상자예요.",
       image: boxImg,
@@ -21,9 +19,7 @@ export default function UnboxingKit() {
     {
       title: "마술봉",
       chip1: "탐험형",
-      chip1Color: "sub-3" as const,
       chip2: "에겐형",
-      chip2Color: "sub-4" as const,
       description:
         "당신은 호기심이 생기면 망설이지 않고 새로운 경험에 뛰어들어요. 평범한 순간도 자신만의 방식으로 흥미롭게 바꾸는 모습이 마술봉과 닮았어요.",
       image: magicStickImg,
@@ -85,9 +81,7 @@ export default function UnboxingKit() {
             key={trait.title}
             title={trait.title}
             chip1={trait.chip1}
-            chip1Color={trait.chip1Color}
             chip2={trait.chip2}
-            chip2Color={trait.chip2Color}
             description={trait.description}
             image={trait.image}
           />
