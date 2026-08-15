@@ -19,8 +19,6 @@ import {
   useTestStore,
 } from "@/stores/testStore";
 
-const PLACEHOLDER_NICKNAME = "숭숭";
-
 const parseOrder = (raw: string | undefined): number | null => {
   if (!raw || !/^\d+$/.test(raw)) return null;
   const parsed = Number(raw);
@@ -51,6 +49,10 @@ const QuestionPage = () => {
 
   const pressed =
     question?.kind === "action" && answers[question.questionId] === question.pressValue;
+
+  if (!nickname) {
+    return <Navigate to="/" replace />;
+  }
 
   if (order === null || !question || !canEnterOrder(order, answers, mbti)) {
     return <Navigate to={`/test/${findFirstIncompleteOrder(answers, mbti)}`} replace />;
@@ -109,7 +111,7 @@ const QuestionPage = () => {
   };
 
   const rawTitle = question.kind === "action" && pressed ? question.pressedTitle : question.title;
-  const title = fillNickname(rawTitle, nickname || PLACEHOLDER_NICKNAME);
+  const title = fillNickname(rawTitle, nickname);
 
   const renderBody = () => {
     switch (question.kind) {
