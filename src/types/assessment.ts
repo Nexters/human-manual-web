@@ -1,116 +1,67 @@
-export type MbtiType =
-  | "INTJ"
-  | "ISTJ"
-  | "ENTJ"
-  | "ESTJ"
-  | "INFJ"
-  | "ISFJ"
-  | "ENFJ"
-  | "ESFJ"
-  | "INFP"
-  | "ISFP"
-  | "ENFP"
-  | "ESFP"
-  | "INTP"
-  | "ISTP"
-  | "ENTP"
-  | "ESTP";
+export type AnswerKind = "choice" | "scale" | "integer" | "action";
 
-export interface ParticipantInput {
-  /** 결과 화면에 표시할 이름 또는 닉네임 */
-  nickname: string;
-}
+export type AnswerValue = string | number;
 
-export interface AnswerInput {
-  /** 문항 고정 ID */
+export type IdentifierQuestion = {
   question_id: string;
-  /** 선택한 영문 ID 또는 입력한 정수 */
-  value: string | number;
-}
+  answer_kind: AnswerKind;
+  values?: string[];
+  constraints?: { minimum: number; maximum: number; step: number };
+};
 
-export interface AssessmentSubmissionInput {
-  /** 문항 및 채점 계약 버전 */
+export type AssessmentIdentifiers = {
   assessment_version: string;
-  participant: ParticipantInput;
-  /** 23개 고정 문항의 답변 목록 */
+  identifier_status: string;
+  id_policy: Record<string, string | boolean>;
+  mbti_input: { field: string; allowed_values: string[] };
+  questions: IdentifierQuestion[];
+};
+
+export type ContentOption = { value: string; label: string };
+
+export type ContentQuestion = {
+  question_id: string;
+  step: number;
+  order: number;
+  prompt: string;
+  answer_kind: AnswerKind;
+  options?: ContentOption[];
+  instruction?: string;
+  visual_endpoints?: { left: string; right: string };
+  constraints?: { minimum: number; maximum: number; step: number };
+};
+
+export type AssessmentContent = {
+  assessment_version: string;
+  locale: string;
+  questions: ContentQuestion[];
+  mbti_screen: { prompt: string; submission_field: string };
+};
+
+export const MBTI_AXES = [
+  { key: "EI", label: "에너지 방향", poles: ["E", "I"], poleLabels: ["E(외향형)", "I(내향형)"] },
+  { key: "SN", label: "인식", poles: ["S", "N"], poleLabels: ["S(감각형)", "N(직관형)"] },
+  { key: "TF", label: "판단", poles: ["T", "F"], poleLabels: ["T(사고형)", "F(감정형)"] },
+  { key: "JP", label: "계획성", poles: ["J", "P"], poleLabels: ["J(판단형)", "P(인식형)"] },
+] as const;
+
+export type MbtiAxisKey = (typeof MBTI_AXES)[number]["key"];
+
+export type MbtiSelection = Partial<Record<MbtiAxisKey, string>>;
+
+export type AnswerInput = {
+  question_id: string;
+  value: AnswerValue;
+};
+
+export type AssessmentSubmissionInput = {
+  assessment_version: string;
+  participant: { nickname: string };
   answers: AnswerInput[];
-  mbti: MbtiType;
-}
+  mbti: string;
+};
 
-export interface OverviewOutput {
-  rarity: string;
-  adjective: string;
-  noun: string;
-  result_name: string;
-  character_id: string;
-  image_url: string;
-  tags: string[];
-}
-
-export interface AxisScoresOutput {
-  attachment: number;
-  expression: number;
-  routine: number;
-  egen: number;
-}
-
-export type PackagingType =
-  | "fragile_box"
-  | "minimal_box"
-  | "matryoshka_box"
-  | "locked_box";
-
-export interface PackagingOutput {
-  type: PackagingType;
-  name: string;
-  tags: string[];
-  reason: string;
-}
-
-export type OpeningToolType =
-  | "glove"
-  | "utility_knife"
-  | "magic_wand"
-  | "chainsaw";
-
-export interface OpeningToolOutput {
-  type: OpeningToolType;
-  name: string;
-  tags: string[];
-  reason: string;
-}
-
-export interface UnboxingKitOutput {
-  axis_scores: AxisScoresOutput;
-  title: string;
-  description: string;
-  packaging: PackagingOutput;
-  opening_tool: OpeningToolOutput;
-}
-
-export interface FeatureOutput {
-  title: string;
-  description: string;
-}
-
-export interface ChargingActivityOutput {
-  type: string;
-  label: string;
-}
-
-export interface ChargingOutput {
-  score: number;
-  description: string;
-  activities: ChargingActivityOutput[];
-}
-
-export interface AssessmentSubmissionOutput {
-  /** 결과를 다시 조회할 때 사용하는 고유 코드 */
+export type AssessmentSubmissionOutput = {
   result_code: string;
-  overview: OverviewOutput;
-  unboxing_kit: UnboxingKitOutput;
-  features: FeatureOutput[];
-  can_do: string[];
-  warnings: string[];
-  charging: ChargingOutput;
-}
+  [key: string]: unknown;
+};
