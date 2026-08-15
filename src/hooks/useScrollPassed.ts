@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface UseScrollPassedOptions {
   /** 뷰포트 상단에서 이 픽셀만큼 아래 지점을 기준선으로 삼는다. */
@@ -10,11 +10,11 @@ interface UseScrollPassedOptions {
  * 스크롤 위치에 따라 즉시 재계산되며 위/아래 스크롤 모두에 반응한다.
  */
 export function useScrollPassed<T extends HTMLElement>({ offset = 0 }: UseScrollPassedOptions = {}) {
-  const ref = useRef<T>(null);
+  const [el, setEl] = useState<T | null>(null);
   const [hasPassed, setHasPassed] = useState(false);
+  const ref = useCallback((node: T | null) => setEl(node), []);
 
   useEffect(() => {
-    const el = ref.current;
     if (!el) return;
 
     const update = () => {
@@ -28,7 +28,7 @@ export function useScrollPassed<T extends HTMLElement>({ offset = 0 }: UseScroll
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
     };
-  }, [offset]);
+  }, [el, offset]);
 
   return { ref, hasPassed };
 }

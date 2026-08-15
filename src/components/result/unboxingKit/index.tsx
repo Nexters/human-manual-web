@@ -45,25 +45,25 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
           description2="각자의 시간 필수, 애정과 독립은 별개"
         />
         <TraitSlider
-          label1="직진"
-          label2="탐색"
-          value={axis_scores.expression}
-          description1="한 가지를 집중해서 파고들기"
-          description2="호기심이 생기면 이리저리 살펴보기"
+          label1="탐색"
+          label2="직진"
+          value={100 - axis_scores.expression}
+          description1="호기심이 생기면 이리저리 살펴보기"
+          description2="한 가지를 집중해서 파고들기"
         />
         <TraitSlider
-          label1="루틴"
-          label2="탐험"
-          value={axis_scores.routine}
-          description1="익숙한 것이 편하고 안전해"
-          description2="새로운 것에 도전하는 것이 재미"
+          label1="탐험"
+          label2="루틴"
+          value={100 - axis_scores.routine}
+          description1="새로운 것에 도전하는 것이 재미"
+          description2="익숙한 것이 편하고 안전해"
         />
         <TraitSlider
-          label1="에겐"
-          label2="테토"
-          value={axis_scores.egen}
-          description1="일관되고 예측 가능한 성격"
-          description2="변화가 많고 예측 불가능한 성격"
+          label1="테토"
+          label2="에겐"
+          value={100 - axis_scores.egen}
+          description1="변화가 많고 예측 불가능한 성격"
+          description2="일관되고 예측 가능한 성격"
         />
       </div>
 
