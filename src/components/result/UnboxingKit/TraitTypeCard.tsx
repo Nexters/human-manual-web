@@ -24,21 +24,21 @@ export default function TraitTypeCard({
           {title}
         </Typography>
         <div className="flex gap-2">
-          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-point text-white text-xs font-medium">
+          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-sub-5 text-point text-xs font-medium">
             {chip1}
           </span>
-          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-point text-white text-xs font-medium">
+          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-sub-5 text-point text-xs font-medium">
             {chip2}
           </span>
         </div>
       </div>
 
       {/* Description */}
-      <div className="flex flex-col gap-2 rounded-[12px] bg-white p-4">
-        <Typography variant="me3" className="font-semibold text-gray-09">
+      <div className="flex flex-col gap-2 rounded-[12px] bg-white p-4 mt-6">
+        <Typography variant="sb3" className="text-main">
           왜 {title}인가요?
         </Typography>
-        <Typography variant="me3" className="text-gray-07 leading-relaxed">
+        <Typography variant="me3" className="text-gray-06">
           {description}
         </Typography>
       </div>
