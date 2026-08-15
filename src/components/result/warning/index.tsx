@@ -18,7 +18,7 @@ export default function Warning({ warnings }: WarningProps) {
         {warnings.map((warning) => (
           <div
             key={warning}
-            className="flex h-[46px] items-center gap-4 rounded-[10px] bg-gray-01 px-4"
+            className="flex min-h-[46px] items-center gap-4 rounded-[10px] bg-gray-01 px-4 py-2.5"
           >
             <img src={errorIcon} alt="" className="size-9 shrink-0" />
             <Typography variant="me2" className="text-gray-07 break-keep">

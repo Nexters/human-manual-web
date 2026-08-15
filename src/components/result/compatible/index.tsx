@@ -6,6 +6,7 @@ import Chip from "@/components/shared/Chip";
 import Button from "@/components/shared/Button";
 import { useModal } from "@/hooks/useModal";
 import InviteFriendModal from "@/components/result/compatible/InviteFriendModal";
+import { cn } from "@/lib/cn";
 
 const INVITE_CODE = "#01010101";
 
@@ -61,23 +62,24 @@ export default function Compatible() {
       {/* Character Cards */}
       <div className="grid grid-cols-2 gap-3">
         {characters.map((character) => (
-          <div
-            key={character.name}
-            className="flex flex-col items-center gap-3 rounded-[10px] bg-white pt-4 pb-6"
-          >
-            <Chip className={character.chipColor}>{character.chipLabel}</Chip>
-            <img
-              src={character.image}
-              alt={character.name}
-              className="size-[120px] object-contain"
-            />
-            <div className="flex flex-col items-center gap-1">
-              <Typography variant="h2" className="text-gray-08">
-                {character.name}
-              </Typography>
-              <Typography variant="me3" className="text-center text-gray-07 break-keep">
-                {character.description}
-              </Typography>
+          <div key={character.name} className="flex flex-col items-center">
+            <Chip className={cn("z-10 -mb-[17px]", character.chipColor)}>
+              {character.chipLabel}
+            </Chip>
+            <div className="flex w-full flex-col items-center gap-3 rounded-[10px] bg-white pt-8 pb-6">
+              <img
+                src={character.image}
+                alt={character.name}
+                className="size-[120px] object-contain"
+              />
+              <div className="flex flex-col items-center gap-1">
+                <Typography variant="h2" className="text-gray-08">
+                  {character.name}
+                </Typography>
+                <Typography variant="me3" className="text-center text-gray-07 break-keep">
+                  {character.description}
+                </Typography>
+              </div>
             </div>
           </div>
         ))}
