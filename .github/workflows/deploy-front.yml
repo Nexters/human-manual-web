@@ -1,4 +1,4 @@
-name: Deploy Frontend to Gabia Server
+name: Build and Push React Frontend (pnpm)
 
 on:
   push:
@@ -10,23 +10,38 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # 1. React 빌드 (서버에서 빌드해도 되지만 여기서 먼저 하면 서버 부하가 적음)
-      - name: Build React App
-        run: |
-          npm ci
-          npm run build
+      # 1. pnpm 환경 설정
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest # 또는 사용하는 pnpm 버전 지정 (예: 8)
 
-      # 2. 서버로 파일 전송 (애플보이 SCP 액션 활용)
+      # 2. Node.js 환경 설정 및 pnpm 캐시 활용
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20' # 사용하는 Node 버전
+          cache: 'pnpm'
+
+      # 3. 의존성 설치 (pnpm 방식)
+      - name: Install dependencies
+        run: pnpm install
+
+      # 4. React 빌드 (pnpm 방식)
+      - name: Build React App
+        run: pnpm run build
+          
+      # 5. 서버로 파일 전송 (SCP)
       - name: Copy files to Gabia Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.GAIA_HOST }}
           username: ${{ secrets.GAIA_USERNAME }}
           key: ${{ secrets.GAIA_SSH_KEY }}
-          source: "dist/*"
+          source: "dist/*,Dockerfile" # 👈 Dockerfile도 같이 서버로 전송되도록 추가했습니다!
           target: "/home/ubuntu/frontend-app"
 
-      # 3. 서버에서 도커 이미지 빌드 및 실행 (핵심!)
+      # 6. 서버에서 도커 이미지 빌드 및 실행 (SSH)
       - name: Build & Run Docker on Server
         uses: appleboy/ssh-action@master
         with:
@@ -35,9 +50,9 @@ jobs:
           key: ${{ secrets.GAIA_SSH_KEY }}
           script: |
             cd /home/ubuntu/frontend-app
-            # 서버에서 이미지 빌드 (로컬 레지스트리 활용)
+            # 서버에서 도커 이미지 빌드
             docker build -t my-frontend .
-            # 기존 컨테이너 교체
+            # 기존 컨테이너 중지 및 삭제 후 재실행
             docker stop my-frontend || true
             docker rm my-frontend || true
             docker run -d --name my-frontend -p 80:80 my-frontend
