@@ -1,4 +1,4 @@
-import top from "@/assets/img/toys/toy-top.png";
+import spinningTop from "@/assets/img/toys/toy-top.png";
 import teddyBear from "@/assets/img/toys/toy-teddy-bear.png";
 import secretBox from "@/assets/img/toys/toy-secret-box.png";
 import bulldozer from "@/assets/img/toys/toy-bulldozer.png";
@@ -21,11 +21,13 @@ export type CharacterAsset = {
 };
 
 /**
- * character_id 키는 백엔드 스펙이 아직 확정되지 않아 임의로 지정한 영문 snake_case 값입니다.
- * 실제 API 값이 확정되면 이 키들을 맞춰 수정해주세요.
+ * character_id는 api.pakit.kr OpenAPI 스펙(/api/compatibility 예시)에 spinning_top, teddy_bear,
+ * cube 3개만 명시되어 있고 나머지는 자유 문자열이라 문서화된 전체 목록이 없습니다.
+ * 아래 3개(spinning_top/teddy_bear/cube)는 스펙에서 확인된 값이고, 나머지는 Figma 레이어명을
+ * 영문 snake_case로 임의 변환한 추측값이니 실제 값 확정 시 맞춰 수정해주세요.
  */
 export const CHARACTER_ASSETS: Record<string, CharacterAsset> = {
-  top: { image: top, alt: "팽이 캐릭터" },
+  spinning_top: { image: spinningTop, alt: "팽이 캐릭터" },
   teddy_bear: { image: teddyBear, alt: "곰인형 캐릭터" },
   secret_box: { image: secretBox, alt: "비밀상자 캐릭터" },
   bulldozer: { image: bulldozer, alt: "불도저 캐릭터" },
@@ -43,7 +45,7 @@ export const CHARACTER_ASSETS: Record<string, CharacterAsset> = {
   robot: { image: robot, alt: "로봇 캐릭터" },
 };
 
-const DEFAULT_CHARACTER_ASSET: CharacterAsset = { image: top, alt: "캐릭터" };
+const DEFAULT_CHARACTER_ASSET: CharacterAsset = { image: spinningTop, alt: "캐릭터" };
 
 export function getCharacterAsset(characterId: string): CharacterAsset {
   return CHARACTER_ASSETS[characterId] ?? DEFAULT_CHARACTER_ASSET;
