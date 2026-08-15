@@ -1,0 +1,43 @@
+name: Deploy Frontend to Gabia Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # 1. React 빌드 (서버에서 빌드해도 되지만 여기서 먼저 하면 서버 부하가 적음)
+      - name: Build React App
+        run: |
+          npm ci
+          npm run build
+
+      # 2. 서버로 파일 전송 (애플보이 SCP 액션 활용)
+      - name: Copy files to Gabia Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.GAIA_HOST }}
+          username: ${{ secrets.GAIA_USERNAME }}
+          key: ${{ secrets.GAIA_SSH_KEY }}
+          source: "dist/*"
+          target: "/home/ubuntu/frontend-app"
+
+      # 3. 서버에서 도커 이미지 빌드 및 실행 (핵심!)
+      - name: Build & Run Docker on Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.GAIA_HOST }}
+          username: ${{ secrets.GAIA_USERNAME }}
+          key: ${{ secrets.GAIA_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/frontend-app
+            # 서버에서 이미지 빌드 (로컬 레지스트리 활용)
+            docker build -t my-frontend .
+            # 기존 컨테이너 교체
+            docker stop my-frontend || true
+            docker rm my-frontend || true
+            docker run -d --name my-frontend -p 80:80 my-frontend
