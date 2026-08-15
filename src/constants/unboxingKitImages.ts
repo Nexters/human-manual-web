@@ -1,5 +1,5 @@
-import boxImg from "@/assets/images/result/unboxing/box.png";
-import magicStickImg from "@/assets/images/result/unboxing/magic_stick.png";
+import boxImg from "@/assets/img/result/unboxing/box.png";
+import magicStickImg from "@/assets/img/result/unboxing/magic_stick.png";
 import type { PackagingType, OpeningToolType } from "@/types/assessment";
 
 /**

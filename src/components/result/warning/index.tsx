@@ -1,4 +1,4 @@
-import errorIcon from "@/assets/images/result/error.png";
+import errorIcon from "@/assets/img/result/error.png";
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
 

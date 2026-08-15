@@ -1,5 +1,5 @@
-import secretBoxImg from "@/assets/images/result/toy/secret.png";
-import teddyBearImg from "@/assets/images/result/toy/teddy_bear.png";
+import secretBoxImg from "@/assets/img/result/toy/secret.png";
+import teddyBearImg from "@/assets/img/result/toy/teddy_bear.png";
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
 import Chip from "@/components/shared/Chip";

@@ -1,4 +1,4 @@
-import checkIcon from "@/assets/images/result/check.png";
+import checkIcon from "@/assets/img/result/check.png";
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
 

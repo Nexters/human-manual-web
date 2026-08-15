@@ -1,6 +1,6 @@
-import friendsIcon from "@/assets/images/result/charge/friends.png";
-import beerIcon from "@/assets/images/result/charge/berr.png";
-import airplaneIcon from "@/assets/images/result/charge/airplane.png";
+import friendsIcon from "@/assets/img/result/charge/friends.png";
+import beerIcon from "@/assets/img/result/charge/berr.png";
+import airplaneIcon from "@/assets/img/result/charge/airplane.png";
 
 /** charging.activities[].type → 아이콘 매핑. 알 수 없는 type은 friendsIcon으로 폴백. */
 export const CHARGING_ACTIVITY_ICON_MAP: Record<string, string> = {

@@ -1,9 +1,9 @@
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
-import fireIcon from "@/assets/images/result/keyFeature/fire.png";
-import smileIcon from "@/assets/images/result/keyFeature/smile.png";
-import starIcon from "@/assets/images/result/keyFeature/star.png";
-import searchIcon from "@/assets/images/result/keyFeature/search.png";
+import fireIcon from "@/assets/img/result/keyFeature/fire.png";
+import smileIcon from "@/assets/img/result/keyFeature/smile.png";
+import starIcon from "@/assets/img/result/keyFeature/star.png";
+import searchIcon from "@/assets/img/result/keyFeature/search.png";
 import { getCharacterImage } from "@/constants/characterImages";
 import type { FeatureOutput } from "@/types/assessment";
 
