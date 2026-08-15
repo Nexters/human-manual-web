@@ -26,6 +26,8 @@ jobs:
 
       # 3. pnpm으로 의존성 설치 및 빌드
       - name: Install and Build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
         run: |
           pnpm install
           pnpm run build
