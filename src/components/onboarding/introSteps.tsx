@@ -38,3 +38,7 @@ export const introSteps: Record<
 };
 
 export const introCharacterImages = [characterGreeting, characterSurprised, characterGuide];
+
+export const introBackgroundImages = [onboardingBg];
+
+export const introPreloadImages = [...introBackgroundImages, ...introCharacterImages];
