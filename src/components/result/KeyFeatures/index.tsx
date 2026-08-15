@@ -32,7 +32,9 @@ export default function KeyFeatures() {
             key={feature.title}
             className="flex items-center gap-3 rounded-[10px] bg-white p-4"
           >
-            <img src={feature.icon} alt="" className="size-10 object-contain shrink-0" />
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-gray-02 bg-gray-01">
+              <img src={feature.icon} alt="" className="size-6 object-contain" />
+            </div>
             <div className="flex flex-col gap-1">
               <Typography variant="sb4" className="text-gray-09">
                 {feature.title}
