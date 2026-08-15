@@ -109,7 +109,7 @@ export default function OnboardingPage() {
         <div className="relative flex flex-1 flex-col px-5 pt-[95px] pb-10">
           <SpeechBubble
             message={
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col items-center gap-1 text-center break-keep">
                 <Typography variant="h3">배송 전에 이름부터 확인할게요!</Typography>
                 <Typography variant="sb4" className="text-gray-07 font-normal">
                   당신의 이름을 알려주세요
@@ -122,6 +122,7 @@ export default function OnboardingPage() {
             placeholder="이름을 입력해주세요"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className="text-center"
           />
           <div className="flex-1" />
         </div>
