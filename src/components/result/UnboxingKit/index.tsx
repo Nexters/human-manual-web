@@ -68,11 +68,13 @@ export default function UnboxingKit() {
       </div>
 
       {/* Info Text */}
-      <div className="rounded-[10px] bg-white p-4">
-        <Typography variant="me3" className="text-gray-08 leading-relaxed">
-          밤이 깊어질수록 텐션이 올라가는 장난꾸러기. 해가 지면 비로소 에너지가 충전되는 타입.
-          엉뚱한 장난과 재치 있는 말로 조용하던 분위기를 뒤집고, 모두가 지칠 때쯤 신나게 놀기
-          시작해요.
+      <div className="flex flex-col gap-2 rounded-[10px] bg-gray-01 p-4">
+        <Typography variant="sb3" className="text-gray-09">
+          밤이 깊어질수록 텐션이 올라가는 장난꾸러기
+        </Typography>
+        <Typography variant="me2" className="text-center text-gray-07">
+          해가 지면 비로소 에너지가 충전되는 타입. 엉뚱한 장난과 재치 있는 말로 조용하던 분위기를
+          뒤집고, 모두가 지칠 때쯤 신나게 놀기 시작해요.
         </Typography>
       </div>
 

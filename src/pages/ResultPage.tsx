@@ -8,7 +8,7 @@ import Compatible from "@/components/result/compatible";
 
 export default function ResultPage() {
   return (
-    <div className="bg-white">
+    <div className="bg-gray-00">
       <Hero title="팽이 지은" subtitle="새벽 2시에도 카톡 폭격하는" />
       <UnboxingKit />
       <KeyFeatures />
