@@ -13,12 +13,12 @@ const INVITE_CODE = "#01010101";
 export default function Compatible() {
   const { open } = useModal();
 
-  const openInviteModal = (disabled: boolean) => {
+  const openInviteModal = (copied: boolean) => {
     const handleCopy = async () => {
       try {
         await navigator.clipboard.writeText(INVITE_CODE);
       } catch {
-        // 클립보드 권한이 없는 환경에서도 버튼 비활성화는 그대로 진행한다.
+        // 클립보드 권한이 없는 환경에서도 복사 완료 UI는 그대로 진행한다.
       }
       openInviteModal(true);
       setTimeout(() => openInviteModal(false), 1500);
@@ -29,10 +29,9 @@ export default function Compatible() {
       description: "친구에게 내 코드를 공유해보세요",
       contents: <InviteFriendModal code={INVITE_CODE} onCopy={handleCopy} />,
       rightButton: {
-        label: "링크 공유",
+        label: copied ? "복사 완료!" : "링크 공유",
         variant: "point",
         onClick: handleCopy,
-        disabled,
       },
     });
   };
