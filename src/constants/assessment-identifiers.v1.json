@@ -1,5 +1,5 @@
 {
-  "assessment_version": "2026-08-12.3",
+  "assessment_version": "2026-08-14.3",
   "identifier_status": "published",
   "id_policy": {
     "question_id": "step{number}.q{two_digit_order}",
@@ -32,18 +32,18 @@
     {
       "question_id": "step1.q01",
       "answer_kind": "choice",
-      "values": ["restaurant", "worries", "hangout", "information"]
+      "values": ["decision", "worries", "hangout", "information"]
     },
     {
       "question_id": "step1.q02",
       "answer_kind": "choice",
       "values": [
-        "navigation",
+        "set_direction",
         "lift_mood",
-        "planning",
-        "reacting",
-        "mediate_conflict",
-        "choose_gift"
+        "make_it_happen",
+        "draw_people_out",
+        "coordinate_opinions",
+        "remember_and_care"
       ]
     },
     {
@@ -99,6 +99,23 @@
       "question_id": "step1.q10",
       "answer_kind": "choice",
       "values": ["morning_person", "no_plan", "photo_obsessed", "hates_walking"]
+    },
+    {
+      "question_id": "step1.q11",
+      "answer_kind": "choice",
+      "values": [
+        "curiosity",
+        "needed_by_someone",
+        "clear_goal",
+        "responsibility",
+        "last_chance",
+        "fun"
+      ]
+    },
+    {
+      "question_id": "step1.q12",
+      "answer_kind": "choice",
+      "values": ["listen_to_me", "take_me_out", "give_me_space", "solve_together", "make_me_laugh"]
     },
     {
       "question_id": "step2.q01",

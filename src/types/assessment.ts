@@ -17,6 +17,27 @@ export type AssessmentIdentifiers = {
   questions: IdentifierQuestion[];
 };
 
+export type ContentOption = { value: string; label: string };
+
+export type ContentQuestion = {
+  question_id: string;
+  step: number;
+  order: number;
+  prompt: string;
+  answer_kind: AnswerKind;
+  options?: ContentOption[];
+  instruction?: string;
+  visual_endpoints?: { left: string; right: string };
+  constraints?: { minimum: number; maximum: number; step: number };
+};
+
+export type AssessmentContent = {
+  assessment_version: string;
+  locale: string;
+  questions: ContentQuestion[];
+  mbti_screen: { prompt: string; submission_field: string };
+};
+
 export const MBTI_AXES = [
   { key: "EI", label: "에너지 방향", poles: ["E", "I"], poleLabels: ["E(외향형)", "I(내향형)"] },
   { key: "SN", label: "인식", poles: ["S", "N"], poleLabels: ["S(감각형)", "N(직관형)"] },
