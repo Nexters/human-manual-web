@@ -35,16 +35,8 @@ export default function CompatibilityPage() {
   }
 
   if (isLoading) {
-    return (
-      <div className="bg-gray-00 flex min-h-dvh flex-col">
-        {topBar}
-        <div className="flex flex-1 items-center justify-center px-5 text-center">
-          <Typography variant="me2" className="text-gray-07">
-            궁합을 확인하고 있어요...
-          </Typography>
-        </div>
-      </div>
-    );
+    // TODO: 스켈레톤 UI 추가
+    return null;
   }
 
   if (isError || !data) {
