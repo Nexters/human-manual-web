@@ -8,6 +8,7 @@ import LongTermTipCard from "@/components/compatibility/LongTermTipCard";
 import CompatibilityActionBar from "@/components/compatibility/CompatibilityActionBar";
 import { useCompatibility } from "@/hooks/useCompatibility";
 import { getCharacterAsset } from "@/constants/characters";
+import { share } from "@/utils/share";
 
 export default function CompatibilityPage() {
   const navigate = useNavigate();
@@ -54,6 +55,13 @@ export default function CompatibilityPage() {
 
   const mineAsset = getCharacterAsset(data.mine.character_id);
   const friendAsset = getCharacterAsset(data.friend.character_id);
+
+  const handleShare = () =>
+    share({
+      title: data.headline,
+      text: data.description,
+      url: window.location.href,
+    });
 
   return (
     <div className="bg-gray-00 flex min-h-dvh flex-col">
@@ -117,7 +125,7 @@ export default function CompatibilityPage() {
         />
       </div>
 
-      <CompatibilityActionBar onSave={() => {}} onShare={() => {}} />
+      <CompatibilityActionBar onSave={() => {}} onShare={handleShare} />
     </div>
   );
 }
