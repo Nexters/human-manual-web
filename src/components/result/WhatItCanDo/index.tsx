@@ -1,14 +1,14 @@
+import checkIcon from "@/assets/images/result/check.png";
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
-import { cn } from "@/lib/cn";
 
 // ------- WhatItCanDo UI ------
 export default function WhatItCanDo() {
   const features = [
     "같이 놀아주세요",
-    "새로운 재칭을 단서주세요",
-    "리/섬돈 이미지 읽게세요",
-    "자동을 끼칭주세요",
+    "새로운 제안을 던져주세요",
+    "리액션을 아끼지 말아주세요",
+    "자유롭게 맡겨주세요",
   ];
 
   return (
@@ -21,15 +21,10 @@ export default function WhatItCanDo() {
         {features.map((feature) => (
           <div
             key={feature}
-            className={cn(
-              "flex items-center gap-4 rounded-[10px] bg-gray-00 p-4",
-              "border border-gray-02",
-            )}
+            className="flex h-[46px] items-center gap-4 rounded-[10px] bg-gray-01 px-4"
           >
-            <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-main">
-              <span className="text-sm text-white">✓</span>
-            </div>
-            <Typography variant="me2" className="text-gray-08">
+            <img src={checkIcon} alt="" className="size-9 shrink-0" />
+            <Typography variant="me2" className="text-gray-07">
               {feature}
             </Typography>
           </div>

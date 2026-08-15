@@ -1,14 +1,25 @@
+import friendsIcon from "@/assets/images/result/charge/friends.png";
+import beerIcon from "@/assets/images/result/charge/berr.png";
+import airplaneIcon from "@/assets/images/result/charge/airplane.png";
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
+import { useInView } from "@/hooks/useInView";
+import { useCountUp } from "@/hooks/useCountUp";
 import GaugeArc from "./GaugeArc";
+
+const CHARGE_VALUE = 90;
+const IN_VIEW_OPTIONS = { threshold: 0.4 };
 
 // ------- Charging UI ------
 export default function Charging() {
   const chargingActivities = [
-    { icon: "👨‍👩‍👧", label: "친구끼리 놀기" },
-    { icon: "🍺", label: "맥주 한 잔" },
-    { icon: "✈️", label: "여행가기" },
+    { icon: friendsIcon, label: "친구끼리 놀기" },
+    { icon: beerIcon, label: "맥주 한 잔" },
+    { icon: airplaneIcon, label: "여행가기" },
   ];
+
+  const { ref, isInView } = useInView<HTMLDivElement>(IN_VIEW_OPTIONS);
+  const count = useCountUp(CHARGE_VALUE, isInView);
 
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
@@ -16,19 +27,28 @@ export default function Charging() {
       <SectionTitle title="CHARGING" subtitle="충전 방법" />
 
       {/* Gauge */}
-      <div className="flex flex-col items-center gap-4">
+      <div ref={ref} className="flex flex-col items-center gap-4">
         <div className="relative flex flex-col items-center">
-          <GaugeArc value={90} size={160} strokeWidth={10} />
-          <div className="absolute inset-0 flex flex-col items-center justify-center top-12">
-            <Typography variant="h1" className="text-main">
-              90
-            </Typography>
+          <GaugeArc value={isInView ? CHARGE_VALUE : 0} size={220} strokeWidth={12} />
+          <div className="absolute inset-0 flex flex-col items-center justify-center top-8">
+            <p
+              className="text-center text-main"
+              style={{
+                fontFamily: "'ThePosterFont', var(--font-sans)",
+                fontSize: "74.3px",
+                fontWeight: 400,
+                lineHeight: "140%",
+                letterSpacing: "-2%",
+              }}
+            >
+              {count}
+            </p>
           </div>
         </div>
 
         {/* Description */}
-        <Typography variant="me2" className="text-center text-gray-07">
-          친구들과 놀 때 가장 배레게 충전돼요
+        <Typography variant="sb3" className="text-center text-gray-08">
+          친구들과 놀 때 가장 빠르게 충전돼요
         </Typography>
       </div>
 
@@ -39,7 +59,7 @@ export default function Charging() {
             key={activity.label}
             className="flex flex-col items-center gap-2 rounded-[12px] border border-gray-02 bg-white p-3"
           >
-            <span className="text-3xl">{activity.icon}</span>
+            <img src={activity.icon} alt={activity.label} className="size-20 shrink-0" />
             <Typography variant="me3" className="text-center text-gray-08 text-xs">
               {activity.label}
             </Typography>

@@ -11,6 +11,7 @@ interface HeroProps {
   subtitle?: string;
   badge?: string;
   tags?: string[];
+  isTopBarDark?: boolean;
 }
 
 const TAG_POSITIONS = [
@@ -24,6 +25,7 @@ export default function Hero({
   subtitle = "새벽 2시에도 카톡 폭격하는",
   badge = "상위 4%",
   tags = ["도파민 MAX", "장난꾸러기", "혼자서도 잘놀아요"],
+  isTopBarDark = false,
 }: HeroProps) {
   const navigate = useNavigate();
 
@@ -39,7 +41,7 @@ export default function Hero({
         aria-hidden
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <HeroTopBar title="장난감 소개서" onBack={handleBack} />
+      <HeroTopBar title="장난감 소개서" onBack={handleBack} isDark={isTopBarDark} />
 
       {/* ----- 상단 배지 & 타이틀 섹션 ----- */}
       <div className="relative z-10 flex flex-col items-center gap-4 px-5 pt-[100px]">
