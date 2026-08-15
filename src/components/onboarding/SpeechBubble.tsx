@@ -17,7 +17,7 @@ export default function SpeechBubble({ speaker = "토키", message, className }:
         <Typography
           variant="sb3"
           as="div"
-          className="text-gray-08 flex min-h-[54px] items-center"
+          className="text-gray-08 flex min-h-[54px] items-center justify-center text-center break-keep"
         >
           <div>{message}</div>
         </Typography>
