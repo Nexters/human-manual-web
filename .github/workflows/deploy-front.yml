@@ -1,4 +1,4 @@
-name: Build and Push React Frontend (pnpm)
+name: Build and Deploy React Frontend (via Docker Compose)
 
 on:
   push:
@@ -24,34 +24,32 @@ jobs:
           node-version: '22'
           cache: 'pnpm'
 
-      # 3. pnpm으로 의존성 설치
-      - name: Install dependencies
-        run: pnpm install
+      # 3. pnpm으로 의존성 설치 및 빌드
+      - name: Install and Build
+        run: |
+          pnpm install
+          pnpm run build
 
-      # 4. pnpm으로 리액트 빌드
-      - name: Build React App
-        run: pnpm run build
-          
-      # 5. 서버로 파일 전송 (SCP)
-      - name: Copy files to Gabia Server
+      # 4. 서버로 빌드 결과물 전송 (dist 폴더만 전송)
+      - name: Copy dist to Gabia Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.GAIA_HOST }}
           username: ${{ secrets.GAIA_USERNAME }}
           key: ${{ secrets.GAIA_SSH_KEY }}
-          source: "dist/*,Dockerfile"
+          source: "dist/"
           target: "/home/ubuntu/frontend-app"
 
-      # 6. 서버에서 도커 빌드 및 실행 (3000번 포트 매핑)
-      - name: Build & Run Docker on Server
+      # 5. 서버에서 Docker Compose 실행 (프론트엔드 컨테이너만 재시작)
+      - name: Restart Frontend Service on Server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.GAIA_HOST }}
           username: ${{ secrets.GAIA_USERNAME }}
           key: ${{ secrets.GAIA_SSH_KEY }}
           script: |
-            cd /home/ubuntu/frontend-app
-            docker build -t my-frontend .
-            docker stop my-frontend || true
-            docker rm my-frontend || true
-            docker run -d --name my-frontend -p 3000:80 my-frontend
+            # 백엔드 프로젝트 폴더로 이동하여 실행
+            cd /home/ubuntu/my-fastapi
+            
+            # 프론트엔드 서비스만 새로 빌드하고 실행
+            docker compose up --build -d front
