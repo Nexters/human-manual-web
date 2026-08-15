@@ -1,6 +1,4 @@
 import Typography from "@/components/shared/Typography";
-import Chip from "@/components/shared/Chip";
-import { cn } from "@/lib/cn";
 
 type TraitTypeCardProps = {
   title: string;
@@ -8,15 +6,6 @@ type TraitTypeCardProps = {
   chip2: string;
   description: string;
   image: string;
-};
-
-const chipBgMap: Record<string, string> = {
-  point: "bg-point/10 text-point",
-  "sub-1": "bg-sub-1/10 text-sub-1",
-  "sub-2": "bg-sub-2/10 text-sub-2",
-  "sub-3": "bg-sub-3/10 text-sub-3",
-  "sub-4": "bg-sub-4/10 text-sub-4",
-  "sub-5": "bg-sub-5/10 text-sub-5",
 };
 
 export default function TraitTypeCard({
@@ -35,8 +24,12 @@ export default function TraitTypeCard({
           {title}
         </Typography>
         <div className="flex gap-2">
-          <Chip className={cn("text-xs", chipBgMap["sub-5"])}>{chip1}</Chip>
-          <Chip className={cn("text-xs", chipBgMap["sub-5"])}>{chip2}</Chip>
+          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-point text-white text-xs font-medium">
+            {chip1}
+          </span>
+          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-point text-white text-xs font-medium">
+            {chip2}
+          </span>
         </div>
       </div>
 
