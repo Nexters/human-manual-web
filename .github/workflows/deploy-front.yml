@@ -14,13 +14,13 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: latest # 또는 사용하는 pnpm 버전 지정 (예: 8)
+          version: 9 # 또는 사용하는 pnpm 버전 지정 (예: 8)
 
       # 2. Node.js 환경 설정 및 pnpm 캐시 활용
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20' # 사용하는 Node 버전
+          node-version: '22' # 사용하는 Node 버전
           cache: 'pnpm'
 
       # 3. 의존성 설치 (pnpm 방식)
