@@ -30,15 +30,17 @@ export default function KeyFeatures() {
         {features.map((feature) => (
           <div
             key={feature.title}
-            className="flex flex-col items-center gap-2 rounded-[10px] bg-white p-4"
+            className="flex items-center gap-3 rounded-[10px] bg-white p-4"
           >
-            <img src={feature.icon} alt="" className="size-10 object-contain" />
-            <Typography variant="sb4" className="text-center text-gray-09">
-              {feature.title}
-            </Typography>
-            <Typography variant="me4" className="text-center text-gray-06">
-              {feature.description}
-            </Typography>
+            <img src={feature.icon} alt="" className="size-10 object-contain shrink-0" />
+            <div className="flex flex-col gap-1">
+              <Typography variant="sb4" className="text-gray-09">
+                {feature.title}
+              </Typography>
+              <Typography variant="me4" className="text-gray-06">
+                {feature.description}
+              </Typography>
+            </div>
           </div>
         ))}
       </div>
