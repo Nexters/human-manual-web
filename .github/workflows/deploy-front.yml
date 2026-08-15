@@ -30,17 +30,17 @@ jobs:
           pnpm install
           pnpm run build
 
-      # 4. 서버로 빌드 결과물 전송 (dist 폴더만 전송)
-      - name: Copy dist to Gabia Server
+      # 4. 서버로 빌드 결과물(dist/)과 nginx.conf 파일을 함께 전송
+      - name: Copy dist and nginx.conf to Gabia Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.GAIA_HOST }}
           username: ${{ secrets.GAIA_USERNAME }}
           key: ${{ secrets.GAIA_SSH_KEY }}
-          source: "dist/"
+          source: "dist/,nginx.conf"
           target: "/home/ubuntu/frontend-app"
 
-      # 5. 서버에서 Docker Compose 실행 (프론트엔드 컨테이너만 재시작)
+      # 5. 서버에서 Docker Compose 실행 (ssh-action을 사용하여 명령어 실행)
       - name: Restart Frontend Service on Server
         uses: appleboy/ssh-action@master
         with:
@@ -48,8 +48,5 @@ jobs:
           username: ${{ secrets.GAIA_USERNAME }}
           key: ${{ secrets.GAIA_SSH_KEY }}
           script: |
-            # 백엔드 프로젝트 폴더로 이동하여 실행
             cd /home/ubuntu/my-fastapi
-            
-            # 프론트엔드 서비스만 새로 빌드하고 실행
             docker compose up --build -d front
