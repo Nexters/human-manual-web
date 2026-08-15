@@ -1,6 +1,22 @@
 @import "tailwindcss";
 @import "pretendard/dist/web/variable/pretendardvariable.css";
 
+@font-face {
+  font-family: "RixInooAriDuri";
+  src: url("./assets/fonts/RixInooAriDuri_Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ThePosterFont";
+  src: url("./assets/fonts/THE_POSTER_FONT.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: "Pretendard Variable", sans-serif;
 
