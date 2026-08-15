@@ -13,7 +13,7 @@ export default function KeyFeatures() {
     { icon: smileIcon, title: "일단 해봐요", description: "생각보다 빠른 행동력" },
     { icon: starIcon, title: "변화를 즐겨요", description: "새로운 방식에 열린 태도" },
     { icon: searchIcon, title: "탐험형", description: "직접 부딪히며 발견" },
-  ];
+  ] as const;
 
   return (
     <div className="flex flex-col gap-6 px-5 py-8">

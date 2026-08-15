@@ -24,7 +24,7 @@ export default function UnboxingKit() {
         "당신은 호기심이 생기면 망설이지 않고 새로운 경험에 뛰어들어요. 평범한 순간도 자신만의 방식으로 흥미롭게 바꾸는 모습이 마술봉과 닮았어요.",
       image: magicStickImg,
     },
-  ];
+  ] as const;
 
   return (
     <div className="flex flex-col gap-6 px-5 py-8  mt-[30px]">
