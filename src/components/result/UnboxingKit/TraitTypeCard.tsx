@@ -16,7 +16,7 @@ export default function TraitTypeCard({
   image,
 }: TraitTypeCardProps) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 mt-[30px]">
       {/* Image + Title + Chips */}
       <div className="flex flex-col items-center gap-3">
         <img src={image} alt={title} className="w-24 h-24 object-contain" />
