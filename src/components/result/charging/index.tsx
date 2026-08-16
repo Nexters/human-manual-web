@@ -1,25 +1,22 @@
-import friendsIcon from "@/assets/images/result/charge/friends.png";
-import beerIcon from "@/assets/images/result/charge/berr.png";
-import airplaneIcon from "@/assets/images/result/charge/airplane.png";
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
 import { useInView } from "@/hooks/useInView";
 import { useCountUp } from "@/hooks/useCountUp";
+import { getChargingActivityIcon } from "@/constants/chargingActivityIcons";
 import GaugeArc from "./GaugeArc";
+import type { ChargingOutput } from "@/types/assessment";
 
-const CHARGE_VALUE = 90;
+interface ChargingProps {
+  charging: ChargingOutput;
+}
+
 const IN_VIEW_OPTIONS = { threshold: 0.4 };
 
 // ------- Charging UI ------
-export default function Charging() {
-  const chargingActivities = [
-    { icon: friendsIcon, label: "친구끼리 놀기" },
-    { icon: beerIcon, label: "맥주 한 잔" },
-    { icon: airplaneIcon, label: "여행가기" },
-  ];
-
+export default function Charging({ charging }: ChargingProps) {
+  const { score, description, activities } = charging;
   const { ref, isInView } = useInView<HTMLDivElement>(IN_VIEW_OPTIONS);
-  const count = useCountUp(CHARGE_VALUE, isInView);
+  const count = useCountUp(score, isInView);
 
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
@@ -29,7 +26,7 @@ export default function Charging() {
       {/* Gauge */}
       <div ref={ref} className="flex flex-col items-center gap-4">
         <div className="relative flex flex-col items-center">
-          <GaugeArc value={isInView ? CHARGE_VALUE : 0} size={220} strokeWidth={12} />
+          <GaugeArc value={isInView ? score : 0} size={220} strokeWidth={12} />
           <div className="absolute inset-0 flex flex-col items-center justify-center top-8">
             <p
               className="text-center text-main"
@@ -47,20 +44,24 @@ export default function Charging() {
         </div>
 
         {/* Description */}
-        <Typography variant="sb3" className="text-center text-gray-08">
-          친구들과 놀 때 가장 빠르게 충전돼요
+        <Typography variant="sb3" className="text-center text-gray-08 break-keep">
+          {description}
         </Typography>
       </div>
 
       {/* Charging Activities Grid */}
       <div className="grid grid-cols-3 gap-3">
-        {chargingActivities.map((activity) => (
+        {activities.map((activity) => (
           <div
             key={activity.label}
             className="flex flex-col items-center gap-2 rounded-[12px] border border-gray-02 bg-white p-3"
           >
-            <img src={activity.icon} alt={activity.label} className="size-20 shrink-0" />
-            <Typography variant="me3" className="text-center text-gray-08 text-xs">
+            <img
+              src={getChargingActivityIcon(activity.type)}
+              alt={activity.label}
+              className="size-20 shrink-0"
+            />
+            <Typography variant="me3" className="text-center text-gray-08 text-xs break-keep">
               {activity.label}
             </Typography>
           </div>

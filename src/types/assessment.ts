@@ -61,7 +61,86 @@ export type AssessmentSubmissionInput = {
   mbti: string;
 };
 
-export type AssessmentSubmissionOutput = {
+export interface OverviewOutput {
+  rarity: string;
+  adjective: string;
+  noun: string;
+  result_name: string;
+  character_id: string;
+  image_url: string;
+  tags: string[];
+}
+
+export interface AxisScoresOutput {
+  attachment: number;
+  expression: number;
+  routine: number;
+  egen: number;
+}
+
+export type PackagingType =
+  | "fragile_box"
+  | "minimal_box"
+  | "matryoshka_box"
+  | "locked_box";
+
+export interface PackagingOutput {
+  type: PackagingType;
+  name: string;
+  tags: string[];
+  reason: string;
+}
+
+export type OpeningToolType =
+  | "glove"
+  | "utility_knife"
+  | "magic_wand"
+  | "chainsaw";
+
+export interface OpeningToolOutput {
+  type: OpeningToolType;
+  name: string;
+  tags: string[];
+  reason: string;
+}
+
+export interface UnboxingKitOutput {
+  axis_scores: AxisScoresOutput;
+  title: string;
+  description: string;
+  packaging: PackagingOutput;
+  opening_tool: OpeningToolOutput;
+}
+
+export interface FeatureOutput {
+  title: string;
+  description: string;
+}
+
+export interface CharacterStoryOutput {
+  title: string;
+  description: string;
+}
+
+export interface ChargingActivityOutput {
+  type: string;
+  label: string;
+}
+
+export interface ChargingOutput {
+  score: number;
+  description: string;
+  activities: ChargingActivityOutput[];
+}
+
+export interface AssessmentSubmissionOutput {
   result_code: string;
-  [key: string]: unknown;
-};
+  participant: { nickname: string };
+  overview: OverviewOutput;
+  unboxing_kit: UnboxingKitOutput;
+  features: FeatureOutput[];
+  character_story: CharacterStoryOutput;
+  can_do: string[];
+  warnings: string[];
+  charging: ChargingOutput;
+}
