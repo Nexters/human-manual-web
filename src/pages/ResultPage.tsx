@@ -61,7 +61,12 @@ export default function ResultPage() {
       <UnboxingKit unboxingKit={unboxing_kit} />
 
       {/* ------- 핵심 특징 UI ------ */}
-      <KeyFeatures features={features} characterId={overview.character_id} />
+      <KeyFeatures
+        features={features}
+        characterId={overview.character_id}
+        title={unboxing_kit.title}
+        description={unboxing_kit.description}
+      />
 
       {/* ------- 이렇게 다뤄주세요 UI ------ */}
       <WhatItCanDo can_do={can_do} />

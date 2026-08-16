@@ -10,6 +10,8 @@ import type { FeatureOutput } from "@/types/assessment";
 interface KeyFeaturesProps {
   features: FeatureOutput[];
   characterId: string;
+  title: string;
+  description: string;
 }
 
 const FEATURE_ICONS = [fireIcon, smileIcon, starIcon, searchIcon] as const;
@@ -19,7 +21,7 @@ function getFeatureIcon(index: number): string {
 }
 
 // ------- KeyFeatures UI ------
-export default function KeyFeatures({ features, characterId }: KeyFeaturesProps) {
+export default function KeyFeatures({ features, characterId, title, description }: KeyFeaturesProps) {
   const characterImage = getCharacterImage(characterId);
 
   return (
@@ -52,6 +54,16 @@ export default function KeyFeatures({ features, characterId }: KeyFeaturesProps)
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Info Text */}
+      <div className="flex flex-col justify-center gap-2 rounded-[10px] bg-gray-01 p-4 mt-[40px]">
+        <Typography variant="sb3" className="text-gray-09 text-center break-keep">
+          {title}
+        </Typography>
+        <Typography variant="me2" className="text-center text-gray-07 break-keep">
+          {description}
+        </Typography>
       </div>
     </div>
   );
