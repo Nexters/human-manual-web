@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Typography from "@/components/shared/Typography";
 import QuestionCtaButton from "@/components/question/QuestionCtaButton";
-import deliveryBunnyGif from "@/assets/img/unboxing/delivery-bunny.gif";
+import deliveryBunnyGif from "@/assets/gif/delivery-bunny.gif";
 
 type DeliveryStepProps = {
   phase: "loading" | "done";
