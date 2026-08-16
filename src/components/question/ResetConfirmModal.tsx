@@ -21,7 +21,7 @@ const ResetConfirmModal = ({ open, onCancel, onConfirm }: ResetConfirmModalProps
         <WarningIcon className="text-gray-02 mx-auto size-[40px]" />
 
         <Typography variant="h2" className="mt-[14px] text-black">
-          검사를 처음부터 다시 하시겠습니까?
+          정말 다시 하시겠어요?
         </Typography>
         <Typography variant="me2" className="text-gray-07 mt-[4px]">
           선택한 내용들은 모두 초기화됩니다.
@@ -32,7 +32,7 @@ const ResetConfirmModal = ({ open, onCancel, onConfirm }: ResetConfirmModalProps
             취소
           </QuestionCtaButton>
           <QuestionCtaButton className="h-[46px] flex-1" onClick={onConfirm}>
-            검사 다시하기
+            다시하기
           </QuestionCtaButton>
         </div>
       </div>
