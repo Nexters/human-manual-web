@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "pretendard/dist/web/variable/pretendardvariable.css";
+@import "./styles/animations.css";
 
 @font-face {
   font-family: "RixInooAriDuri";
@@ -47,18 +48,6 @@
   --color-dot-off: #d9d9d9;
   --color-badge-red: #e64e3b;
   --color-chip-yellow: #ffe521;
-
-  --animate-float: float 2.4s ease-in-out infinite;
-
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-8px);
-    }
-  }
 }
 
 html,

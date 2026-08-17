@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import secretBoxImg from "@/assets/img/result/toy/secret.png";
 import teddyBearImg from "@/assets/img/result/toy/teddy_bear.png";
 import Typography from "@/components/shared/Typography";
@@ -5,34 +6,42 @@ import SectionTitle from "@/components/result/SectionTitle";
 import Chip from "@/components/shared/Chip";
 import Button from "@/components/shared/Button";
 import { useModal } from "@/hooks/useModal";
+import { useToast } from "@/hooks/useToast";
 import InviteFriendModal from "@/components/result/compatible/InviteFriendModal";
 import { cn } from "@/lib/cn";
-
-const INVITE_CODE = "#01010101";
+import { share } from "@/utils/share";
 
 // ------- Compatible UI ------
 export default function Compatible() {
+  const { id } = useParams<{ id: string }>();
+  const inviteCode = id ?? "";
   const { open } = useModal();
+  const { open: openToast } = useToast();
 
-  const openInviteModal = (copied: boolean) => {
-    const handleCopy = async () => {
-      try {
-        await navigator.clipboard.writeText(INVITE_CODE);
-      } catch {
-        // 클립보드 권한이 없는 환경에서도 복사 완료 UI는 그대로 진행한다.
-      }
-      openInviteModal(true);
-      setTimeout(() => openInviteModal(false), 1500);
-    };
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(inviteCode);
+    } catch {
+      // 클립보드 권한이 없는 환경에서도 복사 완료 토스트는 그대로 노출한다.
+    }
+    openToast("코드 번호가 복사되었습니다");
+  };
 
+  const handleShare = async () => {
+    await share({
+      title: "친구 궁합",
+      text: "내 코드로 친구 궁합을 확인해보세요",
+      url: window.location.href,
+    });
+  };
+
+  const openInviteModal = () => {
     open({
-      title: "친구 추가",
-      description: "친구에게 내 코드를 공유해보세요",
-      contents: <InviteFriendModal code={INVITE_CODE} onCopy={handleCopy} />,
+      contents: <InviteFriendModal code={inviteCode} onCopy={handleCopy} />,
       rightButton: {
-        label: copied ? "복사 완료!" : "링크 공유",
+        label: "링크 공유",
         variant: "point",
-        onClick: handleCopy,
+        onClick: handleShare,
       },
     });
   };
@@ -91,7 +100,7 @@ export default function Compatible() {
         <Typography variant="me2" className="text-gray-05">
           친구별 케미와 관계 팁이 궁금하다면?
         </Typography>
-        <Button variant="outline" className="w-full" onClick={() => openInviteModal(false)}>
+        <Button variant="outline" className="w-full" onClick={openInviteModal}>
           친구 궁합 자세히 보기 →
         </Button>
       </div>

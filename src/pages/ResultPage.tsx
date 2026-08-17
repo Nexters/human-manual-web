@@ -10,12 +10,14 @@ import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
 import { useAssessmentResult } from "@/hooks/useAssessment";
+import { useTestStore } from "@/stores/testStore";
 
 const TOP_BAR_HEIGHT = 60;
 
 export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
+  const nickname = useTestStore((state) => state.nickname);
 
   const { ref: unboxingKitStartRef, hasPassed: isPastHero } = useScrollPassed<HTMLDivElement>({
     offset: TOP_BAR_HEIGHT,
@@ -43,12 +45,13 @@ export default function ResultPage() {
   }
 
   const { overview, unboxing_kit, features, can_do, warnings, charging } = data;
+  const heroTitle = nickname ? `${overview.noun} ${nickname}` : overview.noun;
 
   return (
     <div className="bg-gray-00 pb-[92px]">
       {/* ------- 상단 히어로(장난감 소개) UI ------ */}
       <Hero
-        title={overview.noun}
+        title={heroTitle}
         subtitle={overview.adjective}
         badge={overview.rarity}
         tags={overview.tags}
