@@ -34,7 +34,7 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
       {/* ----- 상단 타이틀 섹션 ----- */}
       <SectionTitle title="UNBOXING KIT" subtitle="나는 어떤 장난감이에요" />
 
-      {/* Trait Sliders */}
+      {/* ----- 성향 슬라이더 ----- */}
       <div className="flex flex-col gap-6">
         <TraitSlider
           label1="밀착"
@@ -70,7 +70,7 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
         />
       </div>
 
-      {/* Trait Cards */}
+      {/* ----- 성향 타입 카드 ----- */}
       <div className="flex flex-col gap-4">
         {traits.map((trait) => (
           <TraitTypeCard

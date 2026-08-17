@@ -13,7 +13,7 @@ export default function WhatItCanDo({ can_do }: WhatItCanDoProps) {
       {/* ----- 상단 타이틀 섹션 ----- */}
       <SectionTitle title="WHAT IT CAN DO" subtitle="이렇게 다뤄주세요" />
 
-      {/* Features List */}
+      {/* ----- 케어 방법 리스트 ----- */}
       <div className="flex flex-col gap-3">
         {can_do.map((item) => (
           <div

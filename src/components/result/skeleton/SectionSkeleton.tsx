@@ -92,6 +92,7 @@ export default function SectionSkeleton({ variant }: SectionSkeletonProps) {
 
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
+      {/* ----- 상단 타이틀 섹션 ----- */}
       <SectionTitleSkeleton />
       <Content />
     </div>

@@ -23,7 +23,7 @@ export default function Charging({ charging }: ChargingProps) {
       {/* ----- 상단 타이틀 섹션 ----- */}
       <SectionTitle title="CHARGING" subtitle="충전 방법" />
 
-      {/* Gauge */}
+      {/* ----- 게이지 UI ----- */}
       <div ref={ref} className="flex flex-col items-center gap-4">
         <div className="relative flex flex-col items-center">
           <GaugeArc value={isInView ? score : 0} size={220} strokeWidth={12} />
@@ -43,13 +43,13 @@ export default function Charging({ charging }: ChargingProps) {
           </div>
         </div>
 
-        {/* Description */}
+        {/* ----- 설명 텍스트 ----- */}
         <Typography variant="sb3" className="text-center text-gray-08 break-keep">
           {description}
         </Typography>
       </div>
 
-      {/* Charging Activities Grid */}
+      {/* ----- 충전 활동 그리드 ----- */}
       <div className="grid grid-cols-3 gap-3">
         {activities.map((activity) => (
           <div

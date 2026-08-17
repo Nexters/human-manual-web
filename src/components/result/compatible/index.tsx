@@ -22,7 +22,7 @@ export default function Compatible() {
     try {
       await navigator.clipboard.writeText(inviteCode);
     } catch {
-      // 클립보드 권한이 없는 환경에서도 복사 완료 토스트는 그대로 노출한다.
+      // 클립보드 권한이 없는 환경에서도 복사 완료 토스트는 그대로 노출
     }
     openToast("코드 번호가 복사되었습니다");
   };
@@ -43,6 +43,7 @@ export default function Compatible() {
     });
   };
 
+  // TODO: 뱍엔드 응답 추가 시 실제 응답 값으로 교체 필요
   const characters = [
     {
       name: "비밀 상자",
@@ -65,7 +66,7 @@ export default function Compatible() {
       {/* ----- 상단 타이틀 섹션 ----- */}
       <SectionTitle title="COMPATIBLE" subtitle="나와 잘 맞는 친구 궁합" />
 
-      {/* Character Cards */}
+      {/* ----- 캐릭터 카드 UI ----- */}
       <div className="grid grid-cols-2 gap-3">
         {characters.map((character) => (
           <div key={character.name} className="flex flex-col items-center">
@@ -91,7 +92,7 @@ export default function Compatible() {
         ))}
       </div>
 
-      {/* CTA */}
+      {/* ----- 궁합보기 버튼 UI ----- */}
       <div className="flex flex-col items-center gap-3 pt-2">
         <hr className="w-full border-t border-gray-03" />
         <Typography variant="me2" className="text-gray-05">

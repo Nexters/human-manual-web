@@ -56,7 +56,7 @@ export default function KeyFeatures({ features, characterId, title, description 
         ))}
       </div>
 
-      {/* Info Text */}
+      {/* ----- 안내 텍스트 ----- */}
       <div className="flex flex-col justify-center gap-2 rounded-[10px] bg-gray-01 p-4 mt-[40px]">
         <Typography variant="sb3" className="text-gray-09 text-center break-keep">
           {title}

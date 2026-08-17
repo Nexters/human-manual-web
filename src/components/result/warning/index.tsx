@@ -13,7 +13,7 @@ export default function Warning({ warnings }: WarningProps) {
       {/* ----- 상단 타이틀 섹션 ----- */}
       <SectionTitle title="WARNING" subtitle="이렇게 하면 고장나요" />
 
-      {/* Warnings List */}
+      {/* ----- 주의사항 리스트 ----- */}
       <div className="flex flex-col gap-3">
         {warnings.map((warning) => (
           <div

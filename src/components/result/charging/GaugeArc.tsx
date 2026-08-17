@@ -13,7 +13,7 @@ export default function GaugeArc({ value, size = 120, strokeWidth = 8 }: GaugeAr
 
   return (
     <svg width={size} height={size * 0.6} viewBox={`0 0 ${size} ${size * 0.6}`}>
-      {/* Background Arc (gray) */}
+      {/* ----- 배경 아크 (회색) ----- */}
       <path
         d={`M ${strokeWidth / 2} ${y} A ${radius} ${radius} 0 0 1 ${size - strokeWidth / 2} ${y}`}
         fill="none"
@@ -22,7 +22,7 @@ export default function GaugeArc({ value, size = 120, strokeWidth = 8 }: GaugeAr
         strokeLinecap="round"
       />
 
-      {/* Progress Arc (gradient: pink to purple) */}
+      {/* ----- 진행 아크 (핑크-퍼플 그라데이션) ----- */}
       <defs>
         <linearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="var(--color-sub-4)" />
