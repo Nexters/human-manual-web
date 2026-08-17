@@ -4,14 +4,13 @@ import Typography from "@/components/shared/Typography";
 import HeroTopBar from "./TopBar";
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
 import HeroTag from "./Bubble";
-import { getCharacterImage } from "@/constants/characterImages";
 
 interface HeroProps {
   title?: string;
   subtitle?: string;
   badge?: string;
   tags?: string[];
-  characterId?: string;
+  imageUrl?: string;
   isTopBarDark?: boolean;
 }
 
@@ -26,11 +25,10 @@ export default function Hero({
   subtitle = "새벽 2시에도 카톡 폭격하는",
   badge = "상위 4%",
   tags = ["도파민 MAX", "장난꾸러기", "혼자서도 잘놀아요"],
-  characterId,
+  imageUrl,
   isTopBarDark = false,
 }: HeroProps) {
   const navigate = useNavigate();
-  const characterImage = getCharacterImage(characterId ?? "");
 
   const handleBack = () => {
     navigate("/");
@@ -69,7 +67,7 @@ export default function Hero({
 
       {/* ----- 중앙 팽이 & 태그 섹션 ----- */}
       <div className="absolute left-1/2 top-[58%] z-10 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2">
-        <img src={characterImage} alt={title} className="h-full w-full object-contain" />
+        <img src={imageUrl} alt={title} className="h-full w-full object-contain" />
         {tags.map((tag, idx) => (
           <HeroTag key={idx} className={TAG_POSITIONS[idx]}>
             {tag}

@@ -1,7 +1,6 @@
 import SectionTitle from "@/components/result/SectionTitle";
 import TraitSlider from "./TraitSlider";
 import TraitTypeCard from "./TraitTypeCard";
-import { PACKAGING_IMAGE_MAP, OPENING_TOOL_IMAGE_MAP } from "@/constants/unboxingKitImages";
 import type { UnboxingKitOutput } from "@/types/assessment";
 
 interface UnboxingKitProps {
@@ -18,14 +17,14 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
       chip1: packaging.tags[0] ?? "",
       chip2: packaging.tags[1] ?? "",
       description: packaging.reason,
-      image: PACKAGING_IMAGE_MAP[packaging.type],
+      image: packaging.image_url,
     },
     {
       title: opening_tool.name,
       chip1: opening_tool.tags[0] ?? "",
       chip2: opening_tool.tags[1] ?? "",
       description: opening_tool.reason,
-      image: OPENING_TOOL_IMAGE_MAP[opening_tool.type],
+      image: opening_tool.image_url,
     },
   ];
 

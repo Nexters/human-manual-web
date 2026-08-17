@@ -39,7 +39,16 @@ export default function ResultPage() {
     );
   }
 
-  const { overview, unboxing_kit, features, can_do, warnings, charging } = data;
+  const {
+    overview,
+    unboxing_kit,
+    features,
+    character_story,
+    can_do,
+    warnings,
+    charging,
+    compatible_friends,
+  } = data;
   const heroTitle = nickname ? `${overview.noun} ${nickname}` : overview.noun;
 
   return (
@@ -50,7 +59,7 @@ export default function ResultPage() {
         subtitle={overview.adjective}
         badge={overview.rarity}
         tags={overview.tags}
-        characterId={overview.character_id}
+        imageUrl={overview.image_url}
         isTopBarDark={isPastHero}
       />
       <div ref={unboxingKitStartRef} />
@@ -61,9 +70,9 @@ export default function ResultPage() {
       {/* ------- 핵심 특징 UI ------ */}
       <KeyFeatures
         features={features}
-        characterId={overview.character_id}
-        title={unboxing_kit.title}
-        description={unboxing_kit.description}
+        imageUrl={overview.image_url}
+        storyTitle={character_story.title}
+        storyDescription={character_story.description}
       />
 
       {/* ------- 이렇게 다뤄주세요 UI ------ */}
@@ -76,7 +85,7 @@ export default function ResultPage() {
       <Charging charging={charging} />
 
       {/* ------- 친구 궁합 UI------ */}
-      <Compatible />
+      <Compatible compatibleFriends={compatible_friends} />
     </div>
   );
 }

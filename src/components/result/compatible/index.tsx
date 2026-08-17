@@ -1,6 +1,4 @@
 import { useParams } from "react-router-dom";
-import secretBoxImg from "@/assets/img/result/toy/secret.png";
-import teddyBearImg from "@/assets/img/result/toy/teddy_bear.png";
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
 import Chip from "@/components/shared/Chip";
@@ -10,9 +8,16 @@ import { useToast } from "@/hooks/useToast";
 import InviteFriendModal from "@/components/result/compatible/InviteFriendModal";
 import { cn } from "@/lib/cn";
 import { share } from "@/utils/share";
+import type { CompatibleFriendOutput } from "@/types/assessment";
+
+interface CompatibleProps {
+  compatibleFriends: CompatibleFriendOutput[];
+}
+
+const BADGE_COLORS = ["bg-main text-gray-00", "bg-sub-4 text-gray-00"] as const;
 
 // ------- Compatible UI ------
-export default function Compatible() {
+export default function Compatible({ compatibleFriends }: CompatibleProps) {
   const { id } = useParams<{ id: string }>();
   const inviteCode = id ?? "";
   const { open } = useModal();
@@ -43,24 +48,6 @@ export default function Compatible() {
     });
   };
 
-  // TODO: 뱍엔드 응답 추가 시 실제 응답 값으로 교체 필요
-  const characters = [
-    {
-      name: "비밀 상자",
-      description: "당신의 아이디어를 깊이 이해하고 방향을 잡아줘요",
-      image: secretBoxImg,
-      chipLabel: "환상의 장난감",
-      chipColor: "bg-main text-gray-00",
-    },
-    {
-      name: "곰인형",
-      description: "즉흥적인 당신과 안정적인 친구는 속도가 달라요",
-      image: teddyBearImg,
-      chipLabel: "환장의 장난감",
-      chipColor: "bg-sub-4 text-gray-00",
-    },
-  ];
-
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
       {/* ----- 상단 타이틀 섹션 ----- */}
@@ -68,23 +55,23 @@ export default function Compatible() {
 
       {/* ----- 캐릭터 카드 UI ----- */}
       <div className="grid grid-cols-2 gap-3">
-        {characters.map((character) => (
-          <div key={character.name} className="flex flex-col items-center">
-            <Chip className={cn("z-10 -mb-[17px]", character.chipColor)}>
-              {character.chipLabel}
+        {compatibleFriends.map((friend, index) => (
+          <div key={friend.character_id} className="flex flex-col items-center">
+            <Chip className={cn("z-10 -mb-[17px]", BADGE_COLORS[index % BADGE_COLORS.length])}>
+              {friend.badge}
             </Chip>
             <div className="flex w-full flex-col items-center gap-3 rounded-[10px] bg-white pt-8 pb-6">
               <img
-                src={character.image}
-                alt={character.name}
+                src={friend.image_url}
+                alt={friend.noun}
                 className="size-[120px] object-contain"
               />
               <div className="flex flex-col items-center gap-1">
                 <Typography variant="h2" className="text-gray-08">
-                  {character.name}
+                  {friend.noun}
                 </Typography>
                 <Typography variant="me3" className="text-center text-gray-07 break-keep">
-                  {character.description}
+                  {friend.description}
                 </Typography>
               </div>
             </div>

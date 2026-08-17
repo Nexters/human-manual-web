@@ -87,6 +87,7 @@ export type PackagingType =
 export interface PackagingOutput {
   type: PackagingType;
   name: string;
+  image_url: string;
   tags: string[];
   reason: string;
 }
@@ -100,14 +101,13 @@ export type OpeningToolType =
 export interface OpeningToolOutput {
   type: OpeningToolType;
   name: string;
+  image_url: string;
   tags: string[];
   reason: string;
 }
 
 export interface UnboxingKitOutput {
   axis_scores: AxisScoresOutput;
-  title: string;
-  description: string;
   packaging: PackagingOutput;
   opening_tool: OpeningToolOutput;
 }
@@ -128,9 +128,16 @@ export interface ChargingActivityOutput {
 }
 
 export interface ChargingOutput {
-  score: number;
   description: string;
   activities: ChargingActivityOutput[];
+}
+
+export interface CompatibleFriendOutput {
+  badge: string;
+  noun: string;
+  character_id: string;
+  image_url: string;
+  description: string;
 }
 
 export interface AssessmentSubmissionOutput {
@@ -143,4 +150,5 @@ export interface AssessmentSubmissionOutput {
   can_do: string[];
   warnings: string[];
   charging: ChargingOutput;
+  compatible_friends: CompatibleFriendOutput[];
 }

@@ -4,14 +4,13 @@ import fireIcon from "@/assets/img/result/keyFeature/fire.png";
 import smileIcon from "@/assets/img/result/keyFeature/smile.png";
 import starIcon from "@/assets/img/result/keyFeature/star.png";
 import searchIcon from "@/assets/img/result/keyFeature/search.png";
-import { getCharacterImage } from "@/constants/characterImages";
 import type { FeatureOutput } from "@/types/assessment";
 
 interface KeyFeaturesProps {
   features: FeatureOutput[];
-  characterId: string;
-  title: string;
-  description: string;
+  imageUrl: string;
+  storyTitle: string;
+  storyDescription: string;
 }
 
 const FEATURE_ICONS = [fireIcon, smileIcon, starIcon, searchIcon] as const;
@@ -21,9 +20,12 @@ function getFeatureIcon(index: number): string {
 }
 
 // ------- KeyFeatures UI ------
-export default function KeyFeatures({ features, characterId, title, description }: KeyFeaturesProps) {
-  const characterImage = getCharacterImage(characterId);
-
+export default function KeyFeatures({
+  features,
+  imageUrl,
+  storyTitle,
+  storyDescription,
+}: KeyFeaturesProps) {
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
       {/* ----- 상단 타이틀 섹션 ----- */}
@@ -31,7 +33,7 @@ export default function KeyFeatures({ features, characterId, title, description 
 
       {/* ----- 장난감 이미지 섹션 ----- */}
       <div className="flex items-center justify-center">
-        <img src={characterImage} alt="장난감" className="w-full max-w-[280px] object-contain" />
+        <img src={imageUrl} alt="장난감" className="w-full max-w-[280px] object-contain" />
       </div>
 
       {/* ----- 특징 카드 그리드 (2x2) ----- */}
@@ -59,10 +61,10 @@ export default function KeyFeatures({ features, characterId, title, description 
       {/* ----- 안내 텍스트 ----- */}
       <div className="flex flex-col justify-center gap-2 rounded-[10px] bg-gray-01 p-4 mt-[40px]">
         <Typography variant="sb3" className="text-gray-09 text-center break-keep">
-          {title}
+          {storyTitle}
         </Typography>
         <Typography variant="me2" className="text-center text-gray-07 break-keep">
-          {description}
+          {storyDescription}
         </Typography>
       </div>
     </div>
