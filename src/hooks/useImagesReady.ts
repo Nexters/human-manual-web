@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 
 export function useImagesReady(sources: string[]) {
-  const [ready, setReady] = useState(sources.length === 0);
+  const [readyState, setReadyState] = useState<{ sources: string[]; ready: boolean }>({
+    sources,
+    ready: sources.length === 0,
+  });
 
   useEffect(() => {
-    if (sources.length === 0) {
-      setReady(true);
-      return;
-    }
+    if (sources.length === 0) return;
 
     let cancelled = false;
-    setReady(false);
 
     Promise.all(
       sources.map(
@@ -23,7 +22,7 @@ export function useImagesReady(sources: string[]) {
           }),
       ),
     ).then(() => {
-      if (!cancelled) setReady(true);
+      if (!cancelled) setReadyState({ sources, ready: true });
     });
 
     return () => {
@@ -31,5 +30,5 @@ export function useImagesReady(sources: string[]) {
     };
   }, [sources]);
 
-  return ready;
+  return sources.length === 0 || (readyState.sources === sources && readyState.ready);
 }

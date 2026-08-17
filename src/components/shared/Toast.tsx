@@ -16,16 +16,19 @@ export default function Toast() {
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [displayMessage, setDisplayMessage] = useState<ReactNode>(message);
 
+  if (isOpen && !shouldRender) {
+    setShouldRender(true);
+  }
+  if (isOpen && displayMessage !== message) {
+    setDisplayMessage(message);
+  }
+
   useEffect(() => {
-    if (isOpen) {
-      setDisplayMessage(message);
-      setShouldRender(true);
-      return;
-    }
+    if (isOpen) return;
 
     const timer = setTimeout(() => setShouldRender(false), EXIT_ANIMATION_DURATION);
     return () => clearTimeout(timer);
-  }, [isOpen, message]);
+  }, [isOpen]);
 
   if (!shouldRender) return null;
 
