@@ -20,7 +20,7 @@ export default function SplashScreen({ phase, onStart }: SplashScreenProps) {
           className="flex h-full min-h-dvh flex-col bg-white"
         >
           <SplashHeader />
-          <img src={splashBunny} alt="" className="mt-auto w-full" />
+          <img src={splashBunny} alt="" className="w-full fixed bottom-0" />
         </motion.div>
       ) : (
         <motion.div
@@ -45,7 +45,7 @@ export default function SplashScreen({ phase, onStart }: SplashScreenProps) {
 
 function SplashHeader() {
   return (
-    <div className="flex flex-col items-center gap-2 pt-[125px]">
+    <div className="flex flex-col items-center gap-2 pt-[77px] z-10">
       <img src={logo} alt="Pakit" className="w-[243px]" />
       <Typography variant="sb2" className="text-gray-07">
         나를 닮은 장난감을 만나다
