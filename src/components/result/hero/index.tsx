@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import resultBg from "@/assets/img/result/result_bg.png";
+import resultBg from "@/assets/img/backgrounds/room-bg.png";
 import Typography from "@/components/shared/Typography";
 import HeroTopBar from "./TopBar";
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
@@ -33,7 +33,7 @@ export default function Hero({
   const characterImage = getCharacterImage(characterId ?? "");
 
   const handleBack = () => {
-    navigate(-1);
+    navigate("/");
   };
 
   return (

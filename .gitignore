@@ -29,3 +29,6 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+# 압축 전 원본 에셋 백업 (커밋 대상 아님)
+src/assets/_originals/
