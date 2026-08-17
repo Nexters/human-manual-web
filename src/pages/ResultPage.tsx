@@ -6,6 +6,7 @@ import WhatItCanDo from "@/components/result/whatItCanDo";
 import Warning from "@/components/result/warning";
 import Charging from "@/components/result/charging";
 import Compatible from "@/components/result/compatible";
+import ResultPageSkeleton from "@/components/result/skeleton";
 import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
@@ -24,13 +25,7 @@ export default function ResultPage() {
   });
 
   if (isPending) {
-    return (
-      <div className="flex min-h-dvh items-center justify-center bg-gray-00">
-        <Typography variant="sb3" className="text-gray-06">
-          불러오는 중...
-        </Typography>
-      </div>
-    );
+    return <ResultPageSkeleton />;
   }
 
   if (isError || !data) {
