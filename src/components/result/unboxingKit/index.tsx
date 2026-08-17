@@ -1,7 +1,6 @@
 import SectionTitle from "@/components/result/SectionTitle";
 import TraitSlider from "./TraitSlider";
 import TraitTypeCard from "./TraitTypeCard";
-import { PACKAGING_IMAGE_MAP, OPENING_TOOL_IMAGE_MAP } from "@/constants/unboxingKitImages";
 import type { UnboxingKitOutput } from "@/types/assessment";
 
 interface UnboxingKitProps {
@@ -18,14 +17,14 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
       chip1: packaging.tags[0] ?? "",
       chip2: packaging.tags[1] ?? "",
       description: packaging.reason,
-      image: PACKAGING_IMAGE_MAP[packaging.type],
+      image: packaging.image_url,
     },
     {
       title: opening_tool.name,
       chip1: opening_tool.tags[0] ?? "",
       chip2: opening_tool.tags[1] ?? "",
       description: opening_tool.reason,
-      image: OPENING_TOOL_IMAGE_MAP[opening_tool.type],
+      image: opening_tool.image_url,
     },
   ];
 
@@ -34,7 +33,7 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
       {/* ----- 상단 타이틀 섹션 ----- */}
       <SectionTitle title="UNBOXING KIT" subtitle="나는 어떤 장난감이에요" />
 
-      {/* Trait Sliders */}
+      {/* ----- 성향 슬라이더 ----- */}
       <div className="flex flex-col gap-6">
         <TraitSlider
           label1="밀착"
@@ -70,7 +69,7 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
         />
       </div>
 
-      {/* Trait Cards */}
+      {/* ----- 성향 타입 카드 ----- */}
       <div className="flex flex-col gap-4">
         {traits.map((trait) => (
           <TraitTypeCard

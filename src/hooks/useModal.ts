@@ -5,31 +5,14 @@ export const useModal = () => {
   const modal = useModalStore((state) => state.modal);
   const setModal = useModalStore((state) => state.setModal);
 
-  const open = ({
-    contents,
-    title,
-    description,
-    onConfirm,
-    onClose,
-    leftButton,
-    rightButton,
-    overrideActionElements,
-    options,
-  }: Omit<ModalType, "isOpen">) => {
+  const open = ({ title, contents, confirmLabel, onConfirm, onClose }: Omit<ModalType, "isOpen">) => {
     setModal({
       isOpen: true,
       title,
-      description,
       contents,
+      confirmLabel,
       onConfirm,
       onClose,
-      leftButton,
-      rightButton,
-      overrideActionElements,
-      options: {
-        ...(modal.options || {}),
-        ...options,
-      },
     });
   };
 

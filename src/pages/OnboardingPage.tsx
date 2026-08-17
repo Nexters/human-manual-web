@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SplashScreen, { splashImages } from "@/components/onboarding/SplashScreen";
+import SplashScreen from "@/components/onboarding/SplashScreen";
+import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
 import IntroStep from "@/components/onboarding/IntroStep";
 import { introOrder, introPreloadImages, type IntroKey } from "@/components/onboarding/introSteps";

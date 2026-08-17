@@ -6,29 +6,26 @@ import WhatItCanDo from "@/components/result/whatItCanDo";
 import Warning from "@/components/result/warning";
 import Charging from "@/components/result/charging";
 import Compatible from "@/components/result/compatible";
+import ResultPageSkeleton from "@/components/result/skeleton";
 import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
 import { useAssessmentResult } from "@/hooks/useAssessment";
+import { useTestStore } from "@/stores/testStore";
 
 const TOP_BAR_HEIGHT = 60;
 
 export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
+  const nickname = useTestStore((state) => state.nickname);
 
   const { ref: unboxingKitStartRef, hasPassed: isPastHero } = useScrollPassed<HTMLDivElement>({
     offset: TOP_BAR_HEIGHT,
   });
 
   if (isPending) {
-    return (
-      <div className="flex min-h-dvh items-center justify-center bg-gray-00">
-        <Typography variant="sb3" className="text-gray-06">
-          불러오는 중...
-        </Typography>
-      </div>
-    );
+    return <ResultPageSkeleton />;
   }
 
   if (isError || !data) {
@@ -42,17 +39,27 @@ export default function ResultPage() {
     );
   }
 
-  const { overview, unboxing_kit, features, can_do, warnings, charging } = data;
+  const {
+    overview,
+    unboxing_kit,
+    features,
+    character_story,
+    can_do,
+    warnings,
+    charging,
+    compatible_friends,
+  } = data;
+  const heroTitle = nickname ? `${overview.noun} ${nickname}` : overview.noun;
 
   return (
     <div className="bg-gray-00 pb-[92px]">
       {/* ------- 상단 히어로(장난감 소개) UI ------ */}
       <Hero
-        title={overview.noun}
+        title={heroTitle}
         subtitle={overview.adjective}
         badge={overview.rarity}
         tags={overview.tags}
-        characterId={overview.character_id}
+        imageUrl={overview.image_url}
         isTopBarDark={isPastHero}
       />
       <div ref={unboxingKitStartRef} />
@@ -63,9 +70,9 @@ export default function ResultPage() {
       {/* ------- 핵심 특징 UI ------ */}
       <KeyFeatures
         features={features}
-        characterId={overview.character_id}
-        title={unboxing_kit.title}
-        description={unboxing_kit.description}
+        imageUrl={overview.image_url}
+        storyTitle={character_story.title}
+        storyDescription={character_story.description}
       />
 
       {/* ------- 이렇게 다뤄주세요 UI ------ */}
@@ -78,7 +85,7 @@ export default function ResultPage() {
       <Charging charging={charging} />
 
       {/* ------- 친구 궁합 UI------ */}
-      <Compatible />
+      <Compatible compatibleFriends={compatible_friends} />
     </div>
   );
 }

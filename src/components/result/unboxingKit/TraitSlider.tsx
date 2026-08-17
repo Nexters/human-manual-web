@@ -31,7 +31,7 @@ export default function TraitSlider({
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Slider Bar */}
+      {/* ----- 슬라이더 바 ----- */}
       <div className="relative h-2 w-full rounded-full bg-gray-02 overflow-hidden">
         {!isNeutral && (
           <div
@@ -45,7 +45,7 @@ export default function TraitSlider({
         )}
       </div>
 
-      {/* Labels */}
+      {/* ----- 라벨 ----- */}
       <div className="flex items-center justify-between gap-2">
         <button
           type="button"
@@ -70,7 +70,7 @@ export default function TraitSlider({
         </Typography>
       </div>
 
-      {/* Description Box */}
+      {/* ----- 설명 박스 ----- */}
       {isOpen && (
         <div className="rounded-[10px] bg-white p-4">
           <ul className="flex flex-col gap-3">

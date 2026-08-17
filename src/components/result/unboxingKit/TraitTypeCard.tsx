@@ -17,23 +17,27 @@ export default function TraitTypeCard({
 }: TraitTypeCardProps) {
   return (
     <div className="flex flex-col gap-6 mt-[30px]">
-      {/* Image + Title + Chips */}
+      {/* ----- 이미지 & 타이틀 & 칩 ----- */}
       <div className="flex flex-col items-center gap-3">
         <img src={image} alt={title} className="w-24 h-24 object-contain" />
-        <Typography variant="sb3" className="text-gray-09">
+        <Typography variant="sb2" className="text-gray-09">
           {title}
         </Typography>
         <div className="flex gap-2">
-          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-sub-5 text-point text-xs font-medium">
-            {chip1}
+          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-sub-5 text-point">
+            <Typography variant="me2" as="span">
+              {chip1}
+            </Typography>
           </span>
-          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-sub-5 text-point text-xs font-medium">
-            {chip2}
+          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-sub-5 text-point">
+            <Typography variant="me2" as="span">
+              {chip2}
+            </Typography>
           </span>
         </div>
       </div>
 
-      {/* Description */}
+      {/* ----- 설명 박스 ----- */}
       <div className="flex flex-col gap-2 rounded-[12px] bg-white p-4 mt-6">
         <Typography variant="sb3" className="text-main">
           왜 {title}인가요?
