@@ -81,7 +81,7 @@ export default function Hero({
           className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent to-gray-00"
           aria-hidden
         />
-        <Typography variant="sb4" className="text-gray-08">
+        <Typography variant="sb3" className="text-gray-08">
           내 장난감 설명서 보러가기
         </Typography>
         <div className="flex flex-col items-center gap-0 -space-y-1">

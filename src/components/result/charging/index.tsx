@@ -13,7 +13,7 @@ export default function Charging({ charging }: ChargingProps) {
   const { description, activities } = charging;
 
   return (
-    <div className="flex flex-col gap-6 px-5 py-8">
+    <div className="flex flex-col gap-6 px-5 py-8 mt-10 mb-10">
       {/* ----- 상단 타이틀 섹션 ----- */}
       <SectionTitle title="CHARGING" subtitle="충전 방법" />
 
@@ -29,7 +29,7 @@ export default function Charging({ charging }: ChargingProps) {
       {/* ----- 충전 활동 목록 ----- */}
       <div className="flex flex-wrap justify-center gap-2">
         {activities.map((activity) => (
-          <Chip key={activity.label} className="bg-white text-gray-07">
+          <Chip key={activity.label} variant="me3" className="bg-white text-gray-07">
             {activity.label}
           </Chip>
         ))}

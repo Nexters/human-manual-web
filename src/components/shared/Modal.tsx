@@ -44,7 +44,11 @@ export default function Modal() {
           </Typography>
         )}
 
-        {contents && <div className="mt-7 flex w-full flex-col items-center">{contents}</div>}
+        {contents && (
+          <div className={cn("flex w-full flex-col items-center", title && "mt-7")}>
+            {contents}
+          </div>
+        )}
 
         {confirmLabel && (
           <button
