@@ -4,14 +4,10 @@ import type { ModalType } from "@/types/modal";
 const initialState: ModalType = {
   isOpen: false,
   title: undefined,
-  description: undefined,
   contents: undefined,
-  leftButton: undefined,
-  rightButton: undefined,
-  overrideActionElements: undefined,
+  confirmLabel: undefined,
   onConfirm: undefined,
   onClose: undefined,
-  options: undefined,
 };
 
 type ModalStore = {

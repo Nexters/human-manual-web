@@ -38,11 +38,8 @@ export default function Compatible() {
   const openInviteModal = () => {
     open({
       contents: <InviteFriendModal code={inviteCode} onCopy={handleCopy} />,
-      rightButton: {
-        label: "링크 공유",
-        variant: "point",
-        onClick: handleShare,
-      },
+      confirmLabel: "링크 공유",
+      onConfirm: handleShare,
     });
   };
 
