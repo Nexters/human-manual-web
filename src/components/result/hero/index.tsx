@@ -60,7 +60,7 @@ export default function Hero({
           </Typography>
           <p
             className="text-[40px] leading-[1] font-normal tracking-[-0.04em] text-white break-keep"
-            style={{ fontFamily: "'RixInooAriDuri', var(--font-sans)" }}
+            style={{ fontFamily: "'Waguri', var(--font-sans)" }}
           >
             {title}
           </p>
