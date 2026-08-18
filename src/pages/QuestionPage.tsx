@@ -11,7 +11,8 @@ import ResetConfirmModal from "@/components/question/ResetConfirmModal";
 import ScaleQuestion from "@/components/question/ScaleQuestion";
 import Typography from "@/components/shared/Typography";
 import { fillNickname, getQuestion, TOTAL_STEPS } from "@/constants/questions";
-import { buildSubmission, submitAssessment, SubmissionValidationError } from "@/api/submission";
+import { submitAssessment } from "@/api/assessment";
+import { buildSubmission, SubmissionValidationError } from "@/api/submission";
 import {
   canEnterOrder,
   findFirstIncompleteOrder,

@@ -1,15 +1,11 @@
-import axios from "axios";
 import { ASSESSMENT_VERSION, IDENTIFIERS } from "@/constants/assessment";
 import type {
   AnswerInput,
   AnswerValue,
   AssessmentSubmissionInput,
-  AssessmentSubmissionOutput,
   MbtiSelection,
 } from "@/types/assessment";
 import { toMbtiString } from "@/stores/testStore";
-
-const SUBMISSION_ENDPOINT = "/api/tests/submissions";
 
 export class SubmissionValidationError extends Error {
   readonly reasons: string[];
@@ -56,11 +52,4 @@ export const buildSubmission = (params: {
     answers: payload,
     mbti: mbtiString!,
   };
-};
-
-export const submitAssessment = async (
-  input: AssessmentSubmissionInput,
-): Promise<AssessmentSubmissionOutput> => {
-  const { data } = await axios.post<AssessmentSubmissionOutput>(SUBMISSION_ENDPOINT, input);
-  return data;
 };

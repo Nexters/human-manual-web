@@ -1,12 +1,5 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAssessmentResult, submitAssessment } from "@/api/assessment";
-import type { AssessmentSubmissionInput } from "@/types/assessment";
-
-export function useSubmitAssessment() {
-  return useMutation({
-    mutationFn: (input: AssessmentSubmissionInput) => submitAssessment(input),
-  });
-}
+import { useQuery } from "@tanstack/react-query";
+import { getAssessmentResult } from "@/api/assessment";
 
 export function useAssessmentResult(resultCode: string) {
   return useQuery({

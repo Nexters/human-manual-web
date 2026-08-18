@@ -1,8 +1,5 @@
 import { apiClient } from "./client";
-import type {
-  AssessmentSubmissionInput,
-  AssessmentSubmissionOutput,
-} from "@/types/assessment";
+import type { AssessmentSubmissionInput, AssessmentSubmissionOutput } from "@/types/assessment";
 
 export async function submitAssessment(input: AssessmentSubmissionInput) {
   const { data } = await apiClient.post<AssessmentSubmissionOutput>(
@@ -13,8 +10,6 @@ export async function submitAssessment(input: AssessmentSubmissionInput) {
 }
 
 export async function getAssessmentResult(resultCode: string) {
-  const { data } = await apiClient.get<AssessmentSubmissionOutput>(
-    `/api/results/${resultCode}`,
-  );
+  const { data } = await apiClient.get<AssessmentSubmissionOutput>(`/api/results/${resultCode}`);
   return data;
 }
