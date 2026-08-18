@@ -33,10 +33,13 @@ export default function Compatible({ compatibleFriends }: CompatibleProps) {
   };
 
   const handleShare = async () => {
+    const url = new URL("/", window.location.origin);
+    url.searchParams.set("friend", inviteCode);
+
     await share({
       title: "친구 궁합",
       text: "내 코드로 친구 궁합을 확인해보세요",
-      url: window.location.href,
+      url: url.toString(),
     });
   };
 
