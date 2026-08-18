@@ -4,15 +4,18 @@ import SplashScreen from "@/components/onboarding/SplashScreen";
 import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
 import IntroStep from "@/components/onboarding/IntroStep";
+import PartIntroStep from "@/components/onboarding/PartIntroStep";
 import { introOrder, introPreloadImages, type IntroKey } from "@/components/onboarding/introSteps";
 import { useImagePreload } from "@/hooks/useImagePreload";
 import { useImagesReady } from "@/hooks/useImagesReady";
 import { findFirstIncompleteOrder, useTestStore } from "@/stores/testStore";
 import notebookBg from "@/assets/img/notebook-bg.jpg";
+import partIntroBg from "@/assets/img/part-intro-bg.jpg";
+import characterNotebook from "@/assets/gif/character-notebook.gif";
 
-type Step = "splash-logo" | "splash-cta" | IntroKey | "name-input";
+type Step = "splash-logo" | "splash-cta" | IntroKey | "name-input" | "part-intro";
 
-const onboardingPreloadImages = [...introPreloadImages, notebookBg];
+const onboardingPreloadImages = [...introPreloadImages, notebookBg, partIntroBg, characterNotebook];
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
@@ -56,8 +59,17 @@ export default function OnboardingPage() {
         onNameChange={setName}
         onNext={() => {
           setNickname(name.trim());
-          navigate(`/test/${findFirstIncompleteOrder(answers, mbti)}`);
+          setStep("part-intro");
         }}
+      />
+    );
+  }
+
+  if (step === "part-intro") {
+    return (
+      <PartIntroStep
+        onBack={() => setStep("name-input")}
+        onNext={() => navigate(`/test/${findFirstIncompleteOrder(answers, mbti)}`)}
       />
     );
   }

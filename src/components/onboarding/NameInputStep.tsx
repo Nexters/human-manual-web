@@ -17,6 +17,7 @@ export default function NameInputStep({ name, onNameChange, onNext }: NameInputS
       <div className="absolute inset-0 bg-black/30" />
       <div className="relative flex flex-1 flex-col px-5 pt-[95px] pb-10">
         <SpeechBubble
+          chipAlign="center"
           message={
             <div className="flex flex-col items-center gap-1 text-center break-keep">
               <Typography variant="h3">배송 전에 이름부터 확인할게요!</Typography>
