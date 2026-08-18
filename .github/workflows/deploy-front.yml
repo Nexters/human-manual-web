@@ -24,7 +24,7 @@ jobs:
           node-version: '22'
           cache: 'pnpm'
 
-      # 3. pnpm으로 의존성 설치 및 빌드
+      # 3. pnpm으로 의존성 설치 및 빌드 (VITE_API_BASE_URL 환경변수 주입)
       - name: Install and Build
         env:
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
@@ -42,7 +42,7 @@ jobs:
           source: "dist/,nginx.conf"
           target: "/home/ubuntu/frontend-app"
 
-      # 5. 서버에서 Docker Compose 실행 (ssh-action을 사용하여 명령어 실행)
+      # 5. 서버에서 Docker Compose 실행 (무중단 빌드 및 교체)
       - name: Restart Frontend Service on Server
         uses: appleboy/ssh-action@master
         with:
@@ -51,4 +51,6 @@ jobs:
           key: ${{ secrets.GAIA_SSH_KEY }}
           script: |
             cd /home/ubuntu/my-fastapi
-            docker compose up --build -d front
+            docker compose build frontend
+            docker compose up -d --no-deps frontend
+            docker image prune -f
