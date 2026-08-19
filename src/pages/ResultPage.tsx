@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Hero from "@/components/result/hero";
 import UnboxingKit from "@/components/result/unboxingKit";
@@ -6,11 +7,14 @@ import WhatItCanDo from "@/components/result/whatItCanDo";
 import Warning from "@/components/result/warning";
 import Charging from "@/components/result/charging";
 import Compatible from "@/components/result/compatible";
+import ResultCodeModal from "@/components/result/ResultCodeModal";
 import ResultPageSkeleton from "@/components/result/skeleton";
 import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
 import { useAssessmentResult } from "@/hooks/useAssessment";
+import { useModal } from "@/hooks/useModal";
+import { useToast } from "@/hooks/useToast";
 import { useTestStore } from "@/stores/testStore";
 
 const TOP_BAR_HEIGHT = 60;
@@ -19,10 +23,35 @@ export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
   const nickname = useTestStore((state) => state.nickname);
+  const resultCode = useTestStore((state) => state.resultCode);
+  const { open, close } = useModal();
+  const { open: openToast } = useToast();
 
   const { ref: unboxingKitStartRef, hasPassed: isPastHero } = useScrollPassed<HTMLDivElement>({
     offset: TOP_BAR_HEIGHT,
   });
+
+  // 내가 완료한 테스트의 결과 페이지일 때만, 진입 시마다 코드 복사 팝업을 띄운다.
+  useEffect(() => {
+    if (!data || !id || resultCode !== id) return;
+
+    const handleCopy = async () => {
+      try {
+        await navigator.clipboard.writeText(id);
+      } catch {
+        // 클립보드 권한이 없는 환경에서도 복사 완료 토스트는 그대로 노출
+      }
+      openToast("코드 번호가 복사되었습니다");
+      close();
+    };
+
+    open({
+      title: "내 결과 코드",
+      contents: <ResultCodeModal code={id} />,
+      confirmLabel: "내코드 복사하기",
+      onConfirm: handleCopy,
+    });
+  }, [data, id, resultCode, open, close, openToast]);
 
   if (isPending) {
     return <ResultPageSkeleton />;
