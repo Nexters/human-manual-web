@@ -20,7 +20,7 @@ export default function SplashScreen({ phase, onStart }: SplashScreenProps) {
           className="flex h-full min-h-dvh flex-col bg-white"
         >
           <SplashHeader />
-          <img src={splashBunny} alt="" className="fixed bottom-0" />
+          <img src={splashBunny} alt="" className="fixed bottom-0 w-[340px]" />
         </motion.div>
       ) : (
         <motion.div
