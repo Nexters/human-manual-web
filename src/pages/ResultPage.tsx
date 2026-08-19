@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import Hero from "@/components/result/hero";
 import UnboxingKit from "@/components/result/unboxingKit";
@@ -33,11 +33,13 @@ export default function ResultPage() {
     offset: TOP_BAR_HEIGHT,
   });
 
-  // 결과 데이터 로딩에 성공할 때마다 결과 페이지 조회를 기록한다.
+  // 같은 결과 코드에 대해 refetch 등으로 중복 전송되지 않도록, id별로 1회만 기록한다.
+  const trackedResultId = useRef<string | null>(null);
   useEffect(() => {
-    if (!data) return;
+    if (!data || !id || trackedResultId.current === id) return;
+    trackedResultId.current = id;
     trackEvent({ ...GA_EVENTS.RESULT.VIEW, label: data.overview.noun });
-  }, [data]);
+  }, [data, id]);
 
   // 내가 완료한 테스트의 결과 페이지일 때만, 진입 시마다 코드 복사 팝업을 띄운다.
   useEffect(() => {
