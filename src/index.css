@@ -50,11 +50,6 @@
   --color-chip-yellow: #ffe521;
 }
 
-html,
-body {
-  overscroll-behavior: none;
-}
-
 body {
   font-family: var(--font-sans);
   color: var(--color-base);
