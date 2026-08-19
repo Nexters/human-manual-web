@@ -7,9 +7,10 @@ import splashBunny from "@/assets/img/splash-bunny.png";
 type SplashScreenProps = {
   phase: "logo" | "cta";
   onStart: () => void;
+  onCheckCompatibility: () => void;
 };
 
-export default function SplashScreen({ phase, onStart }: SplashScreenProps) {
+export default function SplashScreen({ phase, onStart, onCheckCompatibility }: SplashScreenProps) {
   return (
     <AnimatePresence mode="wait">
       {phase === "logo" ? (
@@ -33,7 +34,7 @@ export default function SplashScreen({ phase, onStart }: SplashScreenProps) {
           <SplashHeader />
           <div className="mt-auto flex flex-col gap-3 px-5 pb-10">
             <Button onClick={onStart}>테스트 시작하기</Button>
-            <Button variant="outline" onClick={() => {}}>
+            <Button variant="outline" onClick={onCheckCompatibility}>
               친구와의 궁합보기
             </Button>
           </div>
