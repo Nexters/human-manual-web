@@ -1,6 +1,7 @@
 export const GA_EVENTS = {
   // 온보딩 관련 GA 이벤트
   ONBOARDING: {
+    // label은 호출부(OnboardingPage.tsx handleStartTest)에서 진입 목적별로 항상 덮어써서 전송됨
     TEST_START: {
       action: "test_start",
       category: "onboarding",
@@ -15,6 +16,8 @@ export const GA_EVENTS = {
 
   // 문항 진행 관련 GA 이벤트
   QUESTION: {
+    // 25문항은 step1(1~12번)/step2(13~24번)/mbti(25번)로 구성됨. 12번 문항에서
+    // 13번으로 처음 넘어가는 시점(=step1을 처음 완료한 순간)에만 1회 전송됨
     STEP1_COMPLETE: {
       action: "step1_complete",
       category: "question",
@@ -35,6 +38,8 @@ export const GA_EVENTS = {
       category: "question",
       label: "검사_다시하기",
     },
+    // 1번 문항에서 뒤로가기(테스트 자체 이탈)만 전송됨. 2~25번 사이 일반
+    // 뒤로가기는 노이즈가 커서 의도적으로 제외함
     EXIT: {
       action: "test_exit",
       category: "question",
@@ -58,6 +63,8 @@ export const GA_EVENTS = {
 
   // 결과 페이지 관련 GA 이벤트
   RESULT: {
+    // label은 호출부(ResultPage.tsx)에서 결과 캐릭터명으로 덮어써서 전송되며,
+    // 같은 결과 코드에 대해서는 refetch가 일어나도 1회만 전송됨
     VIEW: {
       action: "result_view",
       category: "result",
