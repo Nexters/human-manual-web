@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import SplashScreen from "@/components/onboarding/SplashScreen";
 import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
 import IntroStep from "@/components/onboarding/IntroStep";
 import PartIntroStep from "@/components/onboarding/PartIntroStep";
+import FriendCodeModal from "@/components/onboarding/FriendCodeModal";
 import { introOrder, introPreloadImages, type IntroKey } from "@/components/onboarding/introSteps";
 import { useImagePreload } from "@/hooks/useImagePreload";
 import { useImagesReady } from "@/hooks/useImagesReady";
+import { useFriendNavigate } from "@/hooks/useFriendNavigate";
+import { useModal } from "@/hooks/useModal";
 import { findFirstIncompleteOrder, useTestStore } from "@/stores/testStore";
 import notebookBg from "@/assets/img/notebook-bg.jpg";
 import partIntroBg from "@/assets/img/part-intro-bg.jpg";
@@ -18,7 +21,12 @@ type Step = "splash-logo" | "splash-cta" | IntroKey | "name-input" | "part-intro
 const onboardingPreloadImages = [...introPreloadImages, notebookBg, partIntroBg, characterNotebook];
 
 export default function OnboardingPage() {
-  const navigate = useNavigate();
+  const navigate = useFriendNavigate();
+  const [searchParams] = useSearchParams();
+  const friendCode = searchParams.get("friend");
+  const { open, close } = useModal();
+  const hasAutoOpenedFriendModal = useRef(false);
+
   const nickname = useTestStore((state) => state.nickname);
   const answers = useTestStore((state) => state.answers);
   const mbti = useTestStore((state) => state.mbti);
@@ -35,6 +43,34 @@ export default function OnboardingPage() {
     const timer = setTimeout(() => setStep("splash-cta"), 2000);
     return () => clearTimeout(timer);
   }, [step, splashReady]);
+
+  // 친구 코드를 물고 들어온 경우, 스플래시 CTA 화면의 페이드인이 끝난 뒤 안내 팝업을 띄운다.
+  useEffect(() => {
+    if (step !== "splash-cta" || !friendCode || hasAutoOpenedFriendModal.current) return;
+    hasAutoOpenedFriendModal.current = true;
+
+    const timer = setTimeout(() => {
+      open({
+        title: "지금 바로 테스트하기",
+        contents: (
+          <FriendCodeModal
+            onStartTest={() => {
+              close();
+              setStep("greeting");
+            }}
+            onCheckCode={(myCode) => {
+              close();
+              navigate(
+                `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(friendCode)}`,
+              );
+            }}
+          />
+        ),
+      });
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [step, friendCode, open, close, navigate]);
 
   // 인트로/이름입력 스텝의 배경·캐릭터 이미지를 스플래시 노출 시간 동안 미리 받아둔다.
   useImagePreload(onboardingPreloadImages);

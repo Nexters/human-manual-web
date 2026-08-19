@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import DeliveryStep from "@/components/unboxing/DeliveryStep";
 import UnboxingStep from "@/components/unboxing/UnboxingStep";
+import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useTestStore } from "@/stores/testStore";
 
 type Step = "delivery-loading" | "delivery-done" | "unboxing-loading" | "unboxing-done";
@@ -11,7 +11,7 @@ const DELIVERY_LOADING_DURATION_MS = 2000;
 const UNBOXING_LOADING_DURATION_MS = 4000;
 
 export default function UnboxingPage() {
-  const navigate = useNavigate();
+  const navigate = useFriendNavigate();
   const resultCode = useTestStore((state) => state.resultCode);
   const [step, setStep] = useState<Step>("delivery-loading");
 
