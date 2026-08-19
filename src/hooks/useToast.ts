@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import type { ReactNode } from "react";
 import { initialToastState, useToastStore } from "@/stores/toastStore";
 
@@ -7,14 +8,17 @@ export const useToast = () => {
   const toast = useToastStore((state) => state.toast);
   const setToast = useToastStore((state) => state.setToast);
 
-  const close = () => {
+  const close = useCallback(() => {
     setToast({ ...initialToastState });
-  };
+  }, [setToast]);
 
-  const open = (message: ReactNode) => {
-    setToast({ isOpen: true, message });
-    setTimeout(close, TOAST_DURATION);
-  };
+  const open = useCallback(
+    (message: ReactNode) => {
+      setToast({ isOpen: true, message });
+      setTimeout(close, TOAST_DURATION);
+    },
+    [setToast, close],
+  );
 
   return {
     open,
