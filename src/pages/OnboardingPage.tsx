@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SplashScreen from "@/components/onboarding/SplashScreen";
 import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
@@ -23,6 +23,9 @@ const onboardingPreloadImages = [...introPreloadImages, notebookBg, partIntroBg,
 
 export default function OnboardingPage() {
   const navigate = useFriendNavigate();
+  // 궁합 확인 이동은 이미 완성된 URL(입력받은 코드)을 그대로 써야 하므로,
+  // URL의 friend 값을 덮어쓰는 useFriendNavigate를 거치지 않는다.
+  const navigateToCompatibility = useNavigate();
   const [searchParams] = useSearchParams();
   const friendCode = searchParams.get("friend");
   const { open, close } = useModal();
@@ -68,7 +71,7 @@ export default function OnboardingPage() {
             }}
             onCheckCode={(myCode) => {
               close();
-              navigate(
+              navigateToCompatibility(
                 `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(friendCode)}`,
               );
             }}
@@ -78,7 +81,7 @@ export default function OnboardingPage() {
     }, 600);
 
     return () => clearTimeout(timer);
-  }, [step, friendCode, open, close, navigate, handleStartTest]);
+  }, [step, friendCode, open, close, navigateToCompatibility, handleStartTest]);
 
   // 인트로/이름입력 스텝의 배경·캐릭터 이미지를 스플래시 노출 시간 동안 미리 받아둔다.
   useImagePreload(onboardingPreloadImages);
@@ -95,7 +98,7 @@ export default function OnboardingPage() {
           }}
           onCheckCompatibility={(myCode, friendCodeInput) => {
             close();
-            navigate(
+            navigateToCompatibility(
               `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(friendCodeInput)}`,
             );
           }}
