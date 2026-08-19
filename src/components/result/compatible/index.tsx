@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/useToast";
 import InviteFriendModal from "@/components/result/compatible/InviteFriendModal";
 import { cn } from "@/lib/cn";
 import { share } from "@/utils/share";
+import { trackEvent } from "@/lib/google-analytics";
+import { GA_EVENTS } from "@/lib/google-analytics/event";
 import type { CompatibleFriendOutput } from "@/types/assessment";
 
 interface CompatibleProps {
@@ -29,10 +31,12 @@ export default function Compatible({ compatibleFriends }: CompatibleProps) {
     } catch {
       // 클립보드 권한이 없는 환경에서도 복사 완료 토스트는 그대로 노출
     }
+    trackEvent(GA_EVENTS.RESULT.INVITE_CODE_COPY);
     openToast("코드 번호가 복사되었습니다");
   };
 
   const handleShare = async () => {
+    trackEvent(GA_EVENTS.RESULT.INVITE_LINK_SHARE);
     const url = new URL("/", window.location.origin);
     url.searchParams.set("friend", inviteCode);
 
@@ -44,6 +48,7 @@ export default function Compatible({ compatibleFriends }: CompatibleProps) {
   };
 
   const openInviteModal = () => {
+    trackEvent(GA_EVENTS.RESULT.INVITE_OPEN);
     open({
       contents: <InviteFriendModal code={inviteCode} onCopy={handleCopy} />,
       confirmLabel: "링크 공유",

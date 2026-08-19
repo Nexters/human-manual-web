@@ -9,6 +9,8 @@ import CompatibilityActionBar from "@/components/compatibility/CompatibilityActi
 import { useCompatibility } from "@/hooks/useCompatibility";
 import { getCharacterAsset } from "@/constants/characters";
 import { share } from "@/utils/share";
+import { trackEvent } from "@/lib/google-analytics";
+import { GA_EVENTS } from "@/lib/google-analytics/event";
 
 export default function CompatibilityPage() {
   const navigate = useNavigate();
@@ -56,12 +58,14 @@ export default function CompatibilityPage() {
   const mineAsset = getCharacterAsset(data.mine.character_id);
   const friendAsset = getCharacterAsset(data.friend.character_id);
 
-  const handleShare = () =>
-    share({
+  const handleShare = () => {
+    trackEvent(GA_EVENTS.COMPATIBILITY.RESULT_SHARE);
+    return share({
       title: data.headline,
       text: data.description,
       url: window.location.href,
     });
+  };
 
   return (
     <div className="bg-gray-00 flex min-h-dvh flex-col">

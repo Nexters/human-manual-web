@@ -13,6 +13,8 @@ import { useImagesReady } from "@/hooks/useImagesReady";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useModal } from "@/hooks/useModal";
 import { findFirstIncompleteOrder, useTestStore } from "@/stores/testStore";
+import { trackEvent } from "@/lib/google-analytics";
+import { GA_EVENTS } from "@/lib/google-analytics/event";
 import notebookBg from "@/assets/img/notebook-bg.jpg";
 import partIntroBg from "@/assets/img/part-intro-bg.jpg";
 import characterNotebook from "@/assets/gif/character-notebook.gif";
@@ -44,10 +46,17 @@ export default function OnboardingPage() {
   const splashReady = useImagesReady(splashImages);
 
   // 로컬스토리지에 남아있는 이전 진행 상황을 지우고 새 테스트를 시작한다.
-  const handleStartTest = useCallback(() => {
-    resetTest();
-    setStep("greeting");
-  }, [resetTest]);
+  const handleStartTest = useCallback(
+    (entryPoint: "일반" | "친구초대유입" | "궁합유입") => {
+      trackEvent({
+        ...GA_EVENTS.ONBOARDING.TEST_START,
+        label: `테스트시작하기_${entryPoint}`,
+      });
+      resetTest();
+      setStep("greeting");
+    },
+    [resetTest],
+  );
 
   useEffect(() => {
     if (step !== "splash-logo" || !splashReady) return;
@@ -67,10 +76,14 @@ export default function OnboardingPage() {
           <FriendCodeModal
             onStartTest={() => {
               close();
-              handleStartTest();
+              handleStartTest("친구초대유입");
             }}
             onCheckCode={(myCode) => {
               close();
+              trackEvent({
+                ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
+                label: "친구코드팝업_확인버튼",
+              });
               navigateToCompatibility(
                 `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(friendCode)}`,
               );
@@ -94,10 +107,14 @@ export default function OnboardingPage() {
           initialFriendCode={friendCode ?? undefined}
           onStartTest={() => {
             close();
-            handleStartTest();
+            handleStartTest("궁합유입");
           }}
           onCheckCompatibility={(myCode, friendCodeInput) => {
             close();
+            trackEvent({
+              ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
+              label: "궁합팝업_케미결과확인버튼",
+            });
             navigateToCompatibility(
               `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(friendCodeInput)}`,
             );
@@ -115,7 +132,7 @@ export default function OnboardingPage() {
     return (
       <SplashScreen
         phase={step === "splash-logo" ? "logo" : "cta"}
-        onStart={handleStartTest}
+        onStart={() => handleStartTest("일반")}
         onCheckCompatibility={openTestStartModal}
       />
     );

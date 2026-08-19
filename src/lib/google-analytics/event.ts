@@ -35,10 +35,10 @@ export const GA_EVENTS = {
       category: "question",
       label: "검사_다시하기",
     },
-    SEEK: {
-      action: "question_seek",
+    EXIT: {
+      action: "test_exit",
       category: "question",
-      label: "진행바_이동",
+      label: "1번_문항에서_뒤로가기",
     },
   },
 

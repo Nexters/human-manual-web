@@ -16,6 +16,8 @@ import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
 import { useTestStore } from "@/stores/testStore";
+import { trackEvent } from "@/lib/google-analytics";
+import { GA_EVENTS } from "@/lib/google-analytics/event";
 
 const TOP_BAR_HEIGHT = 60;
 
@@ -31,6 +33,12 @@ export default function ResultPage() {
     offset: TOP_BAR_HEIGHT,
   });
 
+  // 결과 데이터 로딩에 성공할 때마다 결과 페이지 조회를 기록한다.
+  useEffect(() => {
+    if (!data) return;
+    trackEvent({ ...GA_EVENTS.RESULT.VIEW, label: data.overview.noun });
+  }, [data]);
+
   // 내가 완료한 테스트의 결과 페이지일 때만, 진입 시마다 코드 복사 팝업을 띄운다.
   useEffect(() => {
     if (!data || !id || resultCode !== id) return;
@@ -41,6 +49,7 @@ export default function ResultPage() {
       } catch {
         // 클립보드 권한이 없는 환경에서도 복사 완료 토스트는 그대로 노출
       }
+      trackEvent(GA_EVENTS.RESULT.CODE_COPY);
       openToast("코드 번호가 복사되었습니다");
       close();
     };
