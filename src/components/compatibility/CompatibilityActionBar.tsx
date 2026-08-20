@@ -24,7 +24,7 @@ export default function CompatibilityActionBar({
       <button
         type="button"
         onClick={onSave}
-        className="bg-gray-02 text-gray-04 inline-flex h-[54px] flex-1 items-center justify-center gap-2 rounded-[15px] transition-opacity hover:opacity-90 active:opacity-80"
+        className="bg-main inline-flex h-[54px] flex-1 items-center justify-center gap-2 rounded-[15px] text-white transition-opacity hover:opacity-90 active:opacity-80"
       >
         <DownloadIcon className="size-6" />
         <Typography variant="sb3" as="span">
@@ -34,7 +34,7 @@ export default function CompatibilityActionBar({
       <button
         type="button"
         onClick={onShare}
-        className="bg-main inline-flex h-[54px] flex-1 items-center justify-center gap-2 rounded-[15px] text-white transition-opacity hover:opacity-90 active:opacity-80"
+        className="border-main text-main inline-flex h-[54px] flex-1 items-center justify-center gap-2 rounded-[15px] border bg-white transition-opacity hover:opacity-90 active:opacity-80"
       >
         <ShareIcon className="size-6" />
         <Typography variant="sb3" as="span">

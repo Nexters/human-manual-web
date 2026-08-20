@@ -4,10 +4,10 @@ import InfoCard from "@/components/shared/InfoCard";
 import Typography from "@/components/shared/Typography";
 import MatchupProfileCard from "@/components/compatibility/MatchupProfileCard";
 import SynergyScoreCard from "@/components/compatibility/SynergyScoreCard";
+import DetailAnalysisCard from "@/components/compatibility/DetailAnalysisCard";
 import LongTermTipCard from "@/components/compatibility/LongTermTipCard";
 import CompatibilityActionBar from "@/components/compatibility/CompatibilityActionBar";
 import { useCompatibility } from "@/hooks/useCompatibility";
-import { getCharacterAsset } from "@/constants/characters";
 import { share } from "@/utils/share";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
@@ -55,9 +55,6 @@ export default function CompatibilityPage() {
     );
   }
 
-  const mineAsset = getCharacterAsset(data.mine.character_id);
-  const friendAsset = getCharacterAsset(data.friend.character_id);
-
   const handleShare = () => {
     trackEvent(GA_EVENTS.COMPATIBILITY.RESULT_SHARE);
     return share({
@@ -77,15 +74,15 @@ export default function CompatibilityPage() {
             variant="me"
             role="나"
             name={`${data.mine.noun} ${data.mine.nickname}`}
-            image={mineAsset.image}
-            imageAlt={mineAsset.alt}
+            image={data.mine.image_url}
+            imageAlt={`${data.mine.noun} 캐릭터`}
           />
           <MatchupProfileCard
             variant="friend"
             role="친구"
             name={`${data.friend.noun} ${data.friend.nickname}`}
-            image={friendAsset.image}
-            imageAlt={friendAsset.alt}
+            image={data.friend.image_url}
+            imageAlt={`${data.friend.noun} 캐릭터`}
           />
         </div>
 
@@ -107,20 +104,38 @@ export default function CompatibilityPage() {
 
         <div className="flex flex-col gap-4">
           <Typography variant="h2" className="text-gray-08 text-center">
+            우리 사이 더 자세히 보기
+          </Typography>
+
+          {data.details.map((detail, index) => (
+            <DetailAnalysisCard
+              key={detail.key}
+              index={index + 1}
+              title={detail.title}
+              description={detail.description}
+            />
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <Typography variant="h2" className="text-gray-08 text-center">
             함께 있을 때 기억해주세요
           </Typography>
 
-          {data.tips.map((tip) => {
-            const asset = getCharacterAsset(tip.character_id);
-            return (
-              <InfoCard
-                key={tip.target}
-                icon={<img src={asset.image} alt={asset.alt} className="size-14 object-contain" />}
-                title={tip.title}
-                description={tip.description}
-              />
-            );
-          })}
+          {data.tips.map((tip) => (
+            <InfoCard
+              key={tip.target}
+              icon={
+                <img
+                  src={tip.image_url}
+                  alt={`${tip.title} 캐릭터`}
+                  className="size-14 object-contain"
+                />
+              }
+              title={tip.title}
+              description={tip.description}
+            />
+          ))}
         </div>
 
         <LongTermTipCard
