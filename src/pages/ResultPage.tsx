@@ -7,6 +7,7 @@ import WhatItCanDo from "@/components/result/whatItCanDo";
 import Warning from "@/components/result/warning";
 import Charging from "@/components/result/charging";
 import Compatible from "@/components/result/compatible";
+import ShareResult from "@/components/result/shareResult";
 import ResultCodeModal from "@/components/result/ResultCodeModal";
 import ResultPageSkeleton from "@/components/result/skeleton";
 import Typography from "@/components/shared/Typography";
@@ -33,7 +34,7 @@ export default function ResultPage() {
   const { ref: unboxingKitStartRef, hasPassed: isPastHero } = useScrollPassed<HTMLDivElement>({
     offset: TOP_BAR_HEIGHT,
   });
-  const { ref: compatibleActionButtonRef, isVisible: isCompatibleButtonVisible } =
+  const { ref: shareResultMarkerRef, isVisible: isShareResultVisible } =
     useIsVisible<HTMLDivElement>({ threshold: 0 });
 
   // 같은 결과 코드에 대해 refetch 등으로 중복 전송되지 않도록, id별로 1회만 기록한다.
@@ -128,13 +129,13 @@ export default function ResultPage() {
       <Charging charging={charging} />
 
       {/* ------- 친구 궁합 UI------ */}
-      <Compatible
-        compatibleFriends={compatible_friends}
-        actionButtonMarkerRef={compatibleActionButtonRef}
-      />
+      <Compatible compatibleFriends={compatible_friends} />
+
+      {/* ------- 결과지 공유 UI ------ */}
+      <ShareResult actionButtonMarkerRef={shareResultMarkerRef} />
 
       {/* ------- 하단 고정 친구 케미 테스트 버튼 ------ */}
-      {!isCompatibleButtonVisible && (
+      {!isShareResultVisible && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer">
           <div className="w-full max-w-[400px]">
             <Button variant="solid" className="w-full rounded-[10px]" onClick={() => {}}>

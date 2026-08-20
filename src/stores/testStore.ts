@@ -62,7 +62,7 @@ export const useTestStore = create<TestState & TestActions>()(
 
       setResultCode: (resultCode) => set({ resultCode }),
 
-      reset: () => set({ answers: {}, mbti: {}, resultCode: null }),
+      reset: () => set({ ...initialState }),
     }),
     {
       name: STORAGE_KEY,
