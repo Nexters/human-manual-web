@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import Hero from "@/components/result/hero";
 import UnboxingKit from "@/components/result/unboxingKit";
 import KeyFeatures from "@/components/result/keyFeatures";
@@ -25,7 +25,10 @@ const TOP_BAR_HEIGHT = 60;
 
 export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const friendCode = searchParams.get("friend");
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
+  const { data: friendData } = useAssessmentResult(friendCode ?? "");
   const nickname = useTestStore((state) => state.nickname);
   const resultCode = useTestStore((state) => state.resultCode);
   const { open, close } = useModal();
@@ -94,6 +97,8 @@ export default function ResultPage() {
     compatible_friends,
   } = data;
   const heroTitle = nickname ? `${overview.noun} ${nickname}` : overview.noun;
+  const friendNickname = friendCode ? friendData?.participant.nickname : undefined;
+  const stickyButtonLabel = friendNickname ? `${friendNickname}님과의 케미 보러가기` : "친구 케미 테스트";
 
   return (
     <div className="bg-gray-00 pb-[92px]">
@@ -139,7 +144,7 @@ export default function ResultPage() {
         <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer">
           <div className="w-full max-w-[400px]">
             <Button variant="solid" className="w-full rounded-[10px]" onClick={() => {}}>
-              친구 케미 테스트
+              {stickyButtonLabel}
             </Button>
           </div>
         </div>
