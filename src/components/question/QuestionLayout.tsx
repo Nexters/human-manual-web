@@ -44,7 +44,7 @@ const QuestionLayout = ({
           type="button"
           onClick={onBack}
           aria-label="이전 문항으로"
-          className="text-gray-09 -ml-[5px] flex size-[30px] items-center justify-center"
+          className="text-gray-09 flex size-[30px] items-center justify-center"
         >
           <ChevronLeftIcon className="w-[10px]" />
         </button>
