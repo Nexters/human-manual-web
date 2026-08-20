@@ -1,11 +1,11 @@
 {
-  "assessment_version": "2026-08-14.3",
+  "assessment_version": "2026-08-20.1",
   "content_status": "baseline_with_product_mapping",
   "locale": "ko-KR",
   "source": {
     "type": "user_provided_test_screen_images",
     "received_on": "2026-08-13",
-    "scope": "STEP 1 12문항, STEP 2 12문항, MBTI 선택 화면"
+    "scope": "STEP 1 8문항, STEP 2 12문항, MBTI 선택 화면"
   },
   "identifier_contract": "docs/assessment-identifiers.v1.json",
   "result_material_contract": {
@@ -16,7 +16,11 @@
     },
     "features": {
       "slots": [
-        { "id": "motivation", "label": "동원력", "meaning": "나를 움직이게 만드는 것" },
+        {
+          "id": "motivation",
+          "label": "동원력",
+          "meaning": "나를 움직이게 만드는 것"
+        },
         {
           "id": "role_in_relationships",
           "label": "관계 속의 나",
@@ -66,24 +70,58 @@
       },
       "product_plan": "docs/key-feature-product-plan.md"
     },
-    "can_do": { "question_ids": ["step1.q03", "step1.q04", "step1.q12"] },
-    "warnings": { "question_ids": ["step1.q05", "step1.q06"] },
-    "charging": { "question_ids": ["step1.q07", "step1.q08"] },
-    "friend_compatibility": {
-      "compatible_question_id": "step1.q09",
-      "incompatible_question_id": "step1.q10",
-      "api_status": "not_in_current_result_contract"
+    "can_do": {
+      "question_ids": ["step1.q12", "step2.q02", "step2.q03"],
+      "axes": ["attachment"],
+      "additional_input": "mbti",
+      "slot_order": [
+        "support_preference",
+        "relationship_distance",
+        "conflict_support",
+        "attraction_guide"
+      ],
+      "status": "implemented"
+    },
+    "warnings": {
+      "question_ids": ["step1.q06"],
+      "additional_input": "mbti",
+      "mbti_axes": ["E/I", "T/F"],
+      "uses_full_mbti": true,
+      "slot_order": [
+        "communication_landmine",
+        "social_energy_boundary",
+        "anger_trigger",
+        "mbti_trigger"
+      ],
+      "status": "implemented"
+    },
+    "charging": {
+      "question_ids": ["step1.q07", "step1.q08", "step1.q11", "step1.q12"],
+      "additional_input": null,
+      "rule": "base_recovery_and_motivation_sentence_with_three_charging_keywords"
     }
   },
   "calculation_contract": {
     "status": "scoring_confirmed",
     "mapping_source": "temp.txt",
-    "aggregation": "equal_weight_rounded_mean",
-    "classification_boundary": { "operator": ">=", "threshold": 50, "side": "score_100" },
+    "aggregation": {
+      "default": "equal_weight_rounded_mean",
+      "attachment": {
+        "method": "weighted_mean_rounded_to_nearest_integer",
+        "weights": {
+          "step2.q04": 50,
+          "step2.q05": 30,
+          "step2.q06": 20
+        }
+      }
+    },
+    "classification_boundary": {
+      "operator": ">=",
+      "threshold": 50,
+      "side": "score_100"
+    },
     "unresolved_fields": [
       "features MBTI 16종 대표 특징의 최종 콘텐츠 검수",
-      "can_do 결과 재료를 실제 문구로 조합하는 규칙",
-      "warnings 결과 재료를 실제 문구로 조합하는 규칙",
       "charging 결과 재료를 실제 문구로 조합하는 규칙"
     ],
     "known_axes": [
@@ -114,225 +152,282 @@
       "question_id": "step1.q01",
       "step": 1,
       "order": 1,
-      "prompt": "친구들이 유독 나부터 찾는 순간은 언제인가요?",
+      "prompt": "친구들이 나를 찾는 순간은 언제인가요?",
       "answer_kind": "choice",
       "options": [
-        { "value": "decision", "label": "다들 ‘아무거나’만 반복하고 결정을 못 할 때" },
-        { "value": "worries", "label": "혼자 생각해도 답이 안 나는 고민이 생겼을 때" },
-        { "value": "hangout", "label": "심심한데 누구를 불러야 재밌을지 고민될 때" },
-        { "value": "information", "label": "검색해도 원하는 정보를 찾지 못했을 때" }
-      ],
-      "calculation": {
-        "status": "mapped",
-        "role": "result_material",
-        "result_section": "features",
-        "feature_slot": "role_in_relationships"
-      }
-    },
-    {
-      "question_id": "step1.q02",
-      "step": 1,
-      "order": 2,
-      "prompt": "친구들과 함께 있으면 나도 모르게 맡게 되는 역할은?",
-      "answer_kind": "choice",
-      "options": [
-        { "value": "set_direction", "label": "다들 우왕좌왕하면 방향부터 정한다" },
-        { "value": "lift_mood", "label": "어색해지면 먼저 분위기를 푼다" },
-        { "value": "make_it_happen", "label": "말만 나온 일을 실제 계획으로 만든다" },
-        { "value": "draw_people_out", "label": "누가 이야기하면 잘 받아줘 더 말하게 한다" },
-        { "value": "coordinate_opinions", "label": "의견이 부딪히면 중간에서 정리한다" },
-        { "value": "remember_and_care", "label": "각자 좋아하는 걸 기억해 챙긴다" }
-      ],
-      "calculation": {
-        "status": "mapped",
-        "role": "result_material",
-        "result_section": "features",
-        "feature_slot": "role_in_relationships"
-      }
-    },
-    {
-      "question_id": "step1.q03",
-      "step": 1,
-      "order": 3,
-      "prompt": "남들은 이해 못하는 습관이 있나요?",
-      "answer_kind": "choice",
-      "options": [
-        { "value": "save_favorites", "label": "좋아하는 물건은 아까워서 쉽게 사용하지 못한다" },
-        { "value": "multiple_alarms", "label": "알람을 하나보다 여러 개 맞춰두는 편이다" },
-        { "value": "duplicate_clothes", "label": "마음에 드는 옷은 같은 걸 여러 벌 사는 편이다" },
-        { "value": "check_spoilers", "label": "영화를 보기 전에 결말을 먼저 찾아보는 편이다" }
-      ],
-      "calculation": { "status": "mapped", "role": "result_material", "result_section": "can_do" }
-    },
-    {
-      "question_id": "step1.q04",
-      "step": 1,
-      "order": 4,
-      "prompt": "자주 듣는 잔소리는 무엇인가요?",
-      "answer_kind": "choice",
-      "options": [
-        { "value": "phone_overuse", "label": "폰 좀 그만봐 진짜." },
-        { "value": "sleep_late", "label": "니가 올빼미냐 잠 좀 자" },
-        { "value": "overspending", "label": "거지가 꿈이니?" },
-        { "value": "slow_reply", "label": "읽씹 ㄴㄴ 대답 좀 해라" },
-        { "value": "messy_room", "label": "돼지우리냐 방 좀 치우고 살아라" },
-        { "value": "low_battery", "label": "폰 충전 좀 해라" }
-      ],
-      "calculation": { "status": "mapped", "role": "result_material", "result_section": "can_do" }
-    },
-    {
-      "question_id": "step1.q05",
-      "step": 1,
-      "order": 5,
-      "prompt": "하루 중 절대 건드리면 안 되는 시간은 언제인가요?",
-      "answer_kind": "choice",
-      "options": [
-        { "value": "after_waking", "label": "기상 직후" },
-        { "value": "during_meal", "label": "밥 먹을 때" },
-        { "value": "after_work", "label": "퇴근 직후" },
-        { "value": "late_night", "label": "새벽 감성 타임" }
-      ],
-      "calculation": { "status": "mapped", "role": "result_material", "result_section": "warnings" }
-    },
-    {
-      "question_id": "step1.q06",
-      "step": 1,
-      "order": 6,
-      "prompt": "송송님을 화나게 하는 가장 빠른 방법",
-      "answer_kind": "choice",
-      "options": [
-        { "value": "rush", "label": "재촉하기" },
-        { "value": "interrupt", "label": "말 끊기" },
-        { "value": "take_food", "label": "음식 뺏어먹기" },
-        { "value": "arrive_late", "label": "약속 늦기" },
-        { "value": "nag", "label": "잔소리" },
-        { "value": "change_plan", "label": "내 계획 바꾸기" }
-      ],
-      "calculation": { "status": "mapped", "role": "result_material", "result_section": "warnings" }
-    },
-    {
-      "question_id": "step1.q07",
-      "step": 1,
-      "order": 7,
-      "prompt": "기다리고 기다리던 휴일, 송송님의 첫 스케줄은 무엇인가요?",
-      "answer_kind": "choice",
-      "options": [
-        { "value": "sleep_until_noon", "label": "낮 12시 기상" },
-        { "value": "morning_run", "label": "아침 러닝" },
-        { "value": "brunch_cafe", "label": "브런치 카페" },
-        { "value": "stay_in_bed", "label": "이불 밖은 위험해" },
-        { "value": "watch_streaming", "label": "밀린 OTT 시청" },
-        { "value": "self_development", "label": "자기개발" }
-      ],
-      "calculation": { "status": "mapped", "role": "result_material", "result_section": "charging" }
-    },
-    {
-      "question_id": "step1.q08",
-      "step": 1,
-      "order": 8,
-      "prompt": "금요일 저녁, 약속이 갑자기 취소됐을 때 송송님은",
-      "answer_kind": "choice",
-      "options": [
-        { "value": "go_to_bed", "label": "개꿀! 당장 침대로 간다" },
-        { "value": "contact_others", "label": "다른 친구한테 연락 돌린다" },
-        { "value": "eat_alone", "label": "혼자라도 식당 가서 먹고 온다" },
-        { "value": "go_for_drive", "label": "이 때다, 안 가 본 곳으로 드라이브!" }
-      ],
-      "calculation": { "status": "mapped", "role": "result_material", "result_section": "charging" }
-    },
-    {
-      "question_id": "step1.q09",
-      "step": 1,
-      "order": 9,
-      "prompt": "송송님은 어떤 친구랑 오랫동안 놀 수 있나요?",
-      "answer_kind": "choice",
-      "presentation": "character_carousel",
-      "options": [
-        { "value": "tsundere", "label": "츤데레" },
-        { "value": "planner", "label": "계획형" },
-        { "value": "meme_addict", "label": "밈 중독자" },
-        { "value": "foodie", "label": "먹짱" }
-      ],
-      "calculation": {
-        "status": "mapped",
-        "role": "result_material",
-        "result_section": "friend_compatibility",
-        "relationship": "compatible"
-      }
-    },
-    {
-      "question_id": "step1.q10",
-      "step": 1,
-      "order": 10,
-      "prompt": "이 친구랑은 절대 같이 여행가기 싫다!",
-      "answer_kind": "choice",
-      "presentation": "character_carousel",
-      "options": [
-        { "value": "morning_person", "label": "아침형 인간" },
-        { "value": "no_plan", "label": "무계획형" },
-        { "value": "photo_obsessed", "label": "사진 집착러" },
-        { "value": "hates_walking", "label": "걷기 싫어하는 친구" }
-      ],
-      "calculation": {
-        "status": "mapped",
-        "role": "result_material",
-        "result_section": "friend_compatibility",
-        "relationship": "incompatible"
-      }
-    },
-    {
-      "question_id": "step1.q11",
-      "step": 1,
-      "order": 11,
-      "prompt": "주말 내내 집에만 있으려고 했는데, 결국 밖에 나와버리고 말았다. 그 이유는?",
-      "answer_kind": "choice",
-      "options": [
-        { "value": "curiosity", "label": "SNS에서 처음 보는, 흥미로워 보이는 팝업을 봤다." },
         {
-          "value": "needed_by_someone",
-          "label": "친구가 ‘이건 진짜 너밖에 못 도와줘’라며 불러냈다."
+          "value": "decision",
+          "label": "결정이 필요할 때"
         },
         {
-          "value": "clear_goal",
-          "label": "러닝 앱을 켜보니 이번 주 목표까지 딱 한 번만 남아 있었다."
+          "value": "worries",
+          "label": "고민 있을 때"
         },
         {
-          "value": "responsibility",
-          "label": "친구의 이사를 도와주기로 한 시간이 다가오고 있었다."
+          "value": "hangout",
+          "label": "놀 사람 필요할 때"
         },
-        { "value": "last_chance", "label": "계속 미뤄둔 전시가 오늘 문을 닫는다는 걸 알았다." },
         {
-          "value": "fun",
-          "label": "친구들이 벌써 모여 웃고 난리 난 영상을 단톡방에 올리며 당장 나오라고 했다."
+          "value": "information",
+          "label": "정보 필요할 때"
         }
       ],
       "calculation": {
         "status": "mapped",
         "role": "result_material",
         "result_section": "features",
-        "feature_slot": "motivation",
-        "additional_input": "mbti"
+        "feature_slot": "role_in_relationships"
+      }
+    },
+    {
+      "question_id": "step1.q05",
+      "step": 1,
+      "order": 2,
+      "prompt": "하루 중 절대 건드리면 안 되는 시간은 언제인가요?",
+      "answer_kind": "choice",
+      "options": [
+        {
+          "value": "after_waking",
+          "label": "기상 직후"
+        },
+        {
+          "value": "during_meal",
+          "label": "밥 먹을 때"
+        },
+        {
+          "value": "after_work",
+          "label": "퇴근 직후"
+        },
+        {
+          "value": "late_night",
+          "label": "새벽 감성 타임"
+        }
+      ],
+      "calculation": {
+        "status": "unmapped",
+        "role": "reserved_input",
+        "note": "문항 계약은 유지하며 새 결과 노출 위치는 제품 결정 대기"
+      }
+    },
+    {
+      "question_id": "step1.q06",
+      "step": 1,
+      "order": 3,
+      "prompt": "송송님을 화나게 하는 가장 빠른 방법",
+      "answer_kind": "choice",
+      "options": [
+        {
+          "value": "rush",
+          "label": "재촉하기"
+        },
+        {
+          "value": "interrupt",
+          "label": "말 끊기"
+        },
+        {
+          "value": "take_food",
+          "label": "음식 뺏어먹기"
+        },
+        {
+          "value": "arrive_late",
+          "label": "약속 늦기"
+        },
+        {
+          "value": "nag",
+          "label": "잔소리"
+        },
+        {
+          "value": "change_plan",
+          "label": "내 계획 바꾸기"
+        }
+      ],
+      "calculation": {
+        "status": "mapped",
+        "role": "result_material",
+        "result_section": "warnings",
+        "result_slot": "anger_trigger"
+      }
+    },
+    {
+      "question_id": "step1.q07",
+      "step": 1,
+      "order": 4,
+      "prompt": "기다리고 기다리던 휴일, 송송님의 첫 스케줄은 무엇인가요?",
+      "answer_kind": "choice",
+      "options": [
+        {
+          "value": "sleep_until_noon",
+          "label": "낮 12시 기상"
+        },
+        {
+          "value": "morning_run",
+          "label": "아침 러닝"
+        },
+        {
+          "value": "brunch_cafe",
+          "label": "브런치 카페"
+        },
+        {
+          "value": "stay_in_bed",
+          "label": "이불 밖은 위험해"
+        },
+        {
+          "value": "watch_streaming",
+          "label": "밀린 OTT 시청"
+        },
+        {
+          "value": "self_development",
+          "label": "자기개발"
+        }
+      ],
+      "calculation": {
+        "status": "mapped",
+        "role": "result_material",
+        "result_section": "charging"
+      }
+    },
+    {
+      "question_id": "step1.q08",
+      "step": 1,
+      "order": 5,
+      "prompt": "금요일 저녁, 약속이 갑자기 취소됐을 때 송송님은?",
+      "answer_kind": "choice",
+      "options": [
+        {
+          "value": "go_to_bed",
+          "label": "개꿀! 당장 침대로 간다"
+        },
+        {
+          "value": "contact_others",
+          "label": "다른 친구한테 연락 돌린다"
+        },
+        {
+          "value": "eat_alone",
+          "label": "혼자라도 식당 가서 먹고 온다"
+        },
+        {
+          "value": "go_for_drive",
+          "label": "이 때다, 안 가 본 곳으로 드라이브!"
+        }
+      ],
+      "calculation": {
+        "status": "mapped",
+        "role": "result_material",
+        "result_section": "charging"
       }
     },
     {
       "question_id": "step1.q12",
       "step": 1,
-      "order": 12,
-      "prompt": "기분 안 좋은 티가 났는지 친구에게서 연락이 왔다. 다음 중 가장 반가운 메시지는?",
+      "order": 6,
+      "prompt": "기분이 안 좋을 때, 가장 반가운 친구의 연락은?",
       "answer_kind": "choice",
       "options": [
-        { "value": "listen_to_me", "label": "“무슨 일인지 천천히 들어줄게.”" },
-        { "value": "take_me_out", "label": "“일단 나와. 맛있는 거 먹자.”" },
-        { "value": "give_me_space", "label": "“혼자 정리되면 연락해. 기다릴게.”" },
-        { "value": "solve_together", "label": "“내가 같이 해결해볼까?”" },
-        { "value": "make_me_laugh", "label": "“이거 보고 일단 웃어ㅋㅋ”" }
+        {
+          "value": "listen_to_me",
+          "label": "무슨 일인지 천천히 들어줄게"
+        },
+        {
+          "value": "take_me_out",
+          "label": "일단 나와. 맛있는 거 먹자"
+        },
+        {
+          "value": "give_me_space",
+          "label": "혼자 정리되면 연락해. 기다릴게"
+        },
+        {
+          "value": "solve_together",
+          "label": "내가 같이 해결해볼까?"
+        },
+        {
+          "value": "make_me_laugh",
+          "label": "이거 보고 일단 웃어ㅋㅋ"
+        }
       ],
       "calculation": {
-        "status": "input_collection_implemented_result_mapping_pending",
+        "status": "mapped",
         "role": "result_material",
-        "result_section": "can_do",
+        "result_sections": ["can_do", "charging"],
+        "result_slot": "support_preference",
+        "charging_role": "emotional_recovery_keyword",
         "additional_input": "mbti",
         "mbti_role": "copy_modifier"
+      }
+    },
+    {
+      "question_id": "step1.q11",
+      "step": 1,
+      "order": 7,
+      "prompt": "집에만 있으려던 주말, 나를 밖으로 나오게 한 건?",
+      "answer_kind": "choice",
+      "options": [
+        {
+          "value": "curiosity",
+          "label": "궁금한 새 장소"
+        },
+        {
+          "value": "needed_by_someone",
+          "label": "나를 꼭 찾는 친구"
+        },
+        {
+          "value": "clear_goal",
+          "label": "딱 하나 남은 목표"
+        },
+        {
+          "value": "responsibility",
+          "label": "지켜야 할 약속"
+        },
+        {
+          "value": "last_chance",
+          "label": "오늘뿐인 기회"
+        },
+        {
+          "value": "fun",
+          "label": "재밌어 보이는 모임"
+        }
+      ],
+      "calculation": {
+        "status": "mapped",
+        "role": "result_material",
+        "result_sections": ["features", "charging"],
+        "feature_slot": "motivation",
+        "charging_role": "restart_trigger",
+        "additional_input": "mbti"
+      }
+    },
+    {
+      "question_id": "step1.q02",
+      "step": 1,
+      "order": 8,
+      "prompt": "친구들과 있을 때, 송송님과 가장 닮은 토키는?",
+      "answer_kind": "choice",
+      "options": [
+        {
+          "value": "organize_and_coordinate",
+          "label": "잠깐, 의견 정리해서 방향부터 잡자.",
+          "role": "정리·조율"
+        },
+        {
+          "value": "lift_mood",
+          "label": "분위기 왜 이래ㅋㅋ 일단 웃고 보자.",
+          "role": "분위기 전환"
+        },
+        {
+          "value": "make_it_happen",
+          "label": "재밌겠다. 일단 해보고 생각하자!",
+          "role": "실행·추진"
+        },
+        {
+          "value": "care_for_others",
+          "label": "넌 뭐가 좋아? 말해주면 내가 챙길게.",
+          "role": "관심·배려"
+        }
+      ],
+      "calculation": {
+        "status": "mapped",
+        "role": "result_material",
+        "result_section": "features",
+        "feature_slot": "role_in_relationships"
       }
     },
     {
@@ -346,15 +441,24 @@
           "value": "inspect_profile",
           "label": "정독하며 성향 파악부터! 프로필부터 터는 SNS 염탐형"
         },
-        { "value": "approach_directly", "label": "\"오늘 시간 되세요?\" 바로 직진하는 돌진형" }
+        {
+          "value": "approach_directly",
+          "label": "\"오늘 시간 되세요?\" 바로 직진하는 돌진형"
+        }
       ],
       "calculation": {
         "status": "mapped",
         "role": "axis_signal",
         "axis": "expression",
         "signals": {
-          "inspect_profile": { "pole": "탐색", "canonical_score": 0 },
-          "approach_directly": { "pole": "직진", "canonical_score": 100 }
+          "inspect_profile": {
+            "pole": "탐색",
+            "canonical_score": 0
+          },
+          "approach_directly": {
+            "pole": "직진",
+            "canonical_score": 100
+          }
         }
       }
     },
@@ -379,8 +483,18 @@
         "role": "axis_signal",
         "axis": "expression",
         "signals": {
-          "hint_and_wait": { "pole": "탐색", "canonical_score": 0 },
-          "resolve_immediately": { "pole": "직진", "canonical_score": 100 }
+          "hint_and_wait": {
+            "pole": "탐색",
+            "canonical_score": 0
+          },
+          "resolve_immediately": {
+            "pole": "직진",
+            "canonical_score": 100
+          }
+        },
+        "result_material": {
+          "result_section": "can_do",
+          "result_slot": "conflict_support"
         }
       }
     },
@@ -391,8 +505,14 @@
       "prompt": "친구랑 싸웠을 때 전송 버튼을 누르기 직전 송송님은?",
       "answer_kind": "choice",
       "options": [
-        { "value": "rehearse_with_ai", "label": "AI랑 몇번이고 상담한다" },
-        { "value": "send_immediately", "label": "고민 없이 바로 보낸다" }
+        {
+          "value": "rehearse_with_ai",
+          "label": "AI랑 몇번이고 상담한다"
+        },
+        {
+          "value": "send_immediately",
+          "label": "고민 없이 바로 보낸다"
+        }
       ],
       "calculation": {
         "status": "mapped_by_semantic_equivalence",
@@ -400,8 +520,14 @@
         "axis": "expression",
         "mapping_note": "초기 문항의 전송 전 숙고/즉시 표현 의도가 AI 상담 후 전송/바로 전송 문구로 변경됨",
         "signals": {
-          "rehearse_with_ai": { "pole": "탐색", "canonical_score": 0 },
-          "send_immediately": { "pole": "직진", "canonical_score": 100 }
+          "rehearse_with_ai": {
+            "pole": "탐색",
+            "canonical_score": 0
+          },
+          "send_immediately": {
+            "pole": "직진",
+            "canonical_score": 100
+          }
         }
       }
     },
@@ -413,15 +539,29 @@
       "instruction": "원을 움직여 원하는 거리에 놓아보세요",
       "answer_kind": "scale",
       "presentation": "distance_slider",
-      "visual_endpoints": { "left": "밀착형", "right": "독립형" },
-      "constraints": { "minimum": 0, "maximum": 100, "step": 1 },
+      "visual_endpoints": {
+        "left": "밀착형",
+        "right": "독립형"
+      },
+      "constraints": {
+        "minimum": 0,
+        "maximum": 100,
+        "step": 25
+      },
       "calculation": {
-        "status": "mapped_normalization_pending",
+        "status": "mapped",
         "role": "axis_signal",
         "axis": "attachment",
+        "weight_percent": 50,
         "input_endpoints": {
-          "left": { "pole": "밀착", "canonical_score": 100 },
-          "right": { "pole": "거리조절", "canonical_score": 0 }
+          "left": {
+            "pole": "밀착",
+            "canonical_score": 100
+          },
+          "right": {
+            "pole": "거리조절",
+            "canonical_score": 0
+          }
         }
       }
     },
@@ -432,16 +572,29 @@
       "prompt": "소소한 일상, 얼마나 공유하나요?",
       "answer_kind": "choice",
       "options": [
-        { "value": "share_everything", "label": "\"오늘 뭐 먹었는지까지 다 말해야지!\"" },
-        { "value": "share_selectively", "label": "\"굳이 하나하나 보고할 필요는 없잖아?\"" }
+        {
+          "value": "share_everything",
+          "label": "\"오늘 뭐 먹었는지까지 다 말해야지!\""
+        },
+        {
+          "value": "share_selectively",
+          "label": "\"굳이 하나하나 보고할 필요는 없잖아?\""
+        }
       ],
       "calculation": {
         "status": "mapped",
         "role": "axis_signal",
         "axis": "attachment",
+        "weight_percent": 30,
         "signals": {
-          "share_everything": { "pole": "밀착", "canonical_score": 100 },
-          "share_selectively": { "pole": "거리조절", "canonical_score": 0 }
+          "share_everything": {
+            "pole": "밀착",
+            "canonical_score": 100
+          },
+          "share_selectively": {
+            "pole": "거리조절",
+            "canonical_score": 0
+          }
         }
       }
     },
@@ -449,46 +602,110 @@
       "question_id": "step2.q06",
       "step": 2,
       "order": 6,
-      "prompt": "지금 쌓여있는 카톡 개수는?",
+      "prompt": "지금 쌓여 있는 카톡 개수는?",
       "answer_kind": "integer",
       "presentation": "number_input",
       "placeholder": "갯수를 입력하세요",
-      "constraints": { "minimum": 0, "maximum": 999, "step": 1 },
+      "constraints": {
+        "minimum": 0,
+        "maximum": 999,
+        "step": 1
+      },
       "calculation": {
         "status": "mapped",
         "role": "axis_signal",
         "axis": "attachment",
+        "weight_percent": 20,
         "rules": [
-          { "operator": "<", "threshold": 300, "pole": "밀착", "canonical_score": 100 },
-          { "operator": "=", "threshold": 300, "pole": "중립", "canonical_score": 50 },
-          { "operator": ">", "threshold": 300, "pole": "거리조절", "canonical_score": 0 }
+          {
+            "operator": "<",
+            "threshold": 300,
+            "pole": "밀착",
+            "canonical_score": 100
+          },
+          {
+            "operator": "=",
+            "threshold": 300,
+            "pole": "중립",
+            "canonical_score": 50
+          },
+          {
+            "operator": ">",
+            "threshold": 300,
+            "pole": "거리조절",
+            "canonical_score": 0
+          }
         ]
+      }
+    },
+    {
+      "question_id": "step2.q10",
+      "step": 2,
+      "order": 7,
+      "prompt": "자주 가던 단골카페에 새로운 메뉴가 생겼다.",
+      "answer_kind": "choice",
+      "options": [
+        {
+          "value": "order_familiar_menu",
+          "label": "괜히 먹었다가 맛 없으면 어떡해? 원래 계속 먹던 거 또 시켜 먹는다"
+        },
+        {
+          "value": "try_new_menu",
+          "label": "안 먹어본 신메뉴가 나왔다고? 일단 도전해보자!"
+        }
+      ],
+      "calculation": {
+        "status": "mapped",
+        "role": "axis_signal",
+        "axis": "routine",
+        "signals": {
+          "order_familiar_menu": {
+            "pole": "루틴",
+            "canonical_score": 100
+          },
+          "try_new_menu": {
+            "pole": "탐험",
+            "canonical_score": 0
+          }
+        }
       }
     },
     {
       "question_id": "step2.q07",
       "step": 2,
-      "order": 7,
+      "order": 8,
       "prompt": "드디어 첫 자취 시작! 어떻게 방을 꾸미실 건가요?",
       "answer_kind": "choice",
       "options": [
-        { "value": "decorate_for_mood", "label": "조명 하나, 포스터 하나까지 감성은 필수" },
-        { "value": "essentials_only", "label": "매트리스랑 가전만 있으면 생활 쌉가능" }
+        {
+          "value": "decorate_for_mood",
+          "label": "조명 하나, 포스터 하나까지 감성은 필수"
+        },
+        {
+          "value": "essentials_only",
+          "label": "매트리스랑 가전만 있으면 생활 쌉가능"
+        }
       ],
       "calculation": {
         "status": "mapped",
         "role": "axis_signal",
         "axis": "egen",
         "signals": {
-          "decorate_for_mood": { "pole": "에겐", "canonical_score": 100 },
-          "essentials_only": { "pole": "테토", "canonical_score": 0 }
+          "decorate_for_mood": {
+            "pole": "에겐",
+            "canonical_score": 100
+          },
+          "essentials_only": {
+            "pole": "테토",
+            "canonical_score": 0
+          }
         }
       }
     },
     {
       "question_id": "step2.q08",
       "step": 2,
-      "order": 8,
+      "order": 9,
       "prompt": "누군가를 챙기거나 애정을 표현할 때 어떻게 하나요?",
       "answer_kind": "choice",
       "options": [
@@ -506,51 +723,46 @@
         "role": "axis_signal",
         "axis": "egen",
         "signals": {
-          "express_with_words": { "pole": "에겐", "canonical_score": 100 },
-          "express_with_actions": { "pole": "테토", "canonical_score": 0 }
+          "express_with_words": {
+            "pole": "에겐",
+            "canonical_score": 100
+          },
+          "express_with_actions": {
+            "pole": "테토",
+            "canonical_score": 0
+          }
         }
       }
     },
     {
       "question_id": "step2.q09",
       "step": 2,
-      "order": 9,
+      "order": 10,
       "prompt": "어젯밤 내가 단톡방에 보낸 드립에 그 누구도 관심 주지 않았을 때,",
       "answer_kind": "choice",
       "options": [
-        { "value": "ruminate", "label": "\"괜히 보냈나...\" 계속해서 곱씹어본다" },
-        { "value": "forget_quickly", "label": "보낸 기억도 없다" }
+        {
+          "value": "ruminate",
+          "label": "\"괜히 보냈나...\" 계속해서 곱씹어본다"
+        },
+        {
+          "value": "forget_quickly",
+          "label": "보낸 기억도 없다"
+        }
       ],
       "calculation": {
         "status": "mapped",
         "role": "axis_signal",
         "axis": "egen",
         "signals": {
-          "ruminate": { "pole": "에겐", "canonical_score": 100 },
-          "forget_quickly": { "pole": "테토", "canonical_score": 0 }
-        }
-      }
-    },
-    {
-      "question_id": "step2.q10",
-      "step": 2,
-      "order": 10,
-      "prompt": "자주 가던 단골카페에 새로운 메뉴가 생겼다.",
-      "answer_kind": "choice",
-      "options": [
-        {
-          "value": "order_familiar_menu",
-          "label": "괜히 먹었다가 맛 없으면 어떡해? 원래 계속 먹던 거 또 시켜 먹는다"
-        },
-        { "value": "try_new_menu", "label": "안 먹어본 신메뉴가 나왔다고? 일단 도전해보자!" }
-      ],
-      "calculation": {
-        "status": "mapped",
-        "role": "axis_signal",
-        "axis": "routine",
-        "signals": {
-          "order_familiar_menu": { "pole": "루틴", "canonical_score": 100 },
-          "try_new_menu": { "pole": "탐험", "canonical_score": 0 }
+          "ruminate": {
+            "pole": "에겐",
+            "canonical_score": 100
+          },
+          "forget_quickly": {
+            "pole": "테토",
+            "canonical_score": 0
+          }
         }
       }
     },
@@ -561,8 +773,14 @@
       "prompt": "배달 앱 최근 주문 내역에 들어가보세요.",
       "answer_kind": "choice",
       "options": [
-        { "value": "order_familiar_stores", "label": "늘 시키던 맛집 몇 곳만 돌아가며 주문한다." },
-        { "value": "try_new_store", "label": "리뷰가 없어도 새로운 가게를 도전한다." }
+        {
+          "value": "order_familiar_stores",
+          "label": "늘 시키던 맛집 몇 곳만 돌아가며 주문한다."
+        },
+        {
+          "value": "try_new_store",
+          "label": "리뷰가 없어도 새로운 가게를 도전한다."
+        }
       ],
       "source_note": "제공 이미지의 바깥 프레임명은 STEP2_12이지만 화면 진행 표시는 11/12이며 기존 ID 계약과 일치한다.",
       "calculation": {
@@ -571,8 +789,14 @@
         "axis": "routine",
         "mapping_note": "초기 자료의 Q12를 현재 화면 의미에 따라 step2.q11에 연결함",
         "signals": {
-          "order_familiar_stores": { "pole": "루틴", "canonical_score": 100 },
-          "try_new_store": { "pole": "탐험", "canonical_score": 0 }
+          "order_familiar_stores": {
+            "pole": "루틴",
+            "canonical_score": 100
+          },
+          "try_new_store": {
+            "pole": "탐험",
+            "canonical_score": 0
+          }
         }
       }
     },
@@ -584,8 +808,14 @@
       "answer_kind": "action",
       "presentation": "interactive_button",
       "options": [
-        { "value": "press", "label": "PUSH 버튼 누르기" },
-        { "value": "skip", "label": "건너뛰기" }
+        {
+          "value": "press",
+          "label": "PUSH 버튼 누르기"
+        },
+        {
+          "value": "skip",
+          "label": "건너뛰기"
+        }
       ],
       "source_note": "제공 이미지의 바깥 프레임명은 STEP2_11이지만 화면 진행 표시는 12/12이며 기존 ID 계약과 일치한다.",
       "calculation": {
@@ -594,8 +824,14 @@
         "axis": "routine",
         "mapping_note": "초기 자료의 Q11을 현재 화면 의미에 따라 step2.q12에 연결함",
         "signals": {
-          "press": { "pole": "탐험", "canonical_score": 0 },
-          "skip": { "pole": "루틴", "canonical_score": 100 }
+          "press": {
+            "pole": "탐험",
+            "canonical_score": 0
+          },
+          "skip": {
+            "pole": "루틴",
+            "canonical_score": 100
+          }
         }
       }
     }
@@ -607,29 +843,53 @@
       {
         "label": "에너지 방향",
         "options": [
-          { "value": "E", "label": "E(외향형)" },
-          { "value": "I", "label": "I(내향형)" }
+          {
+            "value": "E",
+            "label": "E(외향형)"
+          },
+          {
+            "value": "I",
+            "label": "I(내향형)"
+          }
         ]
       },
       {
         "label": "인식",
         "options": [
-          { "value": "S", "label": "S(감각형)" },
-          { "value": "N", "label": "N(직관형)" }
+          {
+            "value": "S",
+            "label": "S(감각형)"
+          },
+          {
+            "value": "N",
+            "label": "N(직관형)"
+          }
         ]
       },
       {
         "label": "판단",
         "options": [
-          { "value": "T", "label": "T(사고형)" },
-          { "value": "F", "label": "F(감정형)" }
+          {
+            "value": "T",
+            "label": "T(사고형)"
+          },
+          {
+            "value": "F",
+            "label": "F(감정형)"
+          }
         ]
       },
       {
         "label": "계획성",
         "options": [
-          { "value": "J", "label": "J(판단형)" },
-          { "value": "P", "label": "P(인식형)" }
+          {
+            "value": "J",
+            "label": "J(판단형)"
+          },
+          {
+            "value": "P",
+            "label": "P(인식형)"
+          }
         ]
       }
     ],
