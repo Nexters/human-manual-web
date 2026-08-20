@@ -20,10 +20,12 @@ export const useModal = () => {
     [setModal],
   );
 
+  // modal 을 클로저로 잡으면 open 으로 modal 이 교체될 때마다 close 의 참조가 바뀐다.
+  // close 를 deps 로 쓰는 이펙트가 무한 재실행되므로, 호출 시점에 스토어에서 직접 읽는다.
   const close = useCallback(() => {
-    modal.onClose?.();
+    useModalStore.getState().modal.onClose?.();
     setModal({ ...initialModalState });
-  }, [modal, setModal]);
+  }, [setModal]);
 
   return {
     open,

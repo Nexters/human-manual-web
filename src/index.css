@@ -50,6 +50,15 @@
   --color-chip-yellow: #ffe521;
 }
 
+@layer base {
+  /* 키보드 탭 이동 시 브라우저 기본 포커스 링이 파랑이라 포인트 컬러로 맞춘다.
+     base 레이어에 두어야 outline-none 같은 유틸리티가 개별적으로 덮어쓸 수 있다. */
+  :focus-visible {
+    outline: 2px solid var(--color-point);
+    outline-offset: 2px;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   color: var(--color-base);
