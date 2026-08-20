@@ -13,6 +13,7 @@ export type ChoiceOption = { value: string; label: string };
 
 export type CarouselOption = {
   value: string;
+  characterId: string;
   name: string;
   quote: string;
   ctaLabel: string;
@@ -31,7 +32,7 @@ export type QuestionMeta =
   | (MetaBase & {
       kind: "carousel";
       ctaTone?: "main" | "point";
-      characters: Record<string, { quote: string; ctaLabel: string }>;
+      characters: Record<string, { characterId: string; name: string; ctaLabel: string }>;
     })
   | (MetaBase & { kind: "scale" })
   | (MetaBase & { kind: "integer" })
@@ -105,44 +106,18 @@ export const QUESTION_META: QuestionMeta[] = [
     order: 1,
     questionId: "step1.q01",
     kind: "choice",
-    layout: "list",
-    titleWrap: "친구들이 유독 나부터\n찾는 순간은 언제인가요?",
+    layout: "grid",
+    titleWrap: "친구들이 나를\n찾는 순간은 언제인가요?",
   },
   {
     order: 2,
-    questionId: "step1.q02",
-    kind: "choice",
-    layout: "list",
-    titleWrap: "친구들과 함께 있으면\n나도 모르게 맡게 되는 역할은?",
-  },
-  {
-    order: 3,
-    questionId: "step1.q03",
-    kind: "choice",
-    layout: "list",
-    background: "white",
-    optionWrap: {
-      save_favorites: "좋아하는 물건은 아까워서\n쉽게 사용하지 못한다",
-      multiple_alarms: "알람을 하나보다 여러 개\n맞춰두는 편이다",
-      duplicate_clothes: "마음에 드는 옷은 같은 걸\n여러 벌 사는 편이다",
-      check_spoilers: "영화를 보기 전에 결말을\n먼저 찾아보는 편이다",
-    },
-  },
-  {
-    order: 4,
-    questionId: "step1.q04",
-    kind: "choice",
-    layout: "bubble",
-  },
-  {
-    order: 5,
     questionId: "step1.q05",
     kind: "choice",
     layout: "card",
     titleWrap: "하루 중 절대 건드리면\n안 되는 시간은 언제인가요?",
   },
   {
-    order: 6,
+    order: 3,
     questionId: "step1.q06",
     kind: "choice",
     layout: "list",
@@ -150,7 +125,7 @@ export const QUESTION_META: QuestionMeta[] = [
     titleWrap: "{nickname}님을 화나게 하는\n가장 빠른 방법",
   },
   {
-    order: 7,
+    order: 4,
     questionId: "step1.q07",
     kind: "choice",
     layout: "chip",
@@ -158,60 +133,47 @@ export const QUESTION_META: QuestionMeta[] = [
     titleWrap: "기다리고 기다리던 휴일,\n{nickname}님의 첫 스케줄은 무엇인가요?",
   },
   {
-    order: 8,
+    order: 5,
     questionId: "step1.q08",
     kind: "choice",
     layout: "list",
     background: "white",
-    titleWrap: "금요일 저녁,\n약속이 갑자기 취소됐을 때 {nickname}님은",
+    titleWrap: "금요일 저녁,\n약속이 갑자기 취소됐을 때 {nickname}님은?",
+  },
+  {
+    order: 6,
+    questionId: "step1.q12",
+    kind: "choice",
+    layout: "bubble",
+    titleWrap: "기분이 안 좋을 때,\n가장 반가운 친구의 연락은?",
+  },
+  {
+    order: 7,
+    questionId: "step1.q11",
+    kind: "choice",
+    layout: "chip",
+    background: "white",
+    titleWrap: "집에만 있으려던 주말,\n나를 밖으로 나오게 한 건?",
+  },
+  {
+    order: 8,
+    questionId: "step1.q02",
+    kind: "carousel",
+    ctaTone: "point",
+    titleWrap: "친구들과 있을 때,\n{nickname}님과 가장 닮은 토키는?",
+    characters: {
+      organize_and_coordinate: { characterId: "planner", name: "계획형", ctaLabel: "계획형 토키" },
+      lift_mood: { characterId: "meme_addict", name: "밈 중독자", ctaLabel: "밈 중독자 토키" },
+      make_it_happen: {
+        characterId: "morning_person",
+        name: "아침형 인간",
+        ctaLabel: "아침형 토키",
+      },
+      care_for_others: { characterId: "tsundere", name: "츤데레", ctaLabel: "츤데레 토키" },
+    },
   },
   {
     order: 9,
-    questionId: "step1.q09",
-    kind: "carousel",
-    titleWrap: "{nickname}님은 어떤 친구랑\n오랫동안 놀 수 있나요?",
-    characters: {
-      tsundere: { quote: "…딱히 같이 놀고 싶은 건 아니야", ctaLabel: "츤데레 친구와 놀래요!" },
-      planner: { quote: "우리 다음 약속은 이미 잡아뒀어", ctaLabel: "계획형 친구와 놀래요!" },
-      meme_addict: {
-        quote: "나 오늘 완전 야르한 말랑이 샀음 아자스!",
-        ctaLabel: "밈 중독자 친구와 놀래요!",
-      },
-      foodie: { quote: "일단 밥부터 먹자", ctaLabel: "먹짱 친구와 놀래요!" },
-    },
-  },
-  {
-    order: 10,
-    questionId: "step1.q10",
-    kind: "carousel",
-    ctaTone: "point",
-    titleWrap: "이 친구랑은 절대\n같이 여행가기 싫다!",
-    characters: {
-      morning_person: { quote: "준비 아직도 안 했어?", ctaLabel: "아침형 인간 싫어요" },
-      no_plan: { quote: "일단 Go.", ctaLabel: "무계획형 싫어요" },
-      photo_obsessed: {
-        quote: "이번엔 인스타 스토리용으로 찍어줘",
-        ctaLabel: "사진 집착러 싫어요",
-      },
-      hates_walking: { quote: "5분이나 걸어? 택시타자", ctaLabel: "걷기 싫어하는 친구 싫어요" },
-    },
-  },
-  {
-    order: 11,
-    questionId: "step1.q11",
-    kind: "choice",
-    layout: "list",
-    titleWrap: "주말 내내 집에만 있으려고 했는데,\n결국 밖에 나와버리고 말았다.\n그 이유는?",
-  },
-  {
-    order: 12,
-    questionId: "step1.q12",
-    kind: "choice",
-    layout: "list",
-    titleWrap: "기분 안 좋은 티가 났는지 친구에게서 연락이 왔다.\n다음 중 가장 반가운 메시지는?",
-  },
-  {
-    order: 13,
     questionId: "step2.q01",
     kind: "choice",
     layout: "duo",
@@ -222,7 +184,7 @@ export const QUESTION_META: QuestionMeta[] = [
     },
   },
   {
-    order: 14,
+    order: 10,
     questionId: "step2.q02",
     kind: "choice",
     layout: "duo",
@@ -233,60 +195,32 @@ export const QUESTION_META: QuestionMeta[] = [
     },
   },
   {
-    order: 15,
+    order: 11,
     questionId: "step2.q03",
     kind: "choice",
     layout: "pairCard",
     titleWrap: "친구랑 싸웠을 때\n전송 버튼을 누르기 직전 {nickname}님은?",
   },
   {
-    order: 16,
+    order: 12,
     questionId: "step2.q04",
     kind: "scale",
     titleWrap: "연애할 때, 우리 사이는\n어느 정도가 편한가요?",
   },
   {
-    order: 17,
+    order: 13,
     questionId: "step2.q05",
     kind: "choice",
     layout: "duo",
     titleWrap: "소소한 일상,\n얼마나 공유하나요?",
   },
   {
-    order: 18,
+    order: 14,
     questionId: "step2.q06",
     kind: "integer",
   },
   {
-    order: 19,
-    questionId: "step2.q07",
-    kind: "choice",
-    layout: "duo",
-    titleWrap: "드디어 첫 자취 시작!\n어떻게 방을 꾸미실 건가요?",
-  },
-  {
-    order: 20,
-    questionId: "step2.q08",
-    kind: "choice",
-    layout: "duo",
-    titleWrap: "누군가를 챙기거나 애정을\n표현할 때 어떻게 하나요?",
-    optionWrap: {
-      express_with_words: "다정한 말투, 폭풍 리액션,\n눈빛과 표현으로 채운다",
-      express_with_actions: "말은 별로 없지만 슬쩍 챙겨주거나\n행동으로 보여준다",
-    },
-  },
-  {
-    order: 21,
-    questionId: "step2.q09",
-    kind: "choice",
-    layout: "duo",
-    titleWrap: "어젯밤 내가 단톡방에 보낸 드립에\n그 누구도 관심 주지 않았을 때,",
-    optionWrap: {
-      ruminate: "‘괜히 보냈나...’\n계속해서 곱씹어본다",
-    },
-  },
-  {
-    order: 22,
+    order: 15,
     questionId: "step2.q10",
     kind: "choice",
     layout: "duo",
@@ -297,7 +231,35 @@ export const QUESTION_META: QuestionMeta[] = [
     },
   },
   {
-    order: 23,
+    order: 16,
+    questionId: "step2.q07",
+    kind: "choice",
+    layout: "duo",
+    titleWrap: "드디어 첫 자취 시작!\n어떻게 방을 꾸미실 건가요?",
+  },
+  {
+    order: 17,
+    questionId: "step2.q08",
+    kind: "choice",
+    layout: "duo",
+    titleWrap: "누군가를 챙기거나 애정을\n표현할 때 어떻게 하나요?",
+    optionWrap: {
+      express_with_words: "다정한 말투, 폭풍 리액션,\n눈빛과 표현으로 채운다",
+      express_with_actions: "말은 별로 없지만 슬쩍 챙겨주거나\n행동으로 보여준다",
+    },
+  },
+  {
+    order: 18,
+    questionId: "step2.q09",
+    kind: "choice",
+    layout: "duo",
+    titleWrap: "어젯밤 내가 단톡방에 보낸 드립에\n그 누구도 관심 주지 않았을 때,",
+    optionWrap: {
+      ruminate: "‘괜히 보냈나...’\n계속해서 곱씹어본다",
+    },
+  },
+  {
+    order: 19,
     questionId: "step2.q11",
     kind: "choice",
     layout: "duo",
@@ -308,7 +270,7 @@ export const QUESTION_META: QuestionMeta[] = [
     },
   },
   {
-    order: 24,
+    order: 20,
     questionId: "step2.q12",
     kind: "action",
     titleWrap: "{nickname}님 앞에 나타난\n금지 버튼, 누르실건가요?",
@@ -316,11 +278,11 @@ export const QUESTION_META: QuestionMeta[] = [
     pressedTitle: "궁금한 건 직접 눌러봐야\n직성이 풀리는 타입이시군요?",
     pressValue: "press",
     skipValue: "skip",
-    skipLabel: "그냥 지나가기",
+    skipLabel: "누르지 않고 지나가기",
     nextLabel: "다음",
   },
   {
-    order: 25,
+    order: 21,
     questionId: null,
     kind: "mbti",
     axes: ["EI", "SN", "TF", "JP"],
@@ -366,8 +328,9 @@ const resolve = (meta: QuestionMeta): QuestionDef => {
         ctaTone: meta.ctaTone,
         options: optionsOf(meta).map((option) => ({
           value: option.value,
-          name: option.label,
-          quote: meta.characters[option.value]?.quote ?? "",
+          characterId: meta.characters[option.value]?.characterId ?? option.value,
+          name: meta.characters[option.value]?.name ?? "",
+          quote: option.label,
           ctaLabel: meta.characters[option.value]?.ctaLabel ?? "",
         })),
       };
@@ -414,7 +377,9 @@ const resolve = (meta: QuestionMeta): QuestionDef => {
   }
 };
 
-export const QUESTIONS: QuestionDef[] = QUESTION_META.map(resolve);
+export const QUESTIONS: QuestionDef[] = [...QUESTION_META]
+  .sort((a, b) => a.order - b.order)
+  .map(resolve);
 
 export const getQuestion = (order: number): QuestionDef | undefined => {
   return QUESTIONS.find((q) => q.order === order);

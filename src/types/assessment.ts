@@ -4,6 +4,8 @@ export type AnswerValue = string | number;
 
 export type IdentifierQuestion = {
   question_id: string;
+  step: number;
+  order: number;
   answer_kind: AnswerKind;
   values?: string[];
   constraints?: { minimum: number; maximum: number; step: number };

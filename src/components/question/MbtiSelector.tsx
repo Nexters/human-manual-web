@@ -30,7 +30,7 @@ const MbtiSelector = ({ value, onChange }: MbtiSelectorProps) => {
                   onClick={() => onChange(axis.key, pole)}
                   aria-pressed={selected}
                   className={cn(
-                    "h-[45px] flex-1 rounded-[6px] border transition-colors",
+                    "h-[45px] flex-1 rounded-[6px] border-[1.5px] transition-colors",
                     selected
                       ? "bg-sub-5 border-point text-sub-4"
                       : "bg-gray-01 text-gray-05 border-transparent",
