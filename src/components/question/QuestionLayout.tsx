@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import ProgressBar from "@/components/question/ProgressBar";
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
 import Typography from "@/components/shared/Typography";
@@ -32,6 +32,14 @@ const QuestionLayout = ({
   children,
   footer,
 }: QuestionLayoutProps) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // 문항이 바뀔 때마다 선택지 영역에 포커스를 옮겨둔다.
+  // 그래야 첫 Tab 이 뒤로가기·다시하기·진행바를 건너뛰고 선택지로 바로 들어간다.
+  useEffect(() => {
+    contentRef.current?.focus({ preventScroll: true });
+  }, [order]);
+
   return (
     <div
       className={cn(
@@ -76,7 +84,13 @@ const QuestionLayout = ({
         </Typography>
       )}
 
-      <div className="flex flex-1 flex-col justify-center py-8">{children}</div>
+      <div
+        ref={contentRef}
+        tabIndex={-1}
+        className="flex flex-1 flex-col justify-center py-8 outline-none"
+      >
+        {children}
+      </div>
 
       <div className="mt-auto">{footer}</div>
     </div>
