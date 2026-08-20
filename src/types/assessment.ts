@@ -117,6 +117,7 @@ export interface UnboxingKitOutput {
 export interface FeatureOutput {
   title: string;
   description: string;
+  tag: string;
 }
 
 export interface CharacterStoryOutput {
