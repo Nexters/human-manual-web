@@ -1,3 +1,4 @@
+import type { RefObject } from "react";
 import { useParams } from "react-router-dom";
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
@@ -14,12 +15,13 @@ import type { CompatibleFriendOutput } from "@/types/assessment";
 
 interface CompatibleProps {
   compatibleFriends: CompatibleFriendOutput[];
+  actionButtonMarkerRef?: RefObject<HTMLDivElement | null>;
 }
 
 const BADGE_COLORS = ["bg-main text-gray-00", "bg-sub-4 text-gray-00"] as const;
 
 // ------- Compatible UI ------
-export default function Compatible({ compatibleFriends }: CompatibleProps) {
+export default function Compatible({ compatibleFriends, actionButtonMarkerRef }: CompatibleProps) {
   const { id } = useParams<{ id: string }>();
   const inviteCode = id ?? "";
   const { open } = useModal();
@@ -92,6 +94,7 @@ export default function Compatible({ compatibleFriends }: CompatibleProps) {
 
       {/* ----- 궁합보기 버튼 UI ----- */}
       <div className="flex flex-col items-center gap-3 pt-2">
+        <div ref={actionButtonMarkerRef} />
         <hr className="w-full border-t border-gray-03" />
         <Typography variant="me2" className="text-gray-05">
           친구별 케미와 관계 팁이 궁금하다면?

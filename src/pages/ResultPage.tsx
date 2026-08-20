@@ -12,6 +12,7 @@ import ResultPageSkeleton from "@/components/result/skeleton";
 import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
+import { useIsVisible } from "@/hooks/useIsVisible";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
@@ -32,6 +33,8 @@ export default function ResultPage() {
   const { ref: unboxingKitStartRef, hasPassed: isPastHero } = useScrollPassed<HTMLDivElement>({
     offset: TOP_BAR_HEIGHT,
   });
+  const { ref: compatibleActionButtonRef, isVisible: isCompatibleButtonVisible } =
+    useIsVisible<HTMLDivElement>({ threshold: 0 });
 
   // 같은 결과 코드에 대해 refetch 등으로 중복 전송되지 않도록, id별로 1회만 기록한다.
   const trackedResultId = useRef<string | null>(null);
@@ -125,7 +128,21 @@ export default function ResultPage() {
       <Charging charging={charging} />
 
       {/* ------- 친구 궁합 UI------ */}
-      <Compatible compatibleFriends={compatible_friends} />
+      <Compatible
+        compatibleFriends={compatible_friends}
+        actionButtonMarkerRef={compatibleActionButtonRef}
+      />
+
+      {/* ------- 하단 고정 친구 케미 테스트 버튼 ------ */}
+      {!isCompatibleButtonVisible && (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer">
+          <div className="w-full max-w-[400px]">
+            <Button variant="solid" className="w-full rounded-[10px]" onClick={() => {}}>
+              친구 케미 테스트
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
