@@ -16,8 +16,6 @@ export const CONSTRAINTS = Object.fromEntries(
   IDENTIFIERS.questions.filter((q) => q.constraints).map((q) => [q.question_id, q.constraints!]),
 );
 
-export const SCALE_UI_STEP = 20;
-
 const NICKNAME_IN_CONTENT = "송송";
 
 const META_ANSWER_KIND: Record<string, AnswerKind> = {
@@ -48,6 +46,38 @@ export const verifyQuestionContract = (): string[] => {
   }
   if (CONTENT.questions.length !== TOTAL_QUESTIONS) {
     errors.push(`문항 수 불일치: 문구 ${CONTENT.questions.length}개 / 계약 ${TOTAL_QUESTIONS}개`);
+  }
+
+  const orders = QUESTION_META.map((meta) => meta.order);
+  const duplicatedOrders = orders.filter((order, index) => orders.indexOf(order) !== index);
+  if (duplicatedOrders.length > 0) {
+    errors.push(`order 중복: ${[...new Set(duplicatedOrders)].join(", ")}`);
+  }
+
+  const expectedOrder = new Map(
+    [...IDENTIFIERS.questions]
+      .sort((a, b) => a.step - b.step || a.order - b.order)
+      .map((question, index) => [question.question_id, index + 1]),
+  );
+  for (const meta of answered) {
+    const expected = expectedOrder.get(meta.questionId!);
+    if (expected !== undefined && meta.order !== expected) {
+      errors.push(`${meta.questionId} order 불일치: 화면 ${meta.order} / 계약 ${expected}`);
+    }
+  }
+  for (const content of CONTENT.questions) {
+    const contract = spec.get(content.question_id);
+    if (!contract) continue;
+    if (content.step !== contract.step || content.order !== contract.order) {
+      errors.push(
+        `${content.question_id} step/order 불일치: 문구 ${content.step}-${content.order} / 계약 ${contract.step}-${contract.order}`,
+      );
+    }
+  }
+
+  const mbtiMeta = QUESTION_META.find((meta) => meta.questionId === null);
+  if (mbtiMeta && mbtiMeta.order !== TOTAL_QUESTIONS + 1) {
+    errors.push(`MBTI 화면 order 불일치: 화면 ${mbtiMeta.order} / 기대 ${TOTAL_QUESTIONS + 1}`);
   }
 
   for (const meta of answered) {

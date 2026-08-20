@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
+import DevFillAnswersButton from "@/components/question/DevFillAnswersButton";
 import ProgressBar from "@/components/question/ProgressBar";
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
 import Typography from "@/components/shared/Typography";
@@ -32,6 +33,14 @@ const QuestionLayout = ({
   children,
   footer,
 }: QuestionLayoutProps) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // 문항이 바뀔 때마다 선택지 영역에 포커스를 옮겨둔다.
+  // 그래야 첫 Tab 이 뒤로가기·다시하기·진행바를 건너뛰고 선택지로 바로 들어간다.
+  useEffect(() => {
+    contentRef.current?.focus({ preventScroll: true });
+  }, [order]);
+
   return (
     <div
       className={cn(
@@ -44,16 +53,26 @@ const QuestionLayout = ({
           type="button"
           onClick={onBack}
           aria-label="이전 문항으로"
-          className="text-gray-09 -ml-[5px] flex size-[30px] items-center justify-center"
+          className="text-gray-09 flex size-[30px] items-center justify-center"
         >
           <ChevronLeftIcon className="w-[10px]" />
         </button>
 
-        <button type="button" onClick={onReset} className="text-gray-06 ml-auto">
-          <Typography variant="me3" as="span">
-            검사 다시하기
-          </Typography>
-        </button>
+        <div className="ml-auto flex items-center gap-[10px]">
+          {import.meta.env.DEV && (
+            <>
+              <DevFillAnswersButton />
+              <Typography variant="me3" as="span" className="text-gray-03" aria-hidden>
+                |
+              </Typography>
+            </>
+          )}
+          <button type="button" onClick={onReset} className="text-gray-06">
+            <Typography variant="me3" as="span">
+              검사 다시하기
+            </Typography>
+          </button>
+        </div>
       </div>
 
       <div className="mt-[13px]">
@@ -76,7 +95,13 @@ const QuestionLayout = ({
         </Typography>
       )}
 
-      <div className="flex flex-1 flex-col justify-center py-8">{children}</div>
+      <div
+        ref={contentRef}
+        tabIndex={-1}
+        className="flex flex-1 flex-col justify-center py-8 outline-none"
+      >
+        {children}
+      </div>
 
       <div className="mt-auto">{footer}</div>
     </div>

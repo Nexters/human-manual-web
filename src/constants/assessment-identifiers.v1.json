@@ -1,11 +1,12 @@
 {
-  "assessment_version": "2026-08-14.3",
+  "assessment_version": "2026-08-20.1",
   "identifier_status": "published",
   "id_policy": {
-    "question_id": "step{number}.q{two_digit_order}",
+    "question_id": "step{number}.q{two_digit_stable_sequence}",
     "answer_value": "lower_snake_case for choice and action answers",
-    "immutable_after_publish": true,
-    "display_copy_is_not_an_identifier": true
+    "immutable_within_assessment_version": true,
+    "display_copy_is_not_an_identifier": true,
+    "display_order": "sort by step ascending, then order ascending"
   },
   "mbti_input": {
     "field": "mbti",
@@ -31,50 +32,29 @@
   "questions": [
     {
       "question_id": "step1.q01",
+      "step": 1,
+      "order": 1,
       "answer_kind": "choice",
       "values": ["decision", "worries", "hangout", "information"]
     },
     {
-      "question_id": "step1.q02",
-      "answer_kind": "choice",
-      "values": [
-        "set_direction",
-        "lift_mood",
-        "make_it_happen",
-        "draw_people_out",
-        "coordinate_opinions",
-        "remember_and_care"
-      ]
-    },
-    {
-      "question_id": "step1.q03",
-      "answer_kind": "choice",
-      "values": ["save_favorites", "multiple_alarms", "duplicate_clothes", "check_spoilers"]
-    },
-    {
-      "question_id": "step1.q04",
-      "answer_kind": "choice",
-      "values": [
-        "phone_overuse",
-        "sleep_late",
-        "overspending",
-        "slow_reply",
-        "messy_room",
-        "low_battery"
-      ]
-    },
-    {
       "question_id": "step1.q05",
+      "step": 1,
+      "order": 2,
       "answer_kind": "choice",
       "values": ["after_waking", "during_meal", "after_work", "late_night"]
     },
     {
       "question_id": "step1.q06",
+      "step": 1,
+      "order": 3,
       "answer_kind": "choice",
       "values": ["rush", "interrupt", "take_food", "arrive_late", "nag", "change_plan"]
     },
     {
       "question_id": "step1.q07",
+      "step": 1,
+      "order": 4,
       "answer_kind": "choice",
       "values": [
         "sleep_until_noon",
@@ -87,21 +67,22 @@
     },
     {
       "question_id": "step1.q08",
+      "step": 1,
+      "order": 5,
       "answer_kind": "choice",
       "values": ["go_to_bed", "contact_others", "eat_alone", "go_for_drive"]
     },
     {
-      "question_id": "step1.q09",
+      "question_id": "step1.q12",
+      "step": 1,
+      "order": 6,
       "answer_kind": "choice",
-      "values": ["tsundere", "planner", "meme_addict", "foodie"]
-    },
-    {
-      "question_id": "step1.q10",
-      "answer_kind": "choice",
-      "values": ["morning_person", "no_plan", "photo_obsessed", "hates_walking"]
+      "values": ["listen_to_me", "take_me_out", "give_me_space", "solve_together", "make_me_laugh"]
     },
     {
       "question_id": "step1.q11",
+      "step": 1,
+      "order": 7,
       "answer_kind": "choice",
       "values": [
         "curiosity",
@@ -113,67 +94,101 @@
       ]
     },
     {
-      "question_id": "step1.q12",
+      "question_id": "step1.q02",
+      "step": 1,
+      "order": 8,
       "answer_kind": "choice",
-      "values": ["listen_to_me", "take_me_out", "give_me_space", "solve_together", "make_me_laugh"]
+      "values": ["organize_and_coordinate", "lift_mood", "make_it_happen", "care_for_others"]
     },
     {
       "question_id": "step2.q01",
+      "step": 2,
+      "order": 1,
       "answer_kind": "choice",
       "values": ["inspect_profile", "approach_directly"]
     },
     {
       "question_id": "step2.q02",
+      "step": 2,
+      "order": 2,
       "answer_kind": "choice",
       "values": ["hint_and_wait", "resolve_immediately"]
     },
     {
       "question_id": "step2.q03",
+      "step": 2,
+      "order": 3,
       "answer_kind": "choice",
       "values": ["rehearse_with_ai", "send_immediately"]
     },
     {
       "question_id": "step2.q04",
+      "step": 2,
+      "order": 4,
       "answer_kind": "scale",
-      "constraints": { "minimum": 0, "maximum": 100, "step": 1 }
+      "constraints": {
+        "minimum": 0,
+        "maximum": 100,
+        "step": 25
+      }
     },
     {
       "question_id": "step2.q05",
+      "step": 2,
+      "order": 5,
       "answer_kind": "choice",
       "values": ["share_everything", "share_selectively"]
     },
     {
       "question_id": "step2.q06",
+      "step": 2,
+      "order": 6,
       "answer_kind": "integer",
-      "constraints": { "minimum": 0, "maximum": 999, "step": 1 }
+      "constraints": {
+        "minimum": 0,
+        "maximum": 999,
+        "step": 1
+      }
+    },
+    {
+      "question_id": "step2.q10",
+      "step": 2,
+      "order": 7,
+      "answer_kind": "choice",
+      "values": ["order_familiar_menu", "try_new_menu"]
     },
     {
       "question_id": "step2.q07",
+      "step": 2,
+      "order": 8,
       "answer_kind": "choice",
       "values": ["decorate_for_mood", "essentials_only"]
     },
     {
       "question_id": "step2.q08",
+      "step": 2,
+      "order": 9,
       "answer_kind": "choice",
       "values": ["express_with_words", "express_with_actions"]
     },
     {
       "question_id": "step2.q09",
+      "step": 2,
+      "order": 10,
       "answer_kind": "choice",
       "values": ["ruminate", "forget_quickly"]
     },
     {
-      "question_id": "step2.q10",
-      "answer_kind": "choice",
-      "values": ["order_familiar_menu", "try_new_menu"]
-    },
-    {
       "question_id": "step2.q11",
+      "step": 2,
+      "order": 11,
       "answer_kind": "choice",
       "values": ["order_familiar_stores", "try_new_store"]
     },
     {
       "question_id": "step2.q12",
+      "step": 2,
+      "order": 12,
       "answer_kind": "action",
       "values": ["press", "skip"]
     }

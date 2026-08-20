@@ -72,7 +72,7 @@ const CarouselChoiceQuestion = ({ options, index, onIndexChange }: CarouselChoic
           >
             <SpeechBubble className="mt-[37px]">{active.quote}</SpeechBubble>
             <AssetImage
-              src={characterAsset(active.value)}
+              src={characterAsset(active.characterId)}
               alt={active.name}
               className="pointer-events-none mt-[21px] h-[280px] w-[250px]"
             />

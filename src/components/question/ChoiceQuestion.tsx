@@ -1,6 +1,4 @@
 import AssetImage from "@/components/shared/AssetImage";
-import PairCardMockup from "@/components/question/PairCardMockup";
-import CheckIcon from "@/components/shared/icons/CheckIcon";
 import Typography from "@/components/shared/Typography";
 import { questionAsset } from "@/constants/assets";
 import type { ChoiceLayout, ChoiceOption } from "@/constants/questions";
@@ -102,7 +100,7 @@ const ChoiceQuestion = ({ questionId, layout, options, value, onChange }: Choice
           src={questionAsset(questionId, "profile")}
           className="size-[55px] shrink-0 rounded-full"
         />
-        <ul className="flex flex-col items-start gap-3">
+        <ul className="flex flex-col items-start gap-[18px]">
           {options.map((option) => {
             const selected = value === option.value;
 
@@ -182,15 +180,19 @@ const ChoiceQuestion = ({ questionId, layout, options, value, onChange }: Choice
                 aria-pressed={selected}
                 className="flex flex-col items-center"
               >
-                <span
-                  className={cn(
-                    "relative h-[196px] w-[170px] overflow-hidden rounded-[10px] border transition-colors",
-                    selected
-                      ? cn(SELECTED_SURFACE, "border-transparent")
-                      : "border-gray-02 bg-gray-01",
-                  )}
-                >
-                  <PairCardMockup value={option.value} />
+                {/* 선택/비선택 시안이 카드 안쪽(말풍선·전송 버튼 색)까지 달라서 두 장을 겹쳐 두고 투명도로 전환한다. */}
+                <span className="relative block h-[196px] w-[170px]">
+                  <AssetImage
+                    src={questionAsset(questionId, option.value)}
+                    className="absolute inset-0 size-full"
+                  />
+                  <AssetImage
+                    src={questionAsset(questionId, `${option.value}-selected`)}
+                    className={cn(
+                      "absolute inset-0 size-full transition-opacity",
+                      selected ? "opacity-100" : "opacity-0",
+                    )}
+                  />
                 </span>
                 <Typography variant="sb4" as="span" className="mt-[14px] text-center text-black">
                   {option.label}
@@ -252,7 +254,7 @@ const ChoiceQuestion = ({ questionId, layout, options, value, onChange }: Choice
               onClick={() => onChange(option.value)}
               aria-pressed={selected}
               className={cn(
-                "flex w-full items-center gap-2 rounded-[10px] px-5 text-left transition-colors",
+                "flex w-full items-center rounded-[10px] px-5 text-left transition-colors",
                 twoLine ? "min-h-[94px] py-5" : "min-h-[62px] py-[17px]",
                 selected ? SELECTED_SURFACE : twoLine ? "bg-gray-00" : "bg-gray-01",
               )}
@@ -264,7 +266,6 @@ const ChoiceQuestion = ({ questionId, layout, options, value, onChange }: Choice
               >
                 {option.label}
               </Typography>
-              {selected && <CheckIcon className="text-point w-[12px] shrink-0" />}
             </button>
           </li>
         );
