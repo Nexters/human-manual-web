@@ -87,11 +87,6 @@ const QuestionPage = () => {
   };
 
   const goNext = () => {
-    // step2 첫 문항 답변이 아직 없을 때만 전송해, seek로 12번을 재방문해도 중복 집계되지 않게 한다.
-    const step2FirstQuestionId = getQuestion(13)?.questionId;
-    if (order === 12 && step2FirstQuestionId && answers[step2FirstQuestionId] === undefined) {
-      trackEvent(GA_EVENTS.QUESTION.STEP1_COMPLETE);
-    }
     if (order < TOTAL_STEPS) navigate(`/test/${order + 1}`);
   };
 

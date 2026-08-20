@@ -16,13 +16,6 @@ export const GA_EVENTS = {
 
   // 문항 진행 관련 GA 이벤트
   QUESTION: {
-    // 25문항은 step1(1~12번)/step2(13~24번)/mbti(25번)로 구성됨. 12번 문항에서
-    // 13번으로 처음 넘어가는 시점(=step1을 처음 완료한 순간)에만 1회 전송됨
-    STEP1_COMPLETE: {
-      action: "step1_complete",
-      category: "question",
-      label: "1단계_완료",
-    },
     SUBMIT_COMPLETE: {
       action: "test_submit_complete",
       category: "question",
@@ -38,7 +31,7 @@ export const GA_EVENTS = {
       category: "question",
       label: "검사_다시하기",
     },
-    // 1번 문항에서 뒤로가기(테스트 자체 이탈)만 전송됨. 2~25번 사이 일반
+    // 1번 문항에서 뒤로가기(테스트 자체 이탈)만 전송됨. 2~21번 사이 일반
     // 뒤로가기는 노이즈가 커서 의도적으로 제외함
     EXIT: {
       action: "test_exit",
