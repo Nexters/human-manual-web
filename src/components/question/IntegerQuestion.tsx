@@ -46,8 +46,8 @@ const IntegerQuestion = ({ questionId, value, onChange }: IntegerQuestionProps) 
           placeholder={`${constraint.minimum} ~ ${constraint.maximum}까지 입력할 수 있어요`}
           aria-label={`${constraint.minimum}~${constraint.maximum} 사이 숫자 입력`}
           className={cn(
-            "text-gray-09 placeholder:text-gray-06 placeholder:font-medium text-[18px] leading-[1.5] font-bold tracking-[-0.72px] outline-none",
-            value === undefined && "w-full",
+            "text-gray-09 placeholder:text-gray-06 caret-transparent placeholder:font-medium text-[18px] leading-[1.5] font-bold tracking-[-0.72px] outline-none",
+             value === undefined && "w-full",
           )}
           style={value === undefined ? undefined : { width: `${String(value).length}ch` }}
         />

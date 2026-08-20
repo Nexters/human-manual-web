@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useParams, useSearchParams } from "react-router-dom";
 import ActionQuestion from "@/components/question/ActionQuestion";
 import CarouselChoiceQuestion from "@/components/question/CarouselChoiceQuestion";
 import ChoiceQuestion from "@/components/question/ChoiceQuestion";
@@ -13,6 +13,8 @@ import Typography from "@/components/shared/Typography";
 import { fillNickname, getQuestion, TOTAL_STEPS } from "@/constants/questions";
 import { submitAssessment } from "@/api/assessment";
 import { buildSubmission, SubmissionValidationError } from "@/api/submission";
+import { useFriendNavigate } from "@/hooks/useFriendNavigate";
+import { appendFriendParam } from "@/lib/friendParam";
 import {
   canEnterOrder,
   findFirstIncompleteOrder,
@@ -28,7 +30,9 @@ const parseOrder = (raw: string | undefined): number | null => {
 
 const QuestionPage = () => {
   const { number } = useParams();
-  const navigate = useNavigate();
+  const navigate = useFriendNavigate();
+  const [searchParams] = useSearchParams();
+  const friendCode = searchParams.get("friend");
 
   const nickname = useTestStore((state) => state.nickname);
   const answers = useTestStore((state) => state.answers);
@@ -52,11 +56,16 @@ const QuestionPage = () => {
     question?.kind === "action" && answers[question.questionId] === question.pressValue;
 
   if (!nickname) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={appendFriendParam("/", friendCode)} replace />;
   }
 
   if (order === null || !question || !canEnterOrder(order, answers, mbti)) {
-    return <Navigate to={`/test/${findFirstIncompleteOrder(answers, mbti)}`} replace />;
+    return (
+      <Navigate
+        to={appendFriendParam(`/test/${findFirstIncompleteOrder(answers, mbti)}`, friendCode)}
+        replace
+      />
+    );
   }
 
   const carouselIndex =
