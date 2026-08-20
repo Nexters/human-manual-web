@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import Hero from "@/components/result/hero";
 import UnboxingKit from "@/components/result/unboxingKit";
@@ -16,6 +16,8 @@ import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
 import { useTestStore } from "@/stores/testStore";
+import { trackEvent } from "@/lib/google-analytics";
+import { GA_EVENTS } from "@/lib/google-analytics/event";
 
 const TOP_BAR_HEIGHT = 60;
 
@@ -31,6 +33,14 @@ export default function ResultPage() {
     offset: TOP_BAR_HEIGHT,
   });
 
+  // 같은 결과 코드에 대해 refetch 등으로 중복 전송되지 않도록, id별로 1회만 기록한다.
+  const trackedResultId = useRef<string | null>(null);
+  useEffect(() => {
+    if (!data || !id || trackedResultId.current === id) return;
+    trackedResultId.current = id;
+    trackEvent({ ...GA_EVENTS.RESULT.VIEW, label: data.overview.noun });
+  }, [data, id]);
+
   // 내가 완료한 테스트의 결과 페이지일 때만, 진입 시마다 코드 복사 팝업을 띄운다.
   useEffect(() => {
     if (!data || !id || resultCode !== id) return;
@@ -41,6 +51,7 @@ export default function ResultPage() {
       } catch {
         // 클립보드 권한이 없는 환경에서도 복사 완료 토스트는 그대로 노출
       }
+      trackEvent(GA_EVENTS.RESULT.CODE_COPY);
       openToast("코드 번호가 복사되었습니다");
       close();
     };

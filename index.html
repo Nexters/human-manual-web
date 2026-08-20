@@ -5,6 +5,18 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pakit | 나만의 장난감 캐릭터 진단</title>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GOOGLE_ANALYTICS%"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "%VITE_GOOGLE_ANALYTICS%");
+    </script>
+
     <meta
       name="description"
       content="질문에 답하고 나만의 장난감 캐릭터를 배송받아보세요. 친구와의 궁합도 확인할 수 있어요."

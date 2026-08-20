@@ -3,6 +3,8 @@ import DeliveryStep from "@/components/unboxing/DeliveryStep";
 import UnboxingStep from "@/components/unboxing/UnboxingStep";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useTestStore } from "@/stores/testStore";
+import { trackEvent } from "@/lib/google-analytics";
+import { GA_EVENTS } from "@/lib/google-analytics/event";
 
 type Step = "delivery-loading" | "delivery-done" | "unboxing-loading" | "unboxing-done";
 
@@ -34,7 +36,10 @@ export default function UnboxingPage() {
     return (
       <DeliveryStep
         phase={step === "delivery-loading" ? "loading" : "done"}
-        onConfirm={() => setStep("unboxing-loading")}
+        onConfirm={() => {
+          trackEvent(GA_EVENTS.UNBOXING.DELIVERY_CONFIRM);
+          setStep("unboxing-loading");
+        }}
       />
     );
   }
@@ -42,7 +47,10 @@ export default function UnboxingPage() {
   return (
     <UnboxingStep
       phase={step === "unboxing-loading" ? "loading" : "done"}
-      onConfirm={() => navigate(`/result/${resultCode}`)}
+      onConfirm={() => {
+        trackEvent(GA_EVENTS.UNBOXING.OPEN_CONFIRM);
+        navigate(`/result/${resultCode}`);
+      }}
     />
   );
 }

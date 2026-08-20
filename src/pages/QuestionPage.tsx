@@ -21,6 +21,8 @@ import {
   toMbtiString,
   useTestStore,
 } from "@/stores/testStore";
+import { trackEvent } from "@/lib/google-analytics";
+import { GA_EVENTS } from "@/lib/google-analytics/event";
 
 const parseOrder = (raw: string | undefined): number | null => {
   if (!raw || !/^\d+$/.test(raw)) return null;
@@ -93,10 +95,12 @@ const QuestionPage = () => {
       setAnswer(question.questionId, question.skipValue);
       return;
     }
+    if (order === 1) trackEvent(GA_EVENTS.QUESTION.EXIT);
     navigate(order > 1 ? `/test/${order - 1}` : "/");
   };
 
   const handleReset = () => {
+    trackEvent({ ...GA_EVENTS.QUESTION.RESET, label: `${order}번_문항에서_다시하기` });
     reset();
     setResetOpen(false);
     navigate("/test/1");
@@ -107,9 +111,11 @@ const QuestionPage = () => {
     setSubmitting(true);
     try {
       const result = await submitAssessment(buildSubmission({ nickname, answers, mbti }));
+      trackEvent(GA_EVENTS.QUESTION.SUBMIT_COMPLETE);
       setResultCode(result.result_code);
       navigate("/unboxing");
     } catch (error) {
+      trackEvent(GA_EVENTS.QUESTION.SUBMIT_FAIL);
       setSubmitError(
         error instanceof SubmissionValidationError
           ? error.reasons.join("\n")
