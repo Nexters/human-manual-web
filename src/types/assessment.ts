@@ -155,3 +155,7 @@ export interface AssessmentSubmissionOutput {
   charging: ChargingOutput;
   compatible_friends: CompatibleFriendOutput[];
 }
+
+export interface CompletedTestCountOutput {
+  completed_count: number;
+}

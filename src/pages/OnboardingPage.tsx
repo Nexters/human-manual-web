@@ -19,6 +19,7 @@ import { useImagesReady } from "@/hooks/useImagesReady";
 import { useFontsReady } from "@/hooks/useFontsReady";
 import { ALL_FONT_SPECS } from "@/constants/fonts";
 import { useAssessmentResult } from "@/hooks/useAssessment";
+import { useCompletedTestCount } from "@/hooks/useCompletedTestCount";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { useModal } from "@/hooks/useModal";
@@ -55,6 +56,7 @@ export default function OnboardingPage() {
     isPending: friendPreviewPending,
     isError: friendPreviewError,
   } = useAssessmentResult(friendCode ?? "");
+  const participantCount = useCompletedTestCount();
   const { open, close } = useModal();
 
   const nickname = useTestStore((state) => state.nickname);
@@ -173,6 +175,7 @@ export default function OnboardingPage() {
   if (step === "splash-cta") {
     return (
       <SplashScreen
+        participantCount={participantCount}
         onStart={() => handleStartTest("일반")}
         onCheckCompatibility={openTestStartModal}
         onOpenMyResult={openMyResultModal}

@@ -1,6 +1,10 @@
 import axios from "axios";
 import { apiClient } from "./client";
-import type { AssessmentSubmissionInput, AssessmentSubmissionOutput } from "@/types/assessment";
+import type {
+  AssessmentSubmissionInput,
+  AssessmentSubmissionOutput,
+  CompletedTestCountOutput,
+} from "@/types/assessment";
 
 export async function submitAssessment(input: AssessmentSubmissionInput) {
   const { data } = await apiClient.post<AssessmentSubmissionOutput>(
@@ -31,4 +35,10 @@ export async function verifyResultCode(resultCode: string): Promise<boolean> {
     // 통과시켜서, 이어지는 궁합 페이지의 에러 화면이 처리하게 둔다.
     return true;
   }
+}
+
+/** 결과 저장까지 성공한 누적 테스트 수. 홈 화면의 참여자 수 표기에 쓴다. */
+export async function getCompletedTestCount() {
+  const { data } = await apiClient.get<CompletedTestCountOutput>("/api/tests/submissions/count");
+  return data.completed_count;
 }
