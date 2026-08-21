@@ -35,6 +35,16 @@ export default function KeyFeatures({
         <img src={imageUrl} alt="장난감" className="w-full max-w-[280px] object-contain" />
       </div>
 
+      {/* ----- 안내 텍스트 ----- */}
+      <div className="flex flex-col justify-center gap-2 rounded-[10px] bg-gray-01 p-4 ">
+        <Typography variant="sb3" className="text-gray-09 text-center break-keep">
+          {storyTitle}
+        </Typography>
+        <Typography variant="me2" className="text-center text-gray-07 break-keep">
+          {storyDescription}
+        </Typography>
+      </div>
+
       {/* ----- 특징 카드 리스트 ----- */}
       <div className="flex flex-col gap-2">
         {features.map((feature, index) => {
@@ -63,16 +73,6 @@ export default function KeyFeatures({
             </div>
           );
         })}
-      </div>
-
-      {/* ----- 안내 텍스트 ----- */}
-      <div className="flex flex-col justify-center gap-2 rounded-[10px] bg-gray-01 p-4 mt-[40px]">
-        <Typography variant="sb3" className="text-gray-09 text-center break-keep">
-          {storyTitle}
-        </Typography>
-        <Typography variant="me2" className="text-center text-gray-07 break-keep">
-          {storyDescription}
-        </Typography>
       </div>
     </div>
   );
