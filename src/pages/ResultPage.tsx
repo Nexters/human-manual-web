@@ -56,8 +56,15 @@ export default function ResultPage() {
   const { ref: unboxingKitStartRef, hasPassed: isPastHero } = useScrollPassed<HTMLDivElement>({
     offset: TOP_BAR_HEIGHT,
   });
-  const { ref: shareResultMarkerRef, isVisible: isShareResultVisible } =
+  // ShareResult 구간(시작 마커~끝 마커) 사이에 있는 동안만 sticky 버튼을 숨긴다.
+  // 시작/끝 모두 높이 0인 마커가 뷰포트에 걸치는 순간을 감지하는 useIsVisible을 쓴다.
+  // (요소가 뷰포트 상단을 지났는지 보는 useScrollPassed는 그 요소 뒤로 뷰포트 높이만큼의
+  //  콘텐츠가 더 있어야 성립하는데, ShareResult가 페이지의 마지막 섹션이라 그 여백이 없다)
+  const { ref: shareResultStartRef, isVisible: hasReachedShareResultStart } =
     useIsVisible<HTMLDivElement>({ threshold: 0 });
+  const { ref: shareResultEndRef, isVisible: hasReachedShareResultEnd } =
+    useIsVisible<HTMLDivElement>({ threshold: 0 });
+  const isShareResultVisible = hasReachedShareResultStart && !hasReachedShareResultEnd;
 
   // 같은 결과 코드에 대해 refetch 등으로 중복 전송되지 않도록, id별로 1회만 기록한다.
   const trackedResultId = useRef<string | null>(null);
@@ -222,14 +229,15 @@ export default function ResultPage() {
       <Compatible compatibleFriends={compatible_friends} />
 
       {/* ------- 결과지 공유 UI ------ */}
-      <ShareResult actionButtonMarkerRef={shareResultMarkerRef} />
+      <ShareResult actionButtonMarkerRef={shareResultStartRef} />
+      <div ref={shareResultEndRef} />
 
       {/* ------- 상·하단 이동 플로팅 버튼 ------ */}
       <ScrollButtons />
 
       {/* ------- 하단 고정 친구 케미 테스트 버튼 ------ */}
       {!isShareResultVisible && (
-        <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer">
+        <div className="animate-sticky-button-in fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer">
           <div className="w-full max-w-[400px]">
             <Button
               variant="solid"

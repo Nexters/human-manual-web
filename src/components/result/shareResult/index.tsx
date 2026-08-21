@@ -51,9 +51,7 @@ export default function ShareResult({ actionButtonMarkerRef }: ShareResultProps)
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 px-5 pt-2 pb-8">
-      <div ref={actionButtonMarkerRef} />
-
+    <div ref={actionButtonMarkerRef} className="flex flex-col items-center gap-4 px-5 pt-2 pb-8">
       <div className="flex w-full flex-col gap-4 rounded-[20px] bg-white p-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
