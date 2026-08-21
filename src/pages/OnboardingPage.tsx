@@ -58,6 +58,9 @@ export default function OnboardingPage() {
         label: `테스트시작하기_${entryPoint}`,
       });
       resetTest();
+      // 이름 입력값은 마운트 때 스토어에서 한 번 받아온 로컬 state 라, 스토어만 비우면
+      // 같은 브라우저에서 다시 시작할 때 이전 닉네임이 인풋에 남는다.
+      setName("");
       setStep("greeting");
     },
     [resetTest],
