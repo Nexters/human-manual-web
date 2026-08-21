@@ -8,7 +8,7 @@ const TAG_POSITIONS = [
 
 export default function HeroSkeleton() {
   return (
-    <section className="relative w-full min-h-dvh overflow-hidden bg-gray-01">
+    <section className="relative w-full min-h-svh overflow-hidden bg-gray-01">
       <div className="h-[60px]" />
 
       {/* ----- 상단 배지 & 타이틀 자리 ----- */}
