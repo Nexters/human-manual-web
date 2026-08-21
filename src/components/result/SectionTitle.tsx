@@ -7,14 +7,11 @@ type SectionTitleProps = {
 
 export default function SectionTitle({ title, subtitle }: SectionTitleProps) {
   return (
-    <div className="flex flex-col justify-center">
-      <p
-        className="text-center text-[30px] leading-[1] font-normal tracking-[-0.02em] uppercase break-keep"
-        style={{ fontFamily: "'ThePosterFont', var(--font-sans)" }}
-      >
+    <div className="flex flex-col items-center gap-[2px]">
+      <Typography variant="h1" className="text-center text-gray-09 break-keep">
         {title}
-      </p>
-      <Typography variant="sb3" className="text-center text-gray-06 mt-[10px] break-keep">
+      </Typography>
+      <Typography variant="sb3" className="text-center text-gray-06 break-keep">
         {subtitle}
       </Typography>
     </div>

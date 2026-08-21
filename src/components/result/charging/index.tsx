@@ -15,7 +15,7 @@ export default function Charging({ charging }: ChargingProps) {
   return (
     <div className="flex flex-col gap-6 px-5 py-8 mt-10 mb-10">
       {/* ----- 상단 타이틀 섹션 ----- */}
-      <SectionTitle title="CHARGING" subtitle="충전 방법" />
+      <SectionTitle title="충전 방법" subtitle="나를 충전하는 방법" />
 
       {/* ----- 충전 이미지 & 설명 ----- */}
       <div className="flex flex-col items-center gap-4">

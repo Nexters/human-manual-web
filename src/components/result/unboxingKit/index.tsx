@@ -27,7 +27,7 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
   return (
     <div className="flex flex-col gap-6 px-5 py-8  mt-[30px]">
       {/* ----- 상단 타이틀 섹션 ----- */}
-      <SectionTitle title="UNBOXING KIT" subtitle="나는 어떤 장난감이에요" />
+      <SectionTitle title="성향 분석" subtitle="나는 이런 장난감이에요" />
 
       {/* ----- 성향 슬라이더 -----
           axis_scores 값은 항상 rightLabel(100점 방향)의 강도를 뜻한다. */}

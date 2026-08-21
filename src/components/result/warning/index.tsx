@@ -11,7 +11,7 @@ export default function Warning({ warnings }: WarningProps) {
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
       {/* ----- 상단 타이틀 섹션 ----- */}
-      <SectionTitle title="WARNING" subtitle="이렇게 하면 고장나요" />
+      <SectionTitle title="이렇게 하면 고장나요" subtitle="나를 지치게 만드는 행동들이에요" />
 
       {/* ----- 주의사항 리스트 ----- */}
       <div className="flex flex-col gap-3">

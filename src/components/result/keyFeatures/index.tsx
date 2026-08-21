@@ -28,7 +28,7 @@ export default function KeyFeatures({
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
       {/* ----- 상단 타이틀 섹션 ----- */}
-      <SectionTitle title="KEY FEATURES" subtitle="어떤 특징을 가지고 있나요?" />
+      <SectionTitle title="핵심 특징" subtitle="나를 기분 좋게 만드는 행동들이에요" />
 
       {/* ----- 장난감 이미지 섹션 ----- */}
       <div className="flex items-center justify-center">

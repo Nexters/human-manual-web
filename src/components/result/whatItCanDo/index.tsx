@@ -11,7 +11,7 @@ export default function WhatItCanDo({ can_do }: WhatItCanDoProps) {
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
       {/* ----- 상단 타이틀 섹션 ----- */}
-      <SectionTitle title="WHAT IT CAN DO" subtitle="이렇게 다뤄주세요" />
+      <SectionTitle title="이렇게 다뤄주세요" subtitle="나를 기분 좋게 만드는 행동들이에요" />
 
       {/* ----- 케어 방법 리스트 ----- */}
       <div className="flex flex-col gap-3">
