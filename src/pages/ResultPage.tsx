@@ -207,9 +207,6 @@ export default function ResultPage() {
       />
       <div ref={unboxingKitStartRef} />
 
-      {/* ------- 언박싱 키트(성향 슬라이더) UI ------ */}
-      <UnboxingKit unboxingKit={unboxing_kit} />
-
       {/* ------- 핵심 특징 UI ------ */}
       <KeyFeatures
         features={features}
@@ -217,6 +214,9 @@ export default function ResultPage() {
         storyTitle={character_story.title}
         storyDescription={character_story.description}
       />
+
+      {/* ------- 언박싱 키트(성향 슬라이더) UI ------ */}
+      <UnboxingKit unboxingKit={unboxing_kit} />
 
       {/* ------- 이렇게 다뤄주세요 UI ------ */}
       <WhatItCanDo can_do={can_do} />
