@@ -81,6 +81,12 @@ export default function CompatibilityPage() {
     );
   }
 
+  // headline 은 "찰떡궁합 환상의 장난감" 처럼 항상 "~~ 장난감" 꼴로 온다.
+  // 마지막 낱말만 남기고 앞부분을 포인트 컬러로 가른다.
+  const headlineWords = data.headline.trim().split(/\s+/);
+  const headlineNoun = headlineWords.at(-1) ?? "";
+  const headlineModifier = headlineWords.slice(0, -1).join(" ");
+
   const handleShare = () => {
     trackEvent(GA_EVENTS.COMPATIBILITY.RESULT_SHARE);
     return share({
@@ -134,7 +140,9 @@ export default function CompatibilityPage() {
 
         <div className="flex flex-col items-center gap-1 text-center">
           <Typography variant="h2" className="text-gray-08">
-            {data.headline}
+            <span className="text-sub-4">{headlineModifier}</span>
+            {headlineModifier && " "}
+            {headlineNoun}
           </Typography>
           <Typography variant="me2" className="text-gray-07">
             {data.description}
