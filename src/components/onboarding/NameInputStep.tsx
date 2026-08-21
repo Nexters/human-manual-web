@@ -32,6 +32,7 @@ export default function NameInputStep({ name, onNameChange, onNext }: NameInputS
           placeholder="이름을 입력해주세요"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
+          maxLength={6}
           className="text-center"
         />
         <div className="flex-1" />
