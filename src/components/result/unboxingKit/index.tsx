@@ -36,29 +36,29 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
           leftLabel="거리조절"
           rightLabel="밀착"
           value={axis_scores.attachment}
-          leftDescription="각자의 시간 필수, 애정과 독립은 별개"
-          rightDescription="자주 연락해야 안심, 같이 있는 게 충전"
+          leftDescription="각자의 시간은 꼭 필요해요"
+          rightDescription="함께 있는 시간이 힘이 돼요"
         />
         <TraitSlider
           leftLabel="탐색"
           rightLabel="직진"
           value={axis_scores.expression}
-          leftDescription="호기심이 생기면 이리저리 살펴보기"
-          rightDescription="한 가지를 집중해서 파고들기"
+          leftDescription="돌려서 말하는 게 편해요"
+          rightDescription="속마음을 숨김없이 말해요"
         />
         <TraitSlider
           leftLabel="탐험"
           rightLabel="루틴"
           value={axis_scores.routine}
-          leftDescription="새로운 것에 도전하는 것이 재미"
-          rightDescription="익숙한 것이 편하고 안전해"
+          leftDescription="새로운 도전이 제일 재밌어요"
+          rightDescription="익숙한 게 편하고 안심돼요"
         />
         <TraitSlider
           leftLabel="테토"
           rightLabel="에겐"
           value={axis_scores.egen}
-          leftDescription="변화가 많고 예측 불가능한 성격"
-          rightDescription="일관되고 예측 가능한 성격"
+          leftDescription="표현은 서툴러도 마음은 진심이에요"
+          rightDescription="감정도 섬세하게 표현하는 편이에요"
         />
       </div>
 
