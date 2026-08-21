@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import resultBg from "@/assets/img/backgrounds/room-bg.png";
 import Typography from "@/components/shared/Typography";
+import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import HeroTopBar from "./TopBar";
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
 import HeroTag from "./Bubble";
@@ -28,7 +28,7 @@ export default function Hero({
   imageUrl,
   isTopBarDark = false,
 }: HeroProps) {
-  const navigate = useNavigate();
+  const navigate = useFriendNavigate();
 
   const handleBack = () => {
     navigate("/");

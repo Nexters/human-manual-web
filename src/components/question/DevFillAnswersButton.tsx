@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import Typography from "@/components/shared/Typography";
+import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { IDENTIFIERS } from "@/constants/assessment";
 import { TOTAL_STEPS } from "@/constants/questions";
 import { useTestStore } from "@/stores/testStore";
@@ -11,7 +11,7 @@ import type { AnswerValue, MbtiSelection } from "@/types/assessment";
  * QuestionLayout 에서 import.meta.env.DEV 로 감싸 렌더하므로 운영 번들에는 들어가지 않는다.
  */
 const DevFillAnswersButton = () => {
-  const navigate = useNavigate();
+  const navigate = useFriendNavigate();
 
   const fillAll = () => {
     // 계약(identifiers)이 문항 순서와 선택지 순서의 기준이라 여기서 첫 값을 가져온다.
