@@ -134,9 +134,12 @@ export default function ResultPage() {
 
     // share() 의 폴백은 클립보드를 덮어쓰므로, 시트를 쓸 수 있을 때만 호출한다.
     if (canUseSystemShare()) {
-      // title·url 은 넘기지 않는다. 공유 시트가 둘 다 문구 앞에 이어붙이는데,
-      // title 은 UI 라벨이 메시지에 새고, url 은 구분자 없이 붙어 문구 첫 글자를 삼킨다.
-      await share({ text: chemiTestMessage });
+      // 호환성 페이지 공유와 동일하게 title/text/url을 분리해서 넘긴다.
+      await share({
+        title: `나 '${overview.result_name}' 나왔어.`,
+        text: "우리 케미는 몇 점일까? 여기서 확인해줘!",
+        url: chemiTestUrl,
+      });
     }
 
     close();
