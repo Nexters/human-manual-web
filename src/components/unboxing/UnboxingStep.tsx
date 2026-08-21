@@ -20,7 +20,8 @@ export default function UnboxingStep({ phase, onConfirm }: UnboxingStepProps) {
       />
       <div className="absolute left-1/2 top-[17%] z-10 mx-auto flex w-full max-w-[349px] -translate-x-1/2 justify-center px-5">
         <UnboxingBadgeCard
-          message={phase === "loading" ? "두구두구두구..." : "택배 상자가 열렸어요! 확인해볼까요?"}
+          message={phase === "loading" ? "두구두구두구..." : "택배 상자가 열렸어요!"}
+          description={phase === "done" ? "확인해볼까요?" : undefined}
         />
       </div>
       <AnimatePresence mode="wait" initial={false}>

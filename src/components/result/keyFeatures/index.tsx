@@ -1,9 +1,5 @@
 import Typography from "@/components/shared/Typography";
 import SectionTitle from "@/components/result/SectionTitle";
-import fireIcon from "@/assets/img/result/keyFeature/fire.png";
-import smileIcon from "@/assets/img/result/keyFeature/smile.png";
-import starIcon from "@/assets/img/result/keyFeature/star.png";
-import searchIcon from "@/assets/img/result/keyFeature/search.png";
 import type { FeatureOutput } from "@/types/assessment";
 
 interface KeyFeaturesProps {
@@ -13,11 +9,10 @@ interface KeyFeaturesProps {
   storyDescription: string;
 }
 
-const FEATURE_ICONS = [fireIcon, smileIcon, starIcon, searchIcon] as const;
-
-function getFeatureIcon(index: number): string {
-  return FEATURE_ICONS[index] ?? FEATURE_ICONS[FEATURE_ICONS.length - 1];
-}
+// TODO: 백엔드에서 태그별 배경색/글자색 필드를 내려주면 feature.tag_bg_color, feature.tag_text_color로 교체
+const TAG_BG_COLOR = "#FFE0E0";
+const TAG_TEXT_COLOR = "#B21200";
+const DEFAULT_TAG = "열정";
 
 // ------- KeyFeatures UI ------
 export default function KeyFeatures({
@@ -36,21 +31,23 @@ export default function KeyFeatures({
         <img src={imageUrl} alt="장난감" className="w-full max-w-[280px] object-contain" />
       </div>
 
-      {/* ----- 특징 카드 그리드 (2x2) ----- */}
-      <div className="grid grid-cols-2 gap-3">
-        {features.map((feature, index) => (
-          <div
-            key={feature.title}
-            className="flex items-center gap-3 rounded-[10px] bg-white px-1.5 py-3"
-          >
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-gray-02 bg-gray-01">
-              <img src={getFeatureIcon(index)} alt="" className="size-8 object-contain" />
-            </div>
+      {/* ----- 특징 카드 리스트 ----- */}
+      <div className="flex flex-col gap-2">
+        {features.map((feature) => (
+          <div key={feature.title} className="flex flex-col gap-2 rounded-[10px] bg-white px-3.5 py-3">
+            <span
+              className="inline-flex w-fit items-center rounded-[5px] px-2 py-0.5"
+              style={{ backgroundColor: TAG_BG_COLOR, color: TAG_TEXT_COLOR }}
+            >
+              <Typography variant="me3" as="span">
+                {feature.tag || DEFAULT_TAG}
+              </Typography>
+            </span>
             <div className="flex flex-col gap-1">
               <Typography variant="sb4" className="text-gray-09 break-keep">
                 {feature.title}
               </Typography>
-              <Typography variant="me4" className="text-gray-06 break-keep">
+              <Typography variant="me3" className="text-gray-07 break-keep">
                 {feature.description}
               </Typography>
             </div>

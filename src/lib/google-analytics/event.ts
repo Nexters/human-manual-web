@@ -83,6 +83,11 @@ export const GA_EVENTS = {
       category: "result",
       label: "친구초대_링크공유",
     },
+    RETRY: {
+      action: "result_retry",
+      category: "result",
+      label: "결과페이지_테스트_새로보기",
+    },
   },
 
   // 궁합 페이지 관련 GA 이벤트

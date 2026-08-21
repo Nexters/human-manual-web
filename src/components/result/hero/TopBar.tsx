@@ -1,5 +1,6 @@
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
 import Typography from "@/components/shared/Typography";
+import { useHasScrolled } from "@/hooks/useHasScrolled";
 import { cn } from "@/lib/cn";
 
 type HeroTopBarProps = {
@@ -9,11 +10,13 @@ type HeroTopBarProps = {
 };
 
 export default function HeroTopBar({ title, onBack, isDark = false }: HeroTopBarProps) {
+  const hasScrolled = useHasScrolled();
+
   return (
     <div
       className={cn(
         "fixed top-0 left-1/2 z-50 w-full max-w-[440px] -translate-x-1/2 transition-colors duration-300",
-        isDark ? "bg-gray-00" : "bg-transparent",
+        isDark ? "bg-gray-00" : hasScrolled ? "bg-white/10" : "bg-transparent",
       )}
     >
       <div className="relative flex h-[60px] items-center justify-center px-5">

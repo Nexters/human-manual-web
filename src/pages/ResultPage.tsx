@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import Hero from "@/components/result/hero";
 import UnboxingKit from "@/components/result/unboxingKit";
 import KeyFeatures from "@/components/result/keyFeatures";
@@ -7,11 +7,13 @@ import WhatItCanDo from "@/components/result/whatItCanDo";
 import Warning from "@/components/result/warning";
 import Charging from "@/components/result/charging";
 import Compatible from "@/components/result/compatible";
+import ShareResult from "@/components/result/shareResult";
 import ResultCodeModal from "@/components/result/ResultCodeModal";
 import ResultPageSkeleton from "@/components/result/skeleton";
 import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
+import { useIsVisible } from "@/hooks/useIsVisible";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
@@ -23,7 +25,10 @@ const TOP_BAR_HEIGHT = 60;
 
 export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const friendCode = searchParams.get("friend");
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
+  const { data: friendData } = useAssessmentResult(friendCode ?? "");
   const nickname = useTestStore((state) => state.nickname);
   const resultCode = useTestStore((state) => state.resultCode);
   const { open, close } = useModal();
@@ -32,6 +37,8 @@ export default function ResultPage() {
   const { ref: unboxingKitStartRef, hasPassed: isPastHero } = useScrollPassed<HTMLDivElement>({
     offset: TOP_BAR_HEIGHT,
   });
+  const { ref: shareResultMarkerRef, isVisible: isShareResultVisible } =
+    useIsVisible<HTMLDivElement>({ threshold: 0 });
 
   // 같은 결과 코드에 대해 refetch 등으로 중복 전송되지 않도록, id별로 1회만 기록한다.
   const trackedResultId = useRef<string | null>(null);
@@ -90,6 +97,8 @@ export default function ResultPage() {
     compatible_friends,
   } = data;
   const heroTitle = nickname ? `${overview.noun} ${nickname}` : overview.noun;
+  const friendNickname = friendCode ? friendData?.participant.nickname : undefined;
+  const stickyButtonLabel = friendNickname ? `${friendNickname}님과의 케미 보러가기` : "친구 케미 테스트";
 
   return (
     <div className="bg-gray-00 pb-[92px]">
@@ -126,6 +135,20 @@ export default function ResultPage() {
 
       {/* ------- 친구 궁합 UI------ */}
       <Compatible compatibleFriends={compatible_friends} />
+
+      {/* ------- 결과지 공유 UI ------ */}
+      <ShareResult actionButtonMarkerRef={shareResultMarkerRef} />
+
+      {/* ------- 하단 고정 친구 케미 테스트 버튼 ------ */}
+      {!isShareResultVisible && (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer">
+          <div className="w-full max-w-[400px]">
+            <Button variant="solid" className="w-full rounded-[10px]" onClick={() => {}}>
+              {stickyButtonLabel}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
