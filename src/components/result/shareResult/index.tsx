@@ -183,7 +183,7 @@ export default function ShareResult({
 
         <div className="flex items-center justify-between gap-3">
           <Typography variant="sb4" className="text-gray-09">
-            테스트지 공유하기
+            결과지 링크 공유하기
           </Typography>
           <button
             type="button"
