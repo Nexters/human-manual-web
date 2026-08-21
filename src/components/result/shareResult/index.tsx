@@ -2,6 +2,7 @@ import type { RefObject } from "react";
 import { useParams } from "react-router-dom";
 import Typography from "@/components/shared/Typography";
 import CopyIcon from "@/components/shared/icons/CopyIcon";
+import LinkIcon from "@/components/shared/icons/LinkIcon";
 import { useToast } from "@/hooks/useToast";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useTestStore } from "@/stores/testStore";
@@ -10,18 +11,21 @@ import { GA_EVENTS } from "@/lib/google-analytics/event";
 
 interface ShareResultProps {
   actionButtonMarkerRef?: RefObject<HTMLDivElement | null>;
-  /** 이 결과지 주인의 닉네임. 코드가 누구 것인지 밝히는 데 쓴다. */
+  /** 이 결과지 주인의 닉네임. 코드·링크가 누구 것인지 밝히는 데 쓴다. */
   nickname: string;
+  /** 이 결과지 주인의 장난감 이미지. 케미 미리보기 왼쪽 자리에 들어간다. */
+  imageUrl: string;
   onSendChemiTest: () => void;
 }
 
 // ------- ShareResult UI ------
 // 궁합(Compatible) 데이터와 무관하게 결과 코드(id)만으로 동작하는 공유 UI라 별도 섹션으로 분리했다.
-// 케미 초대와 결과지 자랑은 목적이 다르므로 한 카드 안에서 나눠 두고, 코드는 링크가 막힌 곳에서
-// 쓰는 폴백으로 맨 아래에 둔다.
+// 빈 친구 자리와 가려진 케미 지수로 "친구가 있어야 채워지는 칸" 을 먼저 보여주고, 그 아래에
+// 케미 초대 버튼을 둔다. 코드·링크는 케미 없이 결과만 보낼 때 쓰는 보조 수단이라 맨 아래로 내렸다.
 export default function ShareResult({
   actionButtonMarkerRef,
   nickname,
+  imageUrl,
   onSendChemiTest,
 }: ShareResultProps) {
   const { id } = useParams<{ id: string }>();
@@ -30,8 +34,8 @@ export default function ShareResult({
   const navigate = useFriendNavigate();
   const resetTest = useTestStore((state) => state.reset);
 
-  // 남의 결과지를 열었을 수도 있으므로 "내 코드" 라고 부르지 않는다. 주인 이름을 붙여 둔다.
-  const codeCopyLabel = nickname ? `${nickname}님 결과 코드 복사` : "결과 코드 복사";
+  // 남의 결과지를 열었을 수도 있으므로 "내 것" 이라고 부르지 않는다. 주인 이름을 붙여 둔다.
+  const ownerLabel = nickname ? `${nickname}님` : "나";
 
   const handleCopyCode = async () => {
     try {
@@ -63,57 +67,107 @@ export default function ShareResult({
   };
 
   return (
-    <div ref={actionButtonMarkerRef} className="flex flex-col items-center gap-4 px-5 pt-2 pb-8">
-      <div className="flex w-full flex-col gap-5 rounded-[20px] bg-white p-5">
-        <Typography variant="sb3" className="text-gray-09">
-          친구에게 보내기
+    <div ref={actionButtonMarkerRef} className="flex flex-col items-center gap-4 px-5 pt-6 pb-8">
+      {/* ------- 섹션 안내 ------ */}
+      <div className="flex flex-col items-center gap-2">
+        <Typography variant="h2" className="text-gray-09">
+          친구와 나의 케미는?
         </Typography>
+        <Typography variant="me3" className="text-center text-gray-05 break-keep">
+          친구도 장난감을 만들면
+          <br />둘 사이 설명서가 나와요
+        </Typography>
+      </div>
 
-        <div className="flex flex-col gap-2">
-          <button
-            type="button"
-            onClick={onSendChemiTest}
-            className="bg-sub-4 flex h-[54px] w-full items-center justify-center rounded-[10px] text-white transition-opacity hover:opacity-90 active:opacity-80"
-          >
-            <Typography variant="h3" as="span">
-              케미 테스트 보내기
+      {/* ------- 케미 미리보기(친구 자리가 비어 있음) ------ */}
+      <div className="flex w-full flex-col gap-5 rounded-[20px] bg-white p-5">
+        <div className="flex items-center justify-center gap-4">
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex size-20 items-center justify-center rounded-[20px] bg-gray-01">
+              <img src={imageUrl} alt="" className="size-14 object-contain" />
+            </div>
+            <Typography variant="sb4" className="text-gray-09">
+              {ownerLabel}
             </Typography>
-          </button>
-          <Typography variant="me3" className="text-gray-05 break-keep">
-            링크를 공유 받은 친구는 코드를 입력하지 않고 우리 케미를 봐요
+          </div>
+
+          <Typography variant="me2" as="span" className="text-gray-04">
+            ×
           </Typography>
+
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex size-20 items-center justify-center rounded-[20px] border-2 border-dashed border-gray-03">
+              <Typography variant="h1" as="span" className="text-gray-04">
+                ?
+              </Typography>
+            </div>
+            <Typography variant="sb4" className="text-gray-04">
+              친구
+            </Typography>
+          </div>
         </div>
 
         <hr className="border-t border-gray-02" />
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-center gap-1">
+          <Typography variant="me3" className="text-gray-05">
+            둘의 케미 지수
+          </Typography>
+          <span className="text-[36px] leading-none font-bold text-gray-03">??%</span>
+        </div>
+      </div>
+
+      {/* ------- 케미 초대 ------ */}
+      <button
+        type="button"
+        onClick={onSendChemiTest}
+        className="bg-sub-4 flex h-[54px] w-full items-center justify-center rounded-[15px] text-white transition-opacity hover:opacity-90 active:opacity-80"
+      >
+        <Typography variant="h3" as="span">
+          케미 테스트 보내기
+        </Typography>
+      </button>
+
+      {/* ------- 케미 없이 결과만 보낼 때 쓰는 보조 수단 ------ */}
+      <div className="flex w-full flex-col gap-4 rounded-[20px] bg-white p-5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Typography variant="me3" className="text-gray-05">
+              {ownerLabel} 코드
+            </Typography>
+            <Typography variant="sb3" className="text-gray-09">
+              {inviteCode}
+            </Typography>
+          </div>
           <button
             type="button"
-            onClick={handleCopyLink}
-            className="bg-main flex h-[54px] w-full items-center justify-center rounded-[10px] text-white transition-opacity hover:opacity-90 active:opacity-80"
+            onClick={handleCopyCode}
+            className="flex shrink-0 items-center gap-1"
           >
-            <Typography variant="h3" as="span">
-              결과지 링크 복사하기
+            <CopyIcon className="size-4 text-gray-05" />
+            <Typography variant="me3" className="text-gray-05">
+              복사
             </Typography>
           </button>
-          <Typography variant="me3" className="text-gray-05 break-keep">
-            지금 보이는 장난감 설명서를 그대로 공유해요
-          </Typography>
         </div>
 
         <hr className="border-t border-gray-02" />
 
         <div className="flex items-center justify-between gap-3">
-          <div className="flex flex-col gap-[3px]">
-            <Typography variant="me4" className="text-gray-05">
-              {codeCopyLabel}
+          <div className="flex flex-col gap-0.5">
+            <Typography variant="sb4" className="text-gray-09">
+              {ownerLabel} 설명서 링크
             </Typography>
-            <Typography variant="sb4" className="text-gray-07">
-              {inviteCode}
+            <Typography variant="me3" className="text-gray-05 break-keep">
+              케미 없이 결과만 보여줄 때
             </Typography>
           </div>
-          <button type="button" onClick={handleCopyCode} className="flex items-center gap-1">
-            <CopyIcon className="size-4 text-gray-05" />
+          <button
+            type="button"
+            onClick={handleCopyLink}
+            className="flex shrink-0 items-center gap-1"
+          >
+            <LinkIcon className="size-4 text-gray-05" />
             <Typography variant="me3" className="text-gray-05">
               복사
             </Typography>

@@ -245,6 +245,7 @@ export default function ResultPage() {
       <ShareResult
         actionButtonMarkerRef={shareResultStartRef}
         nickname={resultNickname}
+        imageUrl={overview.image_url}
         onSendChemiTest={openChemiTestModal}
       />
       <div ref={shareResultEndRef} />
