@@ -403,24 +403,24 @@
       "answer_kind": "choice",
       "options": [
         {
+          "value": "care_for_others",
+          "label": "넌 뭐가 좋아? 말해주면 내가 챙길게",
+          "role": "관심·배려"
+        },
+        {
           "value": "organize_and_coordinate",
-          "label": "잠깐, 의견 정리해서 방향부터 잡자.",
+          "label": "잠깐, 의견 정리해서 방향부터 잡자",
           "role": "정리·조율"
         },
         {
           "value": "lift_mood",
-          "label": "분위기 왜 이래ㅋㅋ 일단 웃고 보자.",
+          "label": "분위기 왜 이래ㅋㅋ 일단 웃고 보자",
           "role": "분위기 전환"
         },
         {
           "value": "make_it_happen",
           "label": "재밌겠다. 일단 해보고 생각하자!",
           "role": "실행·추진"
-        },
-        {
-          "value": "care_for_others",
-          "label": "넌 뭐가 좋아? 말해주면 내가 챙길게.",
-          "role": "관심·배려"
         }
       ],
       "calculation": {

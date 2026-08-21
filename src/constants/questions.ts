@@ -162,14 +162,14 @@ export const QUESTION_META: QuestionMeta[] = [
     ctaTone: "point",
     titleWrap: "친구들과 있을 때,\n{nickname}님과 가장 닮은 토키는?",
     characters: {
-      organize_and_coordinate: { characterId: "planner", name: "계획형", ctaLabel: "계획형 토키" },
-      lift_mood: { characterId: "meme_addict", name: "밈 중독자", ctaLabel: "밈 중독자 토키" },
+      care_for_others: { characterId: "sweet", name: "스윗 토키", ctaLabel: "관심·배려 토키" },
+      organize_and_coordinate: { characterId: "planner", name: "척척 토키", ctaLabel: "정리·조율 토키" },
+      lift_mood: { characterId: "meme_addict", name: "깔깔 토키", ctaLabel: "분위기 전환 토키" },
       make_it_happen: {
         characterId: "morning_person",
-        name: "아침형 인간",
-        ctaLabel: "아침형 토키",
+        name: "직진 토키",
+        ctaLabel: "실행·추진 토키",
       },
-      care_for_others: { characterId: "tsundere", name: "츤데레", ctaLabel: "츤데레 토키" },
     },
   },
   {
