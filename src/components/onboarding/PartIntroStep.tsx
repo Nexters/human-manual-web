@@ -30,7 +30,7 @@ export default function PartIntroStep({ onBack, onNext }: PartIntroStepProps) {
             className="bg-point absolute top-0 left-1/2 inline-flex h-9 w-[95px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[15px] text-[16px] text-white tracking-[-1.6px]"
             style={{ fontFamily: "'Waguri', var(--font-sans)" }}
           >
-            PART 1
+            토키
           </span>
           <Typography variant="h2" className="text-black">
             똑똑! 주문이 접수됐어요
