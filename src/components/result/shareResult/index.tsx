@@ -10,21 +10,28 @@ import { GA_EVENTS } from "@/lib/google-analytics/event";
 
 interface ShareResultProps {
   actionButtonMarkerRef?: RefObject<HTMLDivElement | null>;
+  /** 이 결과지 주인의 닉네임. 코드가 누구 것인지 밝히는 데 쓴다. */
+  nickname: string;
+  onSendChemiTest: () => void;
 }
 
 // ------- ShareResult UI ------
-// 궁합(Compatible) 데이터와 무관하게 결과 코드만으로 동작하는 공유 UI라 별도 섹션으로 분리했다.
-export default function ShareResult({ actionButtonMarkerRef }: ShareResultProps) {
+// 궁합(Compatible) 데이터와 무관하게 결과 코드(id)만으로 동작하는 공유 UI라 별도 섹션으로 분리했다.
+// 케미 초대와 결과지 자랑은 목적이 다르므로 한 카드 안에서 나눠 두고, 코드는 링크가 막힌 곳에서
+// 쓰는 폴백으로 맨 아래에 둔다.
+export default function ShareResult({
+  actionButtonMarkerRef,
+  nickname,
+  onSendChemiTest,
+}: ShareResultProps) {
   const { id } = useParams<{ id: string }>();
+  const inviteCode = id ?? "";
   const { open: openToast } = useToast();
   const navigate = useFriendNavigate();
   const resetTest = useTestStore((state) => state.reset);
-  const myResultCode = useTestStore((state) => state.resultCode);
 
-  // 경로의 id 는 "지금 보고 있는 결과지" 일 뿐 내 코드가 아니다. 내 결과지일 때만
-  // 공유 카드를 띄워야 남의 코드를 "내 코드" 로 복사·공유하는 일이 없다.
-  const isOwner = myResultCode !== null && myResultCode === id;
-  const inviteCode = myResultCode ?? "";
+  // 남의 결과지를 열었을 수도 있으므로 "내 코드" 라고 부르지 않는다. 주인 이름을 붙여 둔다.
+  const codeCopyLabel = nickname ? `${nickname}님 결과 코드 복사` : "결과 코드 복사";
 
   const handleCopyCode = async () => {
     try {
@@ -55,72 +62,70 @@ export default function ShareResult({ actionButtonMarkerRef }: ShareResultProps)
     navigate("/");
   };
 
-  // 열람자는 지울 진행이 없으므로 reset 하지 않는다. 테스트를 하다 만 사람의 답이 날아가면 안 된다.
-  const handleStartTest = () => {
-    navigate("/");
-  };
-
   return (
     <div ref={actionButtonMarkerRef} className="flex flex-col items-center gap-4 px-5 pt-2 pb-8">
-      {isOwner ? (
-        <div className="flex w-full flex-col gap-4 rounded-[20px] bg-white p-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Typography variant="me3" className="text-gray-05">
-                내 코드
-              </Typography>
-              <Typography variant="sb4" className="text-gray-07">
-                {inviteCode}
-              </Typography>
-            </div>
-            <button type="button" onClick={handleCopyCode} className="flex items-center gap-1">
-              <CopyIcon className="size-4 text-gray-05" />
-              <Typography variant="me3" className="text-gray-05">
-                복사
-              </Typography>
-            </button>
-          </div>
+      <div className="flex w-full flex-col gap-5 rounded-[20px] bg-white p-5">
+        <Typography variant="sb3" className="text-gray-09">
+          친구에게 보내기
+        </Typography>
 
-          <hr className="border-t border-gray-02" />
-
-          <div className="flex flex-col gap-1">
-            <Typography variant="sb3" className="text-gray-09">
-              친구에게 공유하고 케미확인하기
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={onSendChemiTest}
+            className="bg-sub-4 flex h-[54px] w-full items-center justify-center rounded-[10px] text-white transition-opacity hover:opacity-90 active:opacity-80"
+          >
+            <Typography variant="h3" as="span">
+              케미 테스트 보내기
             </Typography>
-            <Typography variant="me3" className="text-gray-05">
-              링크를 보내면 친구가 바로 케미를 확인할 수 있어요.
-            </Typography>
-          </div>
+          </button>
+          <Typography variant="me3" className="text-gray-05 break-keep">
+            링크를 공유 받은 친구는 코드를 입력하지 않고 우리 케미를 봐요
+          </Typography>
+        </div>
 
+        <hr className="border-t border-gray-02" />
+
+        <div className="flex flex-col gap-2">
           <button
             type="button"
             onClick={handleCopyLink}
-            className="bg-sub-4 flex h-[54px] w-full items-center justify-center rounded-[10px] text-white transition-opacity hover:opacity-90 active:opacity-80"
+            className="bg-main flex h-[54px] w-full items-center justify-center rounded-[10px] text-white transition-opacity hover:opacity-90 active:opacity-80"
           >
             <Typography variant="h3" as="span">
               결과지 링크 복사하기
             </Typography>
           </button>
+          <Typography variant="me3" className="text-gray-05 break-keep">
+            지금 보이는 장난감 설명서를 그대로 공유해요
+          </Typography>
         </div>
-      ) : (
-        <button
-          type="button"
-          onClick={handleStartTest}
-          className="bg-sub-4 flex h-[54px] w-full items-center justify-center rounded-[10px] text-white transition-opacity hover:opacity-90 active:opacity-80"
-        >
-          <Typography variant="h3" as="span">
-            테스트 하기
-          </Typography>
-        </button>
-      )}
 
-      {isOwner && (
-        <button type="button" onClick={handleRetry}>
-          <Typography variant="me2" className="text-gray-04">
-            테스트 다시 하기
-          </Typography>
-        </button>
-      )}
+        <hr className="border-t border-gray-02" />
+
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-[3px]">
+            <Typography variant="me4" className="text-gray-05">
+              {codeCopyLabel}
+            </Typography>
+            <Typography variant="sb4" className="text-gray-07">
+              {inviteCode}
+            </Typography>
+          </div>
+          <button type="button" onClick={handleCopyCode} className="flex items-center gap-1">
+            <CopyIcon className="size-4 text-gray-05" />
+            <Typography variant="me3" className="text-gray-05">
+              복사
+            </Typography>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" onClick={handleRetry}>
+        <Typography variant="me2" className="text-gray-04">
+          테스트 다시 하기
+        </Typography>
+      </button>
     </div>
   );
 }

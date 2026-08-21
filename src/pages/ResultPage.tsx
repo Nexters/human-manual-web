@@ -181,12 +181,8 @@ export default function ResultPage() {
     }
   };
 
-  const handleStickyButtonClick = () => {
-    if (friendNickname) {
-      void handleViewChemi();
-      return;
-    }
-
+  // 공유 카드와 하단 고정 버튼이 같은 초대 문구 시트를 연다.
+  const openChemiTestModal = () => {
     trackEvent(GA_EVENTS.RESULT.CHEMI_TEST_OPEN);
     open({
       title: "친구 케미 테스트",
@@ -198,6 +194,15 @@ export default function ResultPage() {
         />
       ),
     });
+  };
+
+  const handleStickyButtonClick = () => {
+    if (friendNickname) {
+      void handleViewChemi();
+      return;
+    }
+
+    openChemiTestModal();
   };
 
   return (
@@ -237,7 +242,11 @@ export default function ResultPage() {
       <Compatible compatibleFriends={compatible_friends} />
 
       {/* ------- 결과지 공유 UI ------ */}
-      <ShareResult actionButtonMarkerRef={shareResultStartRef} />
+      <ShareResult
+        actionButtonMarkerRef={shareResultStartRef}
+        nickname={resultNickname}
+        onSendChemiTest={openChemiTestModal}
+      />
       <div ref={shareResultEndRef} />
 
       {/* ------- 상·하단 이동 플로팅 버튼 ------ */}
