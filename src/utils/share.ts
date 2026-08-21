@@ -1,5 +1,9 @@
 export type ShareData = {
-  title: string;
+  /**
+   * 채팅 앱은 title 을 메시지 맨 앞에 그대로 이어붙인다.
+   * 문구가 그 자체로 완결된 경우엔 넘기지 않는다.
+   */
+  title?: string;
   text: string;
   /**
    * 문구(text)에 링크가 이미 들어있으면 넘기지 않는다.

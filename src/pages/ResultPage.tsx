@@ -120,9 +120,9 @@ export default function ResultPage() {
     // navigator.share 가 있으면 share() 가 시스템 공유 시트만 띄운다. 없을 때는
     // share() 의 폴백이 클립보드를 URL 로 덮어써서 문구가 사라지므로 직접 안내한다.
     if (canUseSystemShare()) {
-      // url 은 넘기지 않는다. 카카오톡이 url 을 문구 앞에 구분자 없이 붙여서
-      // 문구 첫 글자가 URL 에 눌러붙고, friend 값이 그 글자까지 삼킨다.
-      await share({ title: "친구 케미 테스트", text: chemiTestMessage });
+      // title·url 은 넘기지 않는다. 공유 시트가 둘 다 문구 앞에 이어붙이는데,
+      // title 은 UI 라벨이 메시지에 새고, url 은 구분자 없이 붙어 문구 첫 글자를 삼킨다.
+      await share({ text: chemiTestMessage });
     } else {
       openToast("문구를 복사했어요");
     }
