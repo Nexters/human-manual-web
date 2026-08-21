@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { AnimatePresence, motion } from "framer-motion";
 import Hero from "@/components/result/hero";
 import UnboxingKit from "@/components/result/unboxingKit";
 import KeyFeatures from "@/components/result/keyFeatures";
@@ -17,7 +16,6 @@ import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import Spinner from "@/components/shared/Spinner";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
-import { useHasScrolled } from "@/hooks/useHasScrolled";
 import { useIsVisible } from "@/hooks/useIsVisible";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { getCompatibility } from "@/api/compatibility";
@@ -40,7 +38,6 @@ export default function ResultPage() {
   const queryClient = useQueryClient();
   const urlFriendCode = useFriendCode();
   const rememberedFriendCode = useFriendStore((state) => state.friendCode);
-  const nickname = useTestStore((state) => state.nickname);
   const myResultCode = useTestStore((state) => state.resultCode);
 
   // URL 을 잃어도 친구를 알아봐야 하지만, 남의 결과지를 열었을 때 내 친구가 따라붙으면 안 된다.
@@ -58,9 +55,15 @@ export default function ResultPage() {
   const { ref: unboxingKitStartRef, hasPassed: isPastHero } = useScrollPassed<HTMLDivElement>({
     offset: TOP_BAR_HEIGHT,
   });
-  const { ref: shareResultMarkerRef, isVisible: isShareResultVisible } =
+  // ShareResult 구간(시작 마커~끝 마커) 사이에 있는 동안만 sticky 버튼을 숨긴다.
+  // 시작/끝 모두 높이 0인 마커가 뷰포트에 걸치는 순간을 감지하는 useIsVisible을 쓴다.
+  // (요소가 뷰포트 상단을 지났는지 보는 useScrollPassed는 그 요소 뒤로 뷰포트 높이만큼의
+  //  콘텐츠가 더 있어야 성립하는데, ShareResult가 페이지의 마지막 섹션이라 그 여백이 없다)
+  const { ref: shareResultStartRef, isVisible: hasReachedShareResultStart } =
     useIsVisible<HTMLDivElement>({ threshold: 0 });
-  const hasScrolledPastSticky = useHasScrolled(200);
+  const { ref: shareResultEndRef, isVisible: hasReachedShareResultEnd } =
+    useIsVisible<HTMLDivElement>({ threshold: 0 });
+  const isShareResultVisible = hasReachedShareResultStart && !hasReachedShareResultEnd;
 
   // 같은 결과 코드에 대해 refetch 등으로 중복 전송되지 않도록, id별로 1회만 기록한다.
   const trackedResultId = useRef<string | null>(null);
@@ -95,7 +98,10 @@ export default function ResultPage() {
     charging,
     compatible_friends,
   } = data;
-  const heroTitle = nickname ? `${overview.noun} ${nickname}` : overview.noun;
+  // 닉네임은 이 결과지의 주인 것을 쓴다. 내 스토어 값을 쓰면 남의 결과지를 열었을 때
+  // 남의 캐릭터에 내 이름이 붙는다.
+  const resultNickname = data.participant.nickname;
+  const heroTitle = resultNickname ? `${overview.noun} ${resultNickname}` : overview.noun;
   const friendNickname = friendCode ? friendData?.participant.nickname : undefined;
   const stickyButtonLabel = friendNickname
     ? `${friendNickname}님과의 케미 보러가기`
@@ -225,35 +231,27 @@ export default function ResultPage() {
       <Compatible compatibleFriends={compatible_friends} />
 
       {/* ------- 결과지 공유 UI ------ */}
-      <ShareResult actionButtonMarkerRef={shareResultMarkerRef} />
+      <ShareResult actionButtonMarkerRef={shareResultStartRef} />
+      <div ref={shareResultEndRef} />
 
       {/* ------- 상·하단 이동 플로팅 버튼 ------ */}
       <ScrollButtons />
 
       {/* ------- 하단 고정 친구 케미 테스트 버튼 ------ */}
-      <AnimatePresence>
-        {hasScrolledPastSticky && !isShareResultVisible && (
-          <motion.div
-            key="sticky-chemi-button"
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer"
-          >
-            <div className="w-full max-w-[400px]">
-              <Button
-                variant="solid"
-                className="w-full rounded-[10px]"
-                disabled={checkingChemi}
-                onClick={handleStickyButtonClick}
-              >
-                {checkingChemi ? <Spinner className="size-6" /> : stickyButtonLabel}
-              </Button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {!isShareResultVisible && (
+        <div className="animate-sticky-button-in fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer">
+          <div className="w-full max-w-[400px]">
+            <Button
+              variant="solid"
+              className="w-full rounded-[10px]"
+              disabled={checkingChemi}
+              onClick={handleStickyButtonClick}
+            >
+              {checkingChemi ? <Spinner className="size-6" /> : stickyButtonLabel}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

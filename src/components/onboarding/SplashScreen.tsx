@@ -1,46 +1,31 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Button from "@/components/shared/Button";
 import Typography from "@/components/shared/Typography";
 import logo from "@/assets/img/logo.png";
-import splashBunny from "@/assets/img/splash-bunny.png";
+import splashBlocks from "@/assets/img/splash-blocks.png";
 
 type SplashScreenProps = {
-  phase: "logo" | "cta";
   onStart: () => void;
   onCheckCompatibility: () => void;
 };
 
-export default function SplashScreen({ phase, onStart, onCheckCompatibility }: SplashScreenProps) {
+export default function SplashScreen({ onStart, onCheckCompatibility }: SplashScreenProps) {
   return (
-    <AnimatePresence mode="wait">
-      {phase === "logo" ? (
-        <motion.div
-          key="splash-logo"
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex h-full min-h-dvh flex-col bg-white"
-        >
-          <SplashHeader />
-          <img src={splashBunny} alt="" className="fixed bottom-0 w-[340px]" />
-        </motion.div>
-      ) : (
-        <motion.div
-          key="splash-cta"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="flex h-full min-h-dvh flex-col bg-white"
-        >
-          <SplashHeader />
-          <div className="mt-auto flex flex-col gap-3 px-5 pb-10">
-            <Button onClick={onStart}>테스트 시작하기</Button>
-            <Button variant="outline" onClick={onCheckCompatibility}>
-              친구와의 케미보기
-            </Button>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="flex h-full min-h-dvh flex-col bg-white"
+    >
+      <SplashHeader />
+      <img src={splashBlocks} alt="" className="mx-auto mt-10 w-[272px]" />
+      <div className="mt-auto flex flex-col gap-3 px-5 pb-10">
+        <Button onClick={onStart}>테스트 시작하기</Button>
+        <Button variant="outline" onClick={onCheckCompatibility}>
+          친구와의 케미보기
+        </Button>
+      </div>
+    </motion.div>
   );
 }
 

@@ -3,6 +3,7 @@
   --animate-toast-in: toast-in 0.25s ease-out;
   --animate-toast-out: toast-out 0.2s ease-in forwards;
   --animate-skeleton-pulse: skeleton-pulse 1.5s ease-in-out infinite;
+  --animate-sticky-button-in: sticky-button-in 0.25s ease-out;
 
   @keyframes float {
     0%,
@@ -43,6 +44,17 @@
     }
     50% {
       opacity: 0.5;
+    }
+  }
+
+  @keyframes sticky-button-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }
