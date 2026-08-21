@@ -116,17 +116,28 @@ export default function ResultPage() {
       // 클립보드 권한이 없는 환경에서도 공유 시트는 그대로 띄운다
     }
     trackEvent(GA_EVENTS.RESULT.CHEMI_TEST_SHARE);
+    // 데스크톱 크롬에도 navigator.share 가 있어서 공유 시트가 열린다. 시트를 닫아버리면
+    // 복사된 줄 모르니, 복사는 이미 끝났다는 걸 어느 환경에서든 알려준다.
+    openToast("문구를 복사했어요");
 
-    // navigator.share 가 있으면 share() 가 시스템 공유 시트만 띄운다. 없을 때는
-    // share() 의 폴백이 클립보드를 URL 로 덮어써서 문구가 사라지므로 직접 안내한다.
+    // share() 의 폴백은 클립보드를 덮어쓰므로, 시트를 쓸 수 있을 때만 호출한다.
     if (canUseSystemShare()) {
       // title·url 은 넘기지 않는다. 공유 시트가 둘 다 문구 앞에 이어붙이는데,
       // title 은 UI 라벨이 메시지에 새고, url 은 구분자 없이 붙어 문구 첫 글자를 삼킨다.
       await share({ text: chemiTestMessage });
-    } else {
-      openToast("문구를 복사했어요");
     }
 
+    close();
+  };
+
+  // 문구와 링크가 한 문자열이면 주소창에 붙여넣어도 이동할 수 없다. 링크만 따로 복사한다.
+  const handleCopyChemiLink = async () => {
+    try {
+      await navigator.clipboard.writeText(chemiTestUrl);
+    } catch {
+      // 클립보드 권한이 없는 환경에서도 안내는 그대로 노출한다
+    }
+    openToast("링크를 복사했어요");
     close();
   };
 
@@ -164,7 +175,13 @@ export default function ResultPage() {
     trackEvent(GA_EVENTS.RESULT.CHEMI_TEST_OPEN);
     open({
       title: "친구 케미 테스트",
-      contents: <FriendChemiTestModal message={chemiTestMessage} onShare={handleShareChemiTest} />,
+      contents: (
+        <FriendChemiTestModal
+          message={chemiTestMessage}
+          onShare={handleShareChemiTest}
+          onCopyLink={handleCopyChemiLink}
+        />
+      ),
     });
   };
 
