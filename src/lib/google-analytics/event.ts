@@ -72,11 +72,6 @@ export const GA_EVENTS = {
       category: "result",
       label: "결과_페이지_조회",
     },
-    CODE_COPY: {
-      action: "result_code_copy",
-      category: "result",
-      label: "결과페이지_코드복사",
-    },
     INVITE_OPEN: {
       action: "compatibility_invite_open",
       category: "result",
@@ -91,6 +86,16 @@ export const GA_EVENTS = {
       action: "compatibility_invite_link_share",
       category: "result",
       label: "친구초대_링크공유",
+    },
+    CHEMI_TEST_OPEN: {
+      action: "chemi_test_open",
+      category: "result",
+      label: "친구_케미_테스트_열기",
+    },
+    CHEMI_TEST_SHARE: {
+      action: "chemi_test_share",
+      category: "result",
+      label: "친구_케미_테스트_문구공유",
     },
     RETRY: {
       action: "result_retry",
