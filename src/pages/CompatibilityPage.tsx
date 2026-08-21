@@ -73,15 +73,11 @@ export default function CompatibilityPage() {
       <div className="flex flex-1 flex-col gap-8 px-5 pt-[54px] pb-8">
         <div className="flex justify-center gap-2">
           <MatchupProfileCard
-            variant="me"
-            role="나"
             name={`${data.mine.noun} ${data.mine.nickname}`}
             image={data.mine.image_url}
             imageAlt={`${data.mine.noun} 캐릭터`}
           />
           <MatchupProfileCard
-            variant="friend"
-            role="친구"
             name={`${data.friend.noun} ${data.friend.nickname}`}
             image={data.friend.image_url}
             imageAlt={`${data.friend.noun} 캐릭터`}
