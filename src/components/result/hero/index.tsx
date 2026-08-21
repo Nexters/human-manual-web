@@ -1,6 +1,7 @@
 import resultBg from "@/assets/img/backgrounds/room-bg.png";
 import Typography from "@/components/shared/Typography";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
+import { useInitialViewportHeight } from "@/hooks/useInitialViewportHeight";
 import HeroTopBar from "./TopBar";
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
 import HeroTag from "./Bubble";
@@ -29,13 +30,20 @@ export default function Hero({
   isTopBarDark = false,
 }: HeroProps) {
   const navigate = useFriendNavigate();
+  // 카카오톡 인앱 브라우저는 스크롤 중 상단바가 나타났다 사라지며 svh/lvh/dvh
+  // 값이 실시간 재계산될 수 있어, 그 안의 배경/캐릭터(% 기준 배치)가 함께
+  // 흔들린다. 마운트 시점의 높이를 한 번만 측정해 고정 px로 써서 이를 막는다.
+  const viewportHeight = useInitialViewportHeight();
 
   const handleBack = () => {
     navigate("/");
   };
 
   return (
-    <section className="relative w-full min-h-svh overflow-hidden">
+    <section
+      className="relative w-full overflow-hidden"
+      style={{ minHeight: viewportHeight }}
+    >
       <img
         src={resultBg}
         alt=""
