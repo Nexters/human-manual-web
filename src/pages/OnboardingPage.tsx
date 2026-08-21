@@ -19,7 +19,7 @@ import notebookBg from "@/assets/img/notebook-bg.jpg";
 import partIntroBg from "@/assets/img/part-intro-bg.jpg";
 import characterNotebook from "@/assets/gif/character-notebook.gif";
 
-type Step = "splash-logo" | "splash-cta" | IntroKey | "name-input" | "part-intro";
+type Step = "splash-cta" | IntroKey | "name-input" | "part-intro";
 
 const onboardingPreloadImages = [...introPreloadImages, notebookBg, partIntroBg, characterNotebook];
 
@@ -43,7 +43,7 @@ export default function OnboardingPage() {
   const setNickname = useTestStore((state) => state.setNickname);
   const resetTest = useTestStore((state) => state.reset);
 
-  const [step, setStep] = useState<Step>("splash-logo");
+  const [step, setStep] = useState<Step>("splash-cta");
   const [name, setName] = useState(nickname);
 
   // 스플래시 자체 이미지가 다 로드될 때까지는 깨진 이미지가 보이지 않도록 렌더링을 미룬다.
@@ -64,12 +64,6 @@ export default function OnboardingPage() {
     },
     [resetTest],
   );
-
-  useEffect(() => {
-    if (step !== "splash-logo" || !splashReady) return;
-    const timer = setTimeout(() => setStep("splash-cta"), 2000);
-    return () => clearTimeout(timer);
-  }, [step, splashReady]);
 
   const openTestStartModal = useCallback(() => {
     // 친구 코드를 물고 들어왔는지에 따라 유입 경로가 다르다. 수집 데이터의 연속성을 위해
@@ -113,21 +107,15 @@ export default function OnboardingPage() {
     return () => clearTimeout(timer);
   }, [step, friendCode, hasUnusableFriendParam, openTestStartModal]);
 
-  // 인트로/이름입력 스텝의 배경·캐릭터 이미지를 스플래시 노출 시간 동안 미리 받아둔다.
+  // 인트로/이름입력 스텝의 배경·캐릭터 이미지를 첫 화면(스플래시 CTA) 노출 동안 미리 받아둔다.
   useImagePreload(onboardingPreloadImages);
 
   if (!splashReady) {
     return <div className="min-h-dvh bg-white" />;
   }
 
-  if (step === "splash-logo" || step === "splash-cta") {
-    return (
-      <SplashScreen
-        phase={step === "splash-logo" ? "logo" : "cta"}
-        onStart={() => handleStartTest("일반")}
-        onCheckCompatibility={openTestStartModal}
-      />
-    );
+  if (step === "splash-cta") {
+    return <SplashScreen onStart={() => handleStartTest("일반")} onCheckCompatibility={openTestStartModal} />;
   }
 
   if (step === "name-input") {
