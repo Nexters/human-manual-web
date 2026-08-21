@@ -1,5 +1,5 @@
 {
-  "assessment_version": "2026-08-20.1",
+  "assessment_version": "2026-08-22.1",
   "content_status": "baseline_with_product_mapping",
   "locale": "ko-KR",
   "source": {
@@ -540,8 +540,8 @@
       "answer_kind": "scale",
       "presentation": "distance_slider",
       "visual_endpoints": {
-        "left": "밀착형",
-        "right": "독립형"
+        "left": "각자 시간",
+        "right": "늘 함께"
       },
       "constraints": {
         "minimum": 0,
@@ -555,12 +555,12 @@
         "weight_percent": 50,
         "input_endpoints": {
           "left": {
-            "pole": "밀착",
-            "canonical_score": 100
-          },
-          "right": {
             "pole": "거리조절",
             "canonical_score": 0
+          },
+          "right": {
+            "pole": "밀착",
+            "canonical_score": 100
           }
         }
       }
