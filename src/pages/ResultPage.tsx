@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import Hero from "@/components/result/hero";
 import UnboxingKit from "@/components/result/unboxingKit";
 import KeyFeatures from "@/components/result/keyFeatures";
@@ -13,10 +14,14 @@ import ResultPageSkeleton from "@/components/result/skeleton";
 import ScrollButtons from "@/components/result/ScrollButtons";
 import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
+import Spinner from "@/components/shared/Spinner";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
 import { useIsVisible } from "@/hooks/useIsVisible";
 import { useAssessmentResult } from "@/hooks/useAssessment";
+import { getCompatibility } from "@/api/compatibility";
+import { compatibilityQueryKey } from "@/hooks/useCompatibility";
 import { useFriendCode } from "@/hooks/useFriendCode";
+import { useFriendStore } from "@/stores/friendStore";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
 import { useTestStore } from "@/stores/testStore";
@@ -33,12 +38,25 @@ const TOP_BAR_HEIGHT = 60;
 
 export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
-  const friendCode = useFriendCode();
+  // 케미 페이지 URL 은 두 코드를 직접 담아 완성하므로, friend 를 덧붙이는 useFriendNavigate 를 쓰지 않는다.
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const urlFriendCode = useFriendCode();
+  const rememberedFriendCode = useFriendStore((state) => state.friendCode);
+  const nickname = useTestStore((state) => state.nickname);
+  const myResultCode = useTestStore((state) => state.resultCode);
+
+  // URL 을 잃어도 친구를 알아봐야 하지만, 남의 결과지를 열었을 때 내 친구가 따라붙으면 안 된다.
+  // 그래서 기억해둔 코드는 내가 방금 받은 결과지에서만, 자기 자신이 아닐 때만 쓴다.
+  const fallbackFriendCode = id === myResultCode ? rememberedFriendCode : null;
+  const friendCode =
+    (urlFriendCode ?? fallbackFriendCode) === id ? null : (urlFriendCode ?? fallbackFriendCode);
+
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
   const { data: friendData } = useAssessmentResult(friendCode ?? "");
-  const nickname = useTestStore((state) => state.nickname);
   const { open, close } = useModal();
   const { open: openToast } = useToast();
+  const [checkingChemi, setCheckingChemi] = useState(false);
 
   const { ref: unboxingKitStartRef, hasPassed: isPastHero } = useScrollPassed<HTMLDivElement>({
     offset: TOP_BAR_HEIGHT,
@@ -120,9 +138,36 @@ export default function ResultPage() {
     close();
   };
 
+  // 친구 링크로 들어와 테스트를 마친 경우, 두 결과 코드로 케미를 바로 볼 수 있다.
+  const handleViewChemi = async () => {
+    if (!id || !friendCode || checkingChemi) return;
+
+    setCheckingChemi(true);
+    try {
+      // 케미 조회가 성공한 뒤에만 이동한다. 캐시에 담아두면 이동 직후 바로 렌더된다.
+      await queryClient.fetchQuery({
+        queryKey: compatibilityQueryKey(id, friendCode),
+        queryFn: () => getCompatibility(id, friendCode),
+      });
+      trackEvent({
+        ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
+        label: "결과지_케미보러가기버튼",
+      });
+      navigate(
+        `/compatibility?mine=${encodeURIComponent(id)}&friend=${encodeURIComponent(friendCode)}`,
+      );
+    } catch {
+      openToast("케미 결과를 불러오지 못했어요. 잠시 후 다시 시도해주세요");
+    } finally {
+      setCheckingChemi(false);
+    }
+  };
+
   const handleStickyButtonClick = () => {
-    // TODO(공유 flow): friend 코드로 진입했을 때의 '케미 보러가기' 동작은 아직 미정
-    if (friendNickname) return;
+    if (friendNickname) {
+      void handleViewChemi();
+      return;
+    }
 
     trackEvent(GA_EVENTS.RESULT.CHEMI_TEST_OPEN);
     open({
@@ -180,9 +225,10 @@ export default function ResultPage() {
             <Button
               variant="solid"
               className="w-full rounded-[10px]"
+              disabled={checkingChemi}
               onClick={handleStickyButtonClick}
             >
-              {stickyButtonLabel}
+              {checkingChemi ? <Spinner className="size-6" /> : stickyButtonLabel}
             </Button>
           </div>
         </div>
