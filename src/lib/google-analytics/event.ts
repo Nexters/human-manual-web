@@ -111,5 +111,10 @@ export const GA_EVENTS = {
       category: "compatibility",
       label: "궁합페이지_결과지공유",
     },
+    RESULT_SAVE: {
+      action: "compatibility_result_save",
+      category: "compatibility",
+      label: "궁합페이지_이미지저장",
+    },
   },
 } as const;
