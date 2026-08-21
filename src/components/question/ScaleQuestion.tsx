@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Typography from "@/components/shared/Typography";
 import { CONSTRAINTS } from "@/constants/assessment";
 import { cn } from "@/lib/cn";
@@ -16,6 +17,10 @@ const ScaleQuestion = ({ questionId, minLabel, maxLabel, value, onChange }: Scal
   const constraint = CONSTRAINTS[questionId] ?? { minimum: 0, maximum: 100, step: 1 };
   const current = value ?? constraint.minimum;
   const ratio = (current - constraint.minimum) / (constraint.maximum - constraint.minimum);
+
+  useEffect(() => {
+    if (value === undefined) onChange(constraint.minimum);
+  }, [value, constraint.minimum, onChange]);
 
   const thumbCenter = `calc((100% - ${THUMB_SIZE}px) * ${ratio} + ${THUMB_SIZE / 2}px)`;
 
