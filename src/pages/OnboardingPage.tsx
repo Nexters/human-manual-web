@@ -13,6 +13,7 @@ import {
   questionPreloadImages,
   unboxingPreloadImages,
   resultPreloadImages,
+  compatibilityPreloadImages,
 } from "@/constants/appPreloadAssets";
 import { useImagePreload } from "@/hooks/useImagePreload";
 import { useImagesReady } from "@/hooks/useImagesReady";
@@ -42,6 +43,7 @@ const firstScreenPreloadImages = [
   ...questionPreloadImages,
   ...unboxingPreloadImages,
   ...resultPreloadImages,
+  ...compatibilityPreloadImages,
 ];
 
 export default function OnboardingPage() {

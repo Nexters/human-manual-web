@@ -5,6 +5,7 @@ import roomBg from "@/assets/img/backgrounds/room-bg.png";
 import resultCheckIcon from "@/assets/img/result/check.png";
 import resultErrorIcon from "@/assets/img/result/error.png";
 import resultChargeImg from "@/assets/img/result/charge/charge.png";
+import { DETAIL_CONTENT } from "@/components/compatibility/detailAnalysisContent";
 
 // public/assets 는 Vite 모듈 그래프 밖(정적 서빙)이라 questionAsset/characterAsset로 만든
 // 경로 문자열을 직접 나열해야 한다. public/assets/question, public/assets/character에
@@ -50,3 +51,7 @@ export const questionPreloadImages: string[] = [
 export const unboxingPreloadImages = [unboxingClosedGif, deliveryBunnyGif, roomBg];
 
 export const resultPreloadImages = [resultCheckIcon, resultErrorIcon, resultChargeImg];
+
+export const compatibilityPreloadImages = Object.values(DETAIL_CONTENT).map(
+  (content) => content.icon,
+);

@@ -1,26 +1,29 @@
 import Typography from "@/components/shared/Typography";
 
 type DetailAnalysisCardProps = {
-  index: number;
-  title: string;
+  icon: string;
+  titleBefore: string;
+  titleHighlight: string;
+  titleAfter: string;
   description: string;
 };
 
-export default function DetailAnalysisCard({ index, title, description }: DetailAnalysisCardProps) {
+export default function DetailAnalysisCard({
+  icon,
+  titleBefore,
+  titleHighlight,
+  titleAfter,
+  description,
+}: DetailAnalysisCardProps) {
   return (
-    <div className="flex flex-col gap-3 rounded-[10px] bg-white p-5">
-      <div className="flex items-center gap-3">
-        <span
-          className="bg-sub-5 text-sub-4 flex size-7 shrink-0 items-center justify-center rounded-full text-[16px]"
-          style={{ fontFamily: "'ThePosterFont', var(--font-sans)" }}
-        >
-          {String(index).padStart(2, "0")}
-        </span>
-        <Typography variant="h3" className="text-gray-09">
-          {title}
-        </Typography>
-      </div>
-      <Typography variant="me3" className="text-gray-07">
+    <div className="flex flex-col gap-2 rounded-[10px] bg-white p-5">
+      <img src={icon} alt="" className="size-[60px] object-contain" />
+      <Typography variant="sb4" className="text-gray-09 font-bold break-keep">
+        {titleBefore}
+        <span className="text-main">{titleHighlight}</span>
+        {titleAfter}
+      </Typography>
+      <Typography variant="me3" className="text-gray-07 break-keep">
         {description}
       </Typography>
     </div>
