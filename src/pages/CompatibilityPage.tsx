@@ -9,19 +9,21 @@ import LongTermTipCard from "@/components/compatibility/LongTermTipCard";
 import CompatibilityActionBar from "@/components/compatibility/CompatibilityActionBar";
 import { useCompatibility } from "@/hooks/useCompatibility";
 import { share } from "@/utils/share";
+import { takeResultCode } from "@/lib/resultCode";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
 
 export default function CompatibilityPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const mine = searchParams.get("mine") ?? "";
-  const friend = searchParams.get("friend") ?? "";
+  // 공유 시트에서 복사한 값은 링크 뒤에 설명 문구가 눌러붙어 오므로, 코드만 떼어내 쓴다.
+  const mine = takeResultCode(searchParams.get("mine")) ?? "";
+  const friend = takeResultCode(searchParams.get("friend")) ?? "";
 
   const { data, isLoading, isError } = useCompatibility(mine, friend);
 
   const topBar = (
-    <TopBar title="친구와의 궁합" onBack={() => navigate(-1)} className="bg-gray-00" />
+    <TopBar title="친구와의 케미" onBack={() => navigate(-1)} className="bg-gray-00" />
   );
 
   if (!mine || !friend) {
@@ -48,7 +50,7 @@ export default function CompatibilityPage() {
         {topBar}
         <div className="flex flex-1 items-center justify-center px-5 text-center">
           <Typography variant="me2" className="text-gray-07">
-            궁합 정보를 불러오지 못했어요. 잠시 후 다시 시도해주세요.
+            케미 정보를 불러오지 못했어요. 잠시 후 다시 시도해주세요.
           </Typography>
         </div>
       </div>

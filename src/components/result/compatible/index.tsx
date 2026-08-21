@@ -15,7 +15,7 @@ export default function Compatible({ compatibleFriends }: CompatibleProps) {
   return (
     <div className="flex flex-col gap-6 px-5 py-8">
       {/* ----- 상단 타이틀 섹션 ----- */}
-      <SectionTitle title="COMPATIBLE" subtitle="나와 잘 맞는 친구 궁합" />
+      <SectionTitle title="COMPATIBLE" subtitle="나와 잘 맞는 친구 케미" />
 
       {/* ----- 캐릭터 카드 UI ----- */}
       <div className="grid grid-cols-2 gap-3">

@@ -11,6 +11,7 @@ import { introOrder, introPreloadImages, type IntroKey } from "@/components/onbo
 import { useImagePreload } from "@/hooks/useImagePreload";
 import { useImagesReady } from "@/hooks/useImagesReady";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
+import { useFriendCode } from "@/hooks/useFriendCode";
 import { useModal } from "@/hooks/useModal";
 import { findFirstIncompleteOrder, useTestStore } from "@/stores/testStore";
 import { trackEvent } from "@/lib/google-analytics";
@@ -29,7 +30,11 @@ export default function OnboardingPage() {
   // URL의 friend 값을 덮어쓰는 useFriendNavigate를 거치지 않는다.
   const navigateToCompatibility = useNavigate();
   const [searchParams] = useSearchParams();
-  const friendCode = searchParams.get("friend");
+  // 링크로 받은 친구 코드. 형식이 깨진 값은 없는 것으로 취급한다.
+  const friendCode = useFriendCode();
+  // 친구 코드를 물고 온 링크인데 코드를 건지지 못한 경우에도, 빈손으로 온 사람과 같은
+  // 두 칸 입력 팝업을 띄워준다.
+  const hasUnusableFriendParam = searchParams.get("friend") !== null && friendCode === null;
   const { open, close } = useModal();
   const hasAutoOpenedFriendModal = useRef(false);
 
@@ -64,42 +69,7 @@ export default function OnboardingPage() {
     return () => clearTimeout(timer);
   }, [step, splashReady]);
 
-  // 친구 코드를 물고 들어온 경우, 스플래시 CTA 화면의 페이드인이 끝난 뒤 안내 팝업을 띄운다.
-  useEffect(() => {
-    if (step !== "splash-cta" || !friendCode || hasAutoOpenedFriendModal.current) return;
-    hasAutoOpenedFriendModal.current = true;
-
-    const timer = setTimeout(() => {
-      open({
-        title: "지금 바로 테스트하기",
-        contents: (
-          <FriendCodeModal
-            onStartTest={() => {
-              close();
-              handleStartTest("친구초대유입");
-            }}
-            onCheckCode={(myCode) => {
-              close();
-              trackEvent({
-                ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
-                label: "친구코드팝업_확인버튼",
-              });
-              navigateToCompatibility(
-                `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(friendCode)}`,
-              );
-            }}
-          />
-        ),
-      });
-    }, 600);
-
-    return () => clearTimeout(timer);
-  }, [step, friendCode, open, close, navigateToCompatibility, handleStartTest]);
-
-  // 인트로/이름입력 스텝의 배경·캐릭터 이미지를 스플래시 노출 시간 동안 미리 받아둔다.
-  useImagePreload(onboardingPreloadImages);
-
-  const openTestStartModal = () => {
+  const openTestStartModal = useCallback(() => {
     open({
       title: "지금 바로 테스트하기",
       contents: (
@@ -122,7 +92,53 @@ export default function OnboardingPage() {
         />
       ),
     });
-  };
+  }, [open, close, friendCode, handleStartTest, navigateToCompatibility]);
+
+  const openFriendCodeModal = useCallback(
+    (code: string) => {
+      open({
+        title: "지금 바로 테스트하기",
+        contents: (
+          <FriendCodeModal
+            friendCode={code}
+            onStartTest={() => {
+              close();
+              handleStartTest("친구초대유입");
+            }}
+            onCheckCode={(myCode) => {
+              close();
+              trackEvent({
+                ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
+                label: "친구코드팝업_확인버튼",
+              });
+              navigateToCompatibility(
+                `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(code)}`,
+              );
+            }}
+          />
+        ),
+      });
+    },
+    [open, close, handleStartTest, navigateToCompatibility],
+  );
+
+  // 링크로 들어온 경우, 스플래시 CTA 화면의 페이드인이 끝난 뒤 안내 팝업을 띄운다.
+  // 쓸 수 있는 친구 코드가 있으면 내 코드만 받고, 없으면 두 코드를 모두 받는다.
+  useEffect(() => {
+    if (step !== "splash-cta" || hasAutoOpenedFriendModal.current) return;
+    if (!friendCode && !hasUnusableFriendParam) return;
+    hasAutoOpenedFriendModal.current = true;
+
+    const timer = setTimeout(() => {
+      if (friendCode) openFriendCodeModal(friendCode);
+      else openTestStartModal();
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [step, friendCode, hasUnusableFriendParam, openFriendCodeModal, openTestStartModal]);
+
+  // 인트로/이름입력 스텝의 배경·캐릭터 이미지를 스플래시 노출 시간 동안 미리 받아둔다.
+  useImagePreload(onboardingPreloadImages);
 
   if (!splashReady) {
     return <div className="min-h-dvh bg-white" />;

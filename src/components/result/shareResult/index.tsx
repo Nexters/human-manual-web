@@ -31,8 +31,8 @@ export default function ShareResult({ actionButtonMarkerRef }: ShareResultProps)
   };
 
   const handleCopyLink = async () => {
-    const url = new URL("/", window.location.origin);
-    url.searchParams.set("friend", inviteCode);
+    // 결과 코드가 경로에 담긴 실제 결과지 링크를 복사한다.
+    const url = new URL(`/result/${inviteCode}`, window.location.origin);
 
     try {
       await navigator.clipboard.writeText(url.toString());
@@ -75,10 +75,10 @@ export default function ShareResult({ actionButtonMarkerRef }: ShareResultProps)
 
         <div className="flex flex-col gap-1">
           <Typography variant="sb3" className="text-gray-09">
-            친구에게 궁합 공유하기
+            친구에게 공유하고 케미확인하기
           </Typography>
           <Typography variant="me3" className="text-gray-05">
-            링크를 보내면 친구가 바로 궁합을 볼 수 있어요
+            링크를 보내면 친구가 바로 케미를 확인할 수 있어요.
           </Typography>
         </div>
 

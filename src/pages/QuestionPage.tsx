@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, useParams, useSearchParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import ActionQuestion from "@/components/question/ActionQuestion";
 import CarouselChoiceQuestion from "@/components/question/CarouselChoiceQuestion";
 import ChoiceQuestion from "@/components/question/ChoiceQuestion";
@@ -14,6 +14,7 @@ import { fillNickname, getQuestion, TOTAL_STEPS } from "@/constants/questions";
 import { submitAssessment } from "@/api/assessment";
 import { buildSubmission, SubmissionValidationError } from "@/api/submission";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
+import { useFriendCode } from "@/hooks/useFriendCode";
 import { appendFriendParam } from "@/lib/friendParam";
 import {
   canEnterOrder,
@@ -33,8 +34,7 @@ const parseOrder = (raw: string | undefined): number | null => {
 const QuestionPage = () => {
   const { number } = useParams();
   const navigate = useFriendNavigate();
-  const [searchParams] = useSearchParams();
-  const friendCode = searchParams.get("friend");
+  const friendCode = useFriendCode();
 
   const nickname = useTestStore((state) => state.nickname);
   const answers = useTestStore((state) => state.answers);
