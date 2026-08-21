@@ -2,6 +2,7 @@ import { useState, type PointerEvent as ReactPointerEvent } from "react";
 import CarouselArrow from "@/components/question/CarouselArrow";
 import SpeechBubble from "@/components/question/SpeechBubble";
 import AssetImage from "@/components/shared/AssetImage";
+import Typography from "@/components/shared/Typography";
 import { characterAsset } from "@/constants/assets";
 import type { CarouselOption } from "@/constants/questions";
 import { cn } from "@/lib/cn";
@@ -75,6 +76,9 @@ const CarouselChoiceQuestion = ({ options, index, onIndexChange }: CarouselChoic
               alt={active.name}
               className="pointer-events-none mt-[21px] h-[280px] w-[250px]"
             />
+            <Typography variant="h2" className="mt-[5px] text-black">
+              {active.name}
+            </Typography>
           </div>
         </div>
 

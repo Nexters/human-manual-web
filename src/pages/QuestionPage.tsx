@@ -213,7 +213,7 @@ const QuestionPage = () => {
             goNext();
           }}
         >
-          {active.name}
+          이 토키로 결정!
         </QuestionCtaButton>
       );
     }
