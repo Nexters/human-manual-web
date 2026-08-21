@@ -1,4 +1,5 @@
 import SkeletonBox from "@/components/result/skeleton/SkeletonBox";
+import { useInitialViewportHeight } from "@/hooks/useInitialViewportHeight";
 
 const TAG_POSITIONS = [
   "absolute top-[2%] right-[2%]",
@@ -7,8 +8,15 @@ const TAG_POSITIONS = [
 ] as const;
 
 export default function HeroSkeleton() {
+  // Hero(index.tsx)와 동일한 이유로 마운트 시점 높이를 고정 px로 써서,
+  // 실제 Hero로 전환될 때 레이아웃이 어긋나지 않도록 같은 방식을 맞춘다.
+  const viewportHeight = useInitialViewportHeight();
+
   return (
-    <section className="relative w-full min-h-svh overflow-hidden bg-gray-01">
+    <section
+      className="relative w-full overflow-hidden bg-gray-01"
+      style={{ minHeight: viewportHeight }}
+    >
       <div className="h-[60px]" />
 
       {/* ----- 상단 배지 & 타이틀 자리 ----- */}
