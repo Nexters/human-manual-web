@@ -158,25 +158,31 @@ export default function ShareResult({
 
       {/* ------- 케미 없이 결과만 보낼 때 쓰는 보조 수단 ------ */}
       <div className="flex w-full flex-col gap-4 rounded-[20px] bg-white p-5">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <Typography variant="me3" className="text-gray-05">
-              {ownerLabel} 코드
-            </Typography>
-            <Typography variant="sb3" className="text-gray-09">
-              {inviteCode}
-            </Typography>
+        {/* 로그인이 없어 이 코드가 결과지에 닿는 유일한 열쇠다. 잃으면 되찾을 방법이 없다. */}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <Typography variant="me3" className="text-gray-05">
+                {ownerLabel} 코드
+              </Typography>
+              <Typography variant="sb3" className="text-gray-09">
+                {inviteCode}
+              </Typography>
+            </div>
+            <button
+              type="button"
+              onClick={handleCopyCode}
+              className="flex shrink-0 items-center gap-1"
+            >
+              <CopyIcon className="size-4 text-gray-05" />
+              <Typography variant="me3" className="text-gray-05">
+                복사
+              </Typography>
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={handleCopyCode}
-            className="flex shrink-0 items-center gap-1"
-          >
-            <CopyIcon className="size-4 text-gray-05" />
-            <Typography variant="me3" className="text-gray-05">
-              복사
-            </Typography>
-          </button>
+          <Typography variant="me4" className="text-gray-04 break-keep">
+            복사해두면 나중에 이 결과를 다시 볼 수 있어요
+          </Typography>
         </div>
 
         <hr className="border-t border-gray-02" />
