@@ -35,7 +35,7 @@ export default function SplashScreen({ phase, onStart, onCheckCompatibility }: S
           <div className="mt-auto flex flex-col gap-3 px-5 pb-10">
             <Button onClick={onStart}>테스트 시작하기</Button>
             <Button variant="outline" onClick={onCheckCompatibility}>
-              친구와의 궁합보기
+              친구와의 케미보기
             </Button>
           </div>
         </motion.div>
