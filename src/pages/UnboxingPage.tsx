@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import DeliveryStep from "@/components/unboxing/DeliveryStep";
 import UnboxingStep from "@/components/unboxing/UnboxingStep";
-import { getClosedBoxAsset } from "@/components/unboxing/unboxingAssets";
+import { getClosedBoxDurationMs } from "@/components/unboxing/unboxingAssets";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useTestStore } from "@/stores/testStore";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
-import { getGifDurationMs } from "@/lib/gifDuration";
 
 type Step = "delivery-loading" | "delivery-done" | "unboxing-loading" | "unboxing-done";
 
@@ -35,19 +34,11 @@ export default function UnboxingPage() {
 
   useEffect(() => {
     if (step !== "unboxing-loading") return;
-    let cancelled = false;
-    // 조합별 gif마다 실제 재생 길이가 달라, 짧은 gif가 고정 대기 시간 동안 두 번 재생되는 문제를 막기 위해
-    // 파일의 실제 재생 길이를 읽어와 그만큼만 대기한다.
-    const closedGifSrc = getClosedBoxAsset(packagingType, openingToolType);
-    getGifDurationMs(closedGifSrc).then((duration) => {
-      if (cancelled) return;
-      setTimeout(() => {
-        if (!cancelled) setStep("unboxing-done");
-      }, duration);
-    });
-    return () => {
-      cancelled = true;
-    };
+    // 조합별 gif마다 실제 재생 길이가 달라, 고정 대기 시간 동안 짧은 gif가 두 번 재생되는 문제를 막기 위해
+    // 미리 계산해둔 gif 실제 재생 길이만큼만 대기한다(값은 unboxingAssets.ts에 하드코딩).
+    const duration = getClosedBoxDurationMs(packagingType, openingToolType);
+    const timer = setTimeout(() => setStep("unboxing-done"), duration);
+    return () => clearTimeout(timer);
   }, [step, packagingType, openingToolType]);
 
   if (!resultCode) return null;
