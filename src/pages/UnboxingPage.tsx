@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DeliveryStep from "@/components/unboxing/DeliveryStep";
 import UnboxingStep from "@/components/unboxing/UnboxingStep";
-import { getClosedBoxDurationMs } from "@/components/unboxing/unboxingAssets";
+import {
+  getClosedBoxAsset,
+  getClosedBoxDurationMs,
+  getOpenBoxAsset,
+} from "@/components/unboxing/unboxingAssets";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useAssessmentResult } from "@/hooks/useAssessment";
+import { useImagePreload } from "@/hooks/useImagePreload";
 import { useTestStore } from "@/stores/testStore";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
@@ -21,6 +26,16 @@ export default function UnboxingPage() {
   const { data } = useAssessmentResult(resultCode ?? "");
   const packagingType = data?.unboxing_kit.packaging.type;
   const openingToolType = data?.unboxing_kit.opening_tool.type;
+
+  // 조합이 정해지는 즉시(배송 연출 중) 이 사람의 gif·이미지만 미리 받아둔다.
+  // 16개 조합을 다 받으면 트래픽이 너무 커서, 실제로 보게 될 1쌍만 고른다.
+  const comboPreloadImages = useMemo(() => {
+    if (!packagingType || !openingToolType) return [];
+    const closed = getClosedBoxAsset(packagingType, openingToolType);
+    const open = getOpenBoxAsset(packagingType, openingToolType);
+    return open ? [closed, open] : [closed];
+  }, [packagingType, openingToolType]);
+  useImagePreload(comboPreloadImages);
 
   useEffect(() => {
     if (!resultCode) navigate("/", { replace: true });
