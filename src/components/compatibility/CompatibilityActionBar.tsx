@@ -6,12 +6,14 @@ import { cn } from "@/lib/cn";
 type CompatibilityActionBarProps = {
   onSave?: () => void;
   onShare?: () => void;
+  saveDisabled?: boolean;
   className?: string;
 };
 
 export default function CompatibilityActionBar({
   onSave,
   onShare,
+  saveDisabled,
   className,
 }: CompatibilityActionBarProps) {
   return (
@@ -24,11 +26,12 @@ export default function CompatibilityActionBar({
       <button
         type="button"
         onClick={onSave}
-        className="bg-main inline-flex h-[54px] flex-1 items-center justify-center gap-2 rounded-[15px] text-white transition-opacity hover:opacity-90 active:opacity-80"
+        disabled={saveDisabled}
+        className="bg-main inline-flex h-[54px] flex-1 items-center justify-center gap-2 rounded-[15px] text-white transition-opacity hover:opacity-90 active:opacity-80 disabled:opacity-60"
       >
         <DownloadIcon className="size-6" />
         <Typography variant="sb3" as="span">
-          이미지 저장
+          {saveDisabled ? "저장 중..." : "이미지 저장"}
         </Typography>
       </button>
       <button

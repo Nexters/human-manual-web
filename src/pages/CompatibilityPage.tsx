@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import TopBar from "@/components/shared/TopBar";
 import InfoCard from "@/components/shared/InfoCard";
@@ -9,22 +10,35 @@ import LongTermTipCard from "@/components/compatibility/LongTermTipCard";
 import CompatibilityActionBar from "@/components/compatibility/CompatibilityActionBar";
 import { useCompatibility } from "@/hooks/useCompatibility";
 import { share } from "@/utils/share";
+import { saveElementAsImage } from "@/utils/captureImage";
 import { takeResultCode } from "@/lib/resultCode";
+import { useToast } from "@/hooks/useToast";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
 
 export default function CompatibilityPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { open: openToast } = useToast();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [isSaving, setIsSaving] = useState(false);
   // 공유 시트에서 복사한 값은 링크 뒤에 설명 문구가 눌러붙어 오므로, 코드만 떼어내 쓴다.
   const mine = takeResultCode(searchParams.get("mine")) ?? "";
   const friend = takeResultCode(searchParams.get("friend")) ?? "";
 
   const { data, isLoading, isError } = useCompatibility(mine, friend);
 
-  const topBar = (
-    <TopBar title="친구와의 케미" onBack={() => navigate(-1)} className="bg-gray-00" />
-  );
+  // 친구 초대 링크로 바로 들어온 경우 앱 안에 쌓인 히스토리가 없어, 뒤로가기가
+  // 앱 밖(원래 있던 카톡 등)으로 나가버린다. 그럴 땐 온보딩으로 보낸다.
+  const handleBack = () => {
+    if (window.history.state?.idx > 0) {
+      navigate(-1);
+      return;
+    }
+    navigate("/");
+  };
+
+  const topBar = <TopBar title="친구와의 케미" onBack={handleBack} className="bg-gray-00" />;
 
   if (!mine || !friend) {
     return (
@@ -66,11 +80,28 @@ export default function CompatibilityPage() {
     });
   };
 
+  const handleSave = async () => {
+    if (!contentRef.current || isSaving) return;
+
+    trackEvent(GA_EVENTS.COMPATIBILITY.RESULT_SAVE);
+    setIsSaving(true);
+    try {
+      await saveElementAsImage(
+        contentRef.current,
+        `${data.mine.nickname}-${data.friend.nickname}-케미.png`,
+      );
+    } catch {
+      openToast("이미지 저장에 실패했어요. 잠시 후 다시 시도해주세요");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="bg-gray-00 flex min-h-dvh flex-col">
       {topBar}
 
-      <div className="flex flex-1 flex-col gap-8 px-5 pt-[54px] pb-8">
+      <div ref={contentRef} className="flex flex-1 flex-col gap-8 bg-gray-00 px-5 pt-[54px] pb-8">
         <div className="flex justify-center gap-2">
           <MatchupProfileCard
             name={`${data.mine.noun} ${data.mine.nickname}`}
@@ -142,7 +173,11 @@ export default function CompatibilityPage() {
         />
       </div>
 
-      <CompatibilityActionBar onSave={() => {}} onShare={handleShare} />
+      <CompatibilityActionBar
+        onSave={() => void handleSave()}
+        onShare={handleShare}
+        saveDisabled={isSaving}
+      />
     </div>
   );
 }
