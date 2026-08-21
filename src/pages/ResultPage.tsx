@@ -38,7 +38,6 @@ export default function ResultPage() {
   const queryClient = useQueryClient();
   const urlFriendCode = useFriendCode();
   const rememberedFriendCode = useFriendStore((state) => state.friendCode);
-  const nickname = useTestStore((state) => state.nickname);
   const myResultCode = useTestStore((state) => state.resultCode);
 
   // URL 을 잃어도 친구를 알아봐야 하지만, 남의 결과지를 열었을 때 내 친구가 따라붙으면 안 된다.
@@ -99,7 +98,10 @@ export default function ResultPage() {
     charging,
     compatible_friends,
   } = data;
-  const heroTitle = nickname ? `${overview.noun} ${nickname}` : overview.noun;
+  // 닉네임은 이 결과지의 주인 것을 쓴다. 내 스토어 값을 쓰면 남의 결과지를 열었을 때
+  // 남의 캐릭터에 내 이름이 붙는다.
+  const resultNickname = data.participant.nickname;
+  const heroTitle = resultNickname ? `${overview.noun} ${resultNickname}` : overview.noun;
   const friendNickname = friendCode ? friendData?.participant.nickname : undefined;
   const stickyButtonLabel = friendNickname
     ? `${friendNickname}님과의 케미 보러가기`

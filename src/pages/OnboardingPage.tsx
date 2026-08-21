@@ -5,7 +5,6 @@ import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
 import IntroStep from "@/components/onboarding/IntroStep";
 import PartIntroStep from "@/components/onboarding/PartIntroStep";
-import FriendCodeModal from "@/components/onboarding/FriendCodeModal";
 import TestStartModal from "@/components/onboarding/TestStartModal";
 import { introOrder, introPreloadImages, type IntroKey } from "@/components/onboarding/introSteps";
 import { useImagePreload } from "@/hooks/useImagePreload";
@@ -20,7 +19,7 @@ import notebookBg from "@/assets/img/notebook-bg.jpg";
 import partIntroBg from "@/assets/img/part-intro-bg.jpg";
 import characterNotebook from "@/assets/gif/character-notebook.gif";
 
-type Step = "splash-logo" | "splash-cta" | IntroKey | "name-input" | "part-intro";
+type Step = "splash-cta" | IntroKey | "name-input" | "part-intro";
 
 const onboardingPreloadImages = [...introPreloadImages, notebookBg, partIntroBg, characterNotebook];
 
@@ -44,7 +43,7 @@ export default function OnboardingPage() {
   const setNickname = useTestStore((state) => state.setNickname);
   const resetTest = useTestStore((state) => state.reset);
 
-  const [step, setStep] = useState<Step>("splash-logo");
+  const [step, setStep] = useState<Step>("splash-cta");
   const [name, setName] = useState(nickname);
 
   // 스플래시 자체 이미지가 다 로드될 때까지는 깨진 이미지가 보이지 않도록 렌더링을 미룬다.
@@ -66,13 +65,11 @@ export default function OnboardingPage() {
     [resetTest],
   );
 
-  useEffect(() => {
-    if (step !== "splash-logo" || !splashReady) return;
-    const timer = setTimeout(() => setStep("splash-cta"), 2000);
-    return () => clearTimeout(timer);
-  }, [step, splashReady]);
-
   const openTestStartModal = useCallback(() => {
+    // 친구 코드를 물고 들어왔는지에 따라 유입 경로가 다르다. 수집 데이터의 연속성을 위해
+    // 1input 팝업이 쓰던 라벨을 그대로 이어 쓴다.
+    const enteredWithFriendCode = friendCode !== null;
+
     open({
       title: "지금 바로 테스트하기",
       contents: (
@@ -80,13 +77,13 @@ export default function OnboardingPage() {
           initialFriendCode={friendCode ?? undefined}
           onStartTest={() => {
             close();
-            handleStartTest("궁합유입");
+            handleStartTest(enteredWithFriendCode ? "친구초대유입" : "궁합유입");
           }}
           onCheckCompatibility={(myCode, friendCodeInput) => {
             close();
             trackEvent({
               ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
-              label: "궁합팝업_케미결과확인버튼",
+              label: enteredWithFriendCode ? "친구코드팝업_확인버튼" : "궁합팝업_케미결과확인버튼",
             });
             navigateToCompatibility(
               `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(friendCodeInput)}`,
@@ -97,64 +94,28 @@ export default function OnboardingPage() {
     });
   }, [open, close, friendCode, handleStartTest, navigateToCompatibility]);
 
-  const openFriendCodeModal = useCallback(
-    (code: string) => {
-      open({
-        title: "지금 바로 테스트하기",
-        contents: (
-          <FriendCodeModal
-            friendCode={code}
-            onStartTest={() => {
-              close();
-              handleStartTest("친구초대유입");
-            }}
-            onCheckCode={(myCode) => {
-              close();
-              trackEvent({
-                ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
-                label: "친구코드팝업_확인버튼",
-              });
-              navigateToCompatibility(
-                `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(code)}`,
-              );
-            }}
-          />
-        ),
-      });
-    },
-    [open, close, handleStartTest, navigateToCompatibility],
-  );
-
   // 링크로 들어온 경우, 스플래시 CTA 화면의 페이드인이 끝난 뒤 안내 팝업을 띄운다.
-  // 쓸 수 있는 친구 코드가 있으면 내 코드만 받고, 없으면 두 코드를 모두 받는다.
+  // 친구 코드를 건졌든 못 건졌든 같은 팝업이다. 링크로 받은 코드는 친구 코드 칸에 채워져
+  // 화면에 그대로 보이고, 내 코드와 같은 값은 버튼이 눌리지 않는다.
   useEffect(() => {
     if (step !== "splash-cta" || hasAutoOpenedFriendModal.current) return;
     if (!friendCode && !hasUnusableFriendParam) return;
     hasAutoOpenedFriendModal.current = true;
 
-    const timer = setTimeout(() => {
-      if (friendCode) openFriendCodeModal(friendCode);
-      else openTestStartModal();
-    }, 600);
+    const timer = setTimeout(openTestStartModal, 600);
 
     return () => clearTimeout(timer);
-  }, [step, friendCode, hasUnusableFriendParam, openFriendCodeModal, openTestStartModal]);
+  }, [step, friendCode, hasUnusableFriendParam, openTestStartModal]);
 
-  // 인트로/이름입력 스텝의 배경·캐릭터 이미지를 스플래시 노출 시간 동안 미리 받아둔다.
+  // 인트로/이름입력 스텝의 배경·캐릭터 이미지를 첫 화면(스플래시 CTA) 노출 동안 미리 받아둔다.
   useImagePreload(onboardingPreloadImages);
 
   if (!splashReady) {
     return <div className="min-h-dvh bg-white" />;
   }
 
-  if (step === "splash-logo" || step === "splash-cta") {
-    return (
-      <SplashScreen
-        phase={step === "splash-logo" ? "logo" : "cta"}
-        onStart={() => handleStartTest("일반")}
-        onCheckCompatibility={openTestStartModal}
-      />
-    );
+  if (step === "splash-cta") {
+    return <SplashScreen onStart={() => handleStartTest("일반")} onCheckCompatibility={openTestStartModal} />;
   }
 
   if (step === "name-input") {

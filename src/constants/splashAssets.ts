@@ -1,4 +1,4 @@
 import logo from "@/assets/img/logo.png";
-import splashBunny from "@/assets/img/splash-bunny.png";
+import splashBlocks from "@/assets/img/splash-blocks.png";
 
-export const splashImages = [logo, splashBunny];
+export const splashImages = [logo, splashBlocks];
