@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import resultBg from "@/assets/img/backgrounds/room-bg.png";
 import Typography from "@/components/shared/Typography";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
@@ -29,21 +30,26 @@ export default function Hero({
   imageUrl,
   isTopBarDark = false,
 }: HeroProps) {
-  const navigate = useFriendNavigate();
+  const navigate = useNavigate();
+  const navigateWithFriend = useFriendNavigate();
   // 카카오톡 인앱 브라우저는 스크롤 중 상단바가 나타났다 사라지며 svh/lvh/dvh
   // 값이 실시간 재계산될 수 있어, 그 안의 배경/캐릭터(% 기준 배치)가 함께
   // 흔들린다. 마운트 시점의 높이를 한 번만 측정해 고정 px로 써서 이를 막는다.
   const viewportHeight = useInitialViewportHeight();
 
+  // 케미 페이지에서 "자세히 보기" 로 넘어온 경우처럼 앱 안에 히스토리가 쌓여 있으면
+  // 온 곳으로 돌려보낸다. 링크로 바로 들어와 히스토리가 없을 때만 온보딩으로 보낸다
+  // (그대로 뒤로 가면 앱 밖으로 나간다).
   const handleBack = () => {
-    navigate("/");
+    if (window.history.state?.idx > 0) {
+      navigate(-1);
+      return;
+    }
+    navigateWithFriend("/");
   };
 
   return (
-    <section
-      className="relative w-full overflow-hidden"
-      style={{ minHeight: viewportHeight }}
-    >
+    <section className="relative w-full overflow-hidden" style={{ minHeight: viewportHeight }}>
       <img
         src={resultBg}
         alt=""
