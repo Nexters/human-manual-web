@@ -165,6 +165,7 @@ export default function OnboardingPage() {
           friendNoun={friendPreview.overview.noun}
           friendImageUrl={friendPreview.overview.image_url}
           onStart={() => handleStartTest("친구초대유입")}
+          onCheckExistingCode={openTestStartModal}
         />
       );
     }

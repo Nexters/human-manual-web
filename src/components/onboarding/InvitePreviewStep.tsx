@@ -8,6 +8,7 @@ type InvitePreviewStepProps = {
   friendNoun: string;
   friendImageUrl: string;
   onStart: () => void;
+  onCheckExistingCode: () => void;
 };
 
 export default function InvitePreviewStep({
@@ -15,6 +16,7 @@ export default function InvitePreviewStep({
   friendNoun,
   friendImageUrl,
   onStart,
+  onCheckExistingCode,
 }: InvitePreviewStepProps) {
   const previewItems = [
     "나를 닮은 장난감과 내 사용설명서",
@@ -103,6 +105,11 @@ export default function InvitePreviewStep({
         <Typography variant="me2" className="text-gray-05">
           가입 없이 3분이면 충분해요
         </Typography>
+        <button type="button" onClick={onCheckExistingCode} className="mt-2">
+          <Typography variant="sb4" className="text-gray-06 underline">
+            이미 테스트해서 코드가 있어요
+          </Typography>
+        </button>
       </div>
     </div>
   );
