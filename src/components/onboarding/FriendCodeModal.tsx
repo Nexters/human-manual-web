@@ -110,7 +110,7 @@ export default function FriendCodeModal({
               className={cn(
                 "flex h-14 w-[82px] shrink-0 items-center justify-center rounded-[10px] transition-colors",
                 // 입력 전에는 회색, 코드를 입력하면 눌릴 수 있다는 걸 색으로 알린다.
-                canCheck ? "bg-main text-white" : "bg-gray-02 text-gray-07",
+                canCheck ? "bg-sub-4 text-white" : "bg-gray-02 text-gray-07",
               )}
             >
               {checking ? (
