@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useParams, useSearchParams } from "react-router-dom";
 import ActionQuestion from "@/components/question/ActionQuestion";
 import CarouselChoiceQuestion from "@/components/question/CarouselChoiceQuestion";
@@ -56,6 +56,11 @@ const QuestionPage = () => {
 
   const pressed =
     question?.kind === "action" && answers[question.questionId] === question.pressValue;
+
+  useEffect(() => {
+    if (order === null || !question) return;
+    trackEvent({ ...GA_EVENTS.QUESTION.VIEW, label: `${order}번_문항` });
+  }, [order, question]);
 
   if (!nickname) {
     return <Navigate to={appendFriendParam("/", friendCode)} replace />;
