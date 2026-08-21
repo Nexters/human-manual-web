@@ -20,14 +20,14 @@ export default function Compatible({ compatibleFriends }: CompatibleProps) {
       {/* ----- 캐릭터 카드 UI ----- */}
       <div className="grid grid-cols-2 gap-3">
         {compatibleFriends.map((friend, index) => (
-          <div key={friend.character_id} className="flex flex-col items-center">
+          <div key={friend.character_id} className="flex h-full flex-col items-center">
             <Chip
               variant="me2"
               className={cn("z-10 -mb-[17px]", BADGE_COLORS[index % BADGE_COLORS.length])}
             >
               {friend.badge}
             </Chip>
-            <div className="flex w-full flex-col items-center gap-3 rounded-[10px] bg-white pt-8 pb-6">
+            <div className="flex w-full flex-1 flex-col items-center gap-3 rounded-[10px] bg-white pt-8 pb-6">
               <img
                 src={friend.image_url}
                 alt={friend.noun}
