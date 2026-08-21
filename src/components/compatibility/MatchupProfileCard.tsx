@@ -22,7 +22,11 @@ export default function MatchupProfileCard({
         className,
       )}
     >
-      <Typography variant="h1" className="text-gray-07 text-center">
+      <Typography
+        variant="h1"
+        className="text-gray-07 text-center"
+        style={{ fontFamily: "'Waguri', var(--font-sans)" }}
+      >
         {name}
       </Typography>
       <img src={image} alt={imageAlt} className="size-[102px] object-contain" />

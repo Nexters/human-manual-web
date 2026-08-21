@@ -17,11 +17,12 @@ import { takeResultCode } from "@/lib/resultCode";
 import { useToast } from "@/hooks/useToast";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
-import { PRETENDARD_FONT_SPEC, THE_POSTER_FONT_SPEC } from "@/constants/fonts";
+import { PRETENDARD_FONT_SPEC, WAGURI_FONT_SPEC, THE_POSTER_FONT_SPEC } from "@/constants/fonts";
 
-// 상세 분석 카드에 ThePosterFont를 쓴다. 친구 초대 링크로 온보딩 없이 바로 이
-// 페이지에 들어오는 경우가 있어, 온보딩 첫 화면의 폰트 프리로드를 못 받았을 수 있다.
-const COMPATIBILITY_PAGE_FONT_SPECS = [PRETENDARD_FONT_SPEC, THE_POSTER_FONT_SPEC];
+// 매치업 프로필 카드 이름에 Waguri, 상세 분석 카드에 ThePosterFont를 쓴다. 친구
+// 초대 링크로 온보딩 없이 바로 이 페이지에 들어오는 경우가 있어, 온보딩 첫
+// 화면의 폰트 프리로드를 못 받았을 수 있다.
+const COMPATIBILITY_PAGE_FONT_SPECS = [PRETENDARD_FONT_SPEC, WAGURI_FONT_SPEC, THE_POSTER_FONT_SPEC];
 
 export default function CompatibilityPage() {
   const navigate = useNavigate();
