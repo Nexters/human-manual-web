@@ -10,15 +10,13 @@ interface KeyFeaturesProps {
 }
 
 // TODO: 백엔드에서 태그별 배경색/글자색 필드를 내려주면 feature.tag_bg_color, feature.tag_text_color로 교체
-// features는 항상 동력/관계/마음/강점 4개가 이 순서로 오고, 태그 단어가 아니라
-// 카드 순서(자리)에 따라 색이 고정된다.
-const TAG_COLORS_BY_INDEX = [
+const TAG_COLORS = [
   { bg: "#FFE0E0", text: "#B21200" },
   { bg: "#E6E0FF", text: "#5F00B2" },
   { bg: "#E0F3FF", text: "#0068B2" },
   { bg: "#FFEFE0", text: "#B26B00" },
-];
-const DEFAULT_TAG_COLOR = TAG_COLORS_BY_INDEX[0];
+] as const;
+const DEFAULT_TAG = "열정";
 
 // ------- KeyFeatures UI ------
 export default function KeyFeatures({
@@ -40,7 +38,7 @@ export default function KeyFeatures({
       {/* ----- 특징 카드 리스트 ----- */}
       <div className="flex flex-col gap-2">
         {features.map((feature, index) => {
-          const color = TAG_COLORS_BY_INDEX[index] ?? DEFAULT_TAG_COLOR;
+          const tagColor = TAG_COLORS[index % TAG_COLORS.length];
           return (
             <div
               key={feature.title}
@@ -48,10 +46,10 @@ export default function KeyFeatures({
             >
               <span
                 className="inline-flex w-fit items-center rounded-[5px] px-2 py-0.5"
-                style={{ backgroundColor: color.bg, color: color.text }}
+                style={{ backgroundColor: tagColor.bg, color: tagColor.text }}
               >
                 <Typography variant="me3" as="span">
-                  {feature.tag}
+                  {feature.tag || DEFAULT_TAG}
                 </Typography>
               </span>
               <div className="flex flex-col gap-1">
