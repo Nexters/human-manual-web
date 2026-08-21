@@ -151,7 +151,7 @@ export default function ShareResult({
           <Spinner className="size-6" />
         ) : (
           <Typography variant="h3" as="span">
-            {hasFriend ? `${friendNickname}님과의 케미 보러가기` : "케미 테스트 보내기"}
+            {hasFriend ? `${friendNickname}님과의 케미 보러가기` : "친구에게 테스트 링크 공유하기"}
           </Typography>
         )}
       </button>
