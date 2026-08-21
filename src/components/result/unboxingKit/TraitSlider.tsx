@@ -3,31 +3,31 @@ import Typography from "@/components/shared/Typography";
 import IconInfo from "@/components/shared/icons/IconInfo";
 
 type TraitSliderProps = {
-  label1: string;
-  label2: string;
+  /** 축의 0점 방향 라벨 (예: 거리조절, 탐색, 탐험, 테토) */
+  leftLabel: string;
+  /** 축의 100점 방향 라벨 (예: 밀착, 직진, 루틴, 에겐) */
+  rightLabel: string;
   /**
-   * 원본 축 값(0~100), 가공 없이 그대로 전달한다.
-   * 0은 미측정/데이터 없음을 뜻하므로 중립으로 처리한다.
+   * 원본 축 값(0~100). 항상 rightLabel(100점 방향)의 강도를 뜻한다.
+   * 50 미만이면 leftLabel이, 50 이상이면 rightLabel이 우세하다.
    */
   value: number;
-  /** label1이 축의 100쪽 의미인지 여부. true면 value가 클수록 label1이 우세하다. */
-  isLabel1HighEnd: boolean;
-  description1: string;
-  description2: string;
+  leftDescription: string;
+  rightDescription: string;
 };
 
 export default function TraitSlider({
-  label1,
-  label2,
+  leftLabel,
+  rightLabel,
   value,
-  isLabel1HighEnd,
-  description1,
-  description2,
+  leftDescription,
+  rightDescription,
 }: TraitSliderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const isNeutral = value === 0;
-  const label1Value = isLabel1HighEnd ? value : 100 - value;
-  const isLabel1Dominant = label1Value >= 50;
+  const isNeutral = value === 50;
+  const isRightDominant = value > 50;
+  // 우세한 쪽 라벨의 값(50~100)만큼 그 쪽에서부터 채운다.
+  const fillPercent = isRightDominant ? value : 100 - value;
 
   return (
     <div className="flex flex-col gap-3">
@@ -37,9 +37,9 @@ export default function TraitSlider({
           <div
             className="absolute top-0 h-full bg-point transition-all duration-300"
             style={
-              isLabel1Dominant
-                ? { left: 0, width: `${label1Value}%` }
-                : { right: 0, width: `${100 - label1Value}%` }
+              isRightDominant
+                ? { right: 0, width: `${fillPercent}%` }
+                : { left: 0, width: `${fillPercent}%` }
             }
           />
         )}
@@ -55,18 +55,18 @@ export default function TraitSlider({
           <Typography
             variant="sb4"
             as="span"
-            className={!isNeutral && isLabel1Dominant ? "text-point" : "text-gray-09"}
+            className={!isNeutral && !isRightDominant ? "text-point" : "text-gray-09"}
           >
-            {label1}
+            {leftLabel}
           </Typography>
           <IconInfo className="size-4 text-gray-05" />
         </button>
         <Typography
           variant="sb4"
           as="span"
-          className={!isNeutral && !isLabel1Dominant ? "text-point" : "text-gray-09"}
+          className={!isNeutral && isRightDominant ? "text-point" : "text-gray-09"}
         >
-          {label2}
+          {rightLabel}
         </Typography>
       </div>
 
@@ -76,18 +76,18 @@ export default function TraitSlider({
           <ul className="flex flex-col gap-3">
             <li className="flex items-start before:mr-2 before:text-gray-08 before:content-['•']">
               <Typography variant="me3" className="text-gray-08 min-w-16 shrink-0">
-                {label1}형
+                {leftLabel}형
               </Typography>
               <Typography variant="me3" className="text-gray-05 break-keep">
-                {description1}
+                {leftDescription}
               </Typography>
             </li>
             <li className="flex items-start before:mr-2 before:text-gray-08 before:content-['•']">
               <Typography variant="me3" className="text-gray-08 min-w-16 shrink-0">
-                {label2}형
+                {rightLabel}형
               </Typography>
               <Typography variant="me3" className="text-gray-05 break-keep">
-                {description2}
+                {rightDescription}
               </Typography>
             </li>
           </ul>
