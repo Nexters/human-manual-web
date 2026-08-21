@@ -14,15 +14,11 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
   const traits = [
     {
       title: packaging.name,
-      chip1: packaging.tags[0] ?? "",
-      chip2: packaging.tags[1] ?? "",
       description: packaging.reason,
       image: packaging.image_url,
     },
     {
       title: opening_tool.name,
-      chip1: opening_tool.tags[0] ?? "",
-      chip2: opening_tool.tags[1] ?? "",
       description: opening_tool.reason,
       image: opening_tool.image_url,
     },
@@ -72,8 +68,6 @@ export default function UnboxingKit({ unboxingKit }: UnboxingKitProps) {
           <TraitTypeCard
             key={trait.title}
             title={trait.title}
-            chip1={trait.chip1}
-            chip2={trait.chip2}
             description={trait.description}
             image={trait.image}
           />
