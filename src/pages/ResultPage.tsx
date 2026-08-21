@@ -12,6 +12,7 @@ import ShareResult from "@/components/result/shareResult";
 import FriendChemiTestModal from "@/components/result/FriendChemiTestModal";
 import ResultPageSkeleton from "@/components/result/skeleton";
 import ScrollButtons from "@/components/result/ScrollButtons";
+import CoupangPartnersAd from "@/components/shared/CoupangPartnersAd";
 import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
@@ -223,6 +224,9 @@ export default function ResultPage() {
         onSendChemiTest={openChemiTestModal}
         onViewChemi={() => void handleViewChemi()}
       />
+
+      {/* ------- 쿠팡 파트너스 광고 ------ */}
+      <CoupangPartnersAd />
 
       {/* ------- 상·하단 이동 플로팅 버튼 ------ */}
       <ScrollButtons />

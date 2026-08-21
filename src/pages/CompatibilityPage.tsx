@@ -8,6 +8,7 @@ import SynergyScoreCard from "@/components/compatibility/SynergyScoreCard";
 import DetailAnalysisCard from "@/components/compatibility/DetailAnalysisCard";
 import LongTermTipCard from "@/components/compatibility/LongTermTipCard";
 import CompatibilityActionBar from "@/components/compatibility/CompatibilityActionBar";
+import CoupangPartnersAd from "@/components/shared/CoupangPartnersAd";
 import { useCompatibility } from "@/hooks/useCompatibility";
 import { useFontsReady } from "@/hooks/useFontsReady";
 import { share } from "@/utils/share";
@@ -185,6 +186,9 @@ export default function CompatibilityPage() {
         onShare={handleShare}
         saveDisabled={isSaving}
       />
+
+      {/* ------- 쿠팡 파트너스 광고 ------ */}
+      <CoupangPartnersAd />
     </div>
   );
 }
