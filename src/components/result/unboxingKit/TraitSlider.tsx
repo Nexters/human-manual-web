@@ -9,7 +9,7 @@ type TraitSliderProps = {
   rightLabel: string;
   /**
    * 원본 축 값(0~100). 항상 rightLabel(100점 방향)의 강도를 뜻한다.
-   * 50 미만이면 leftLabel이, 50 이상이면 rightLabel이 우세하다.
+   * 50 미만이면 leftLabel이, 50 이상이면 rightLabel이 우세하다 (동점은 rightLabel 우세로 분류).
    */
   value: number;
   leftDescription: string;
@@ -24,8 +24,8 @@ export default function TraitSlider({
   rightDescription,
 }: TraitSliderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const isNeutral = value === 50;
-  const isRightDominant = value > 50;
+  // 50점은 100점 쪽(rightLabel) 성향으로 분류한다.
+  const isRightDominant = value >= 50;
   // 우세한 쪽 라벨의 값(50~100)만큼 그 쪽에서부터 채운다.
   const fillPercent = isRightDominant ? value : 100 - value;
 
@@ -33,16 +33,14 @@ export default function TraitSlider({
     <div className="flex flex-col gap-3">
       {/* ----- 슬라이더 바 ----- */}
       <div className="relative h-2 w-full rounded-full bg-gray-02 overflow-hidden">
-        {!isNeutral && (
-          <div
-            className="absolute top-0 h-full bg-point transition-all duration-300"
-            style={
-              isRightDominant
-                ? { right: 0, width: `${fillPercent}%` }
-                : { left: 0, width: `${fillPercent}%` }
-            }
-          />
-        )}
+        <div
+          className="absolute top-0 h-full bg-point transition-all duration-300"
+          style={
+            isRightDominant
+              ? { right: 0, width: `${fillPercent}%` }
+              : { left: 0, width: `${fillPercent}%` }
+          }
+        />
       </div>
 
       {/* ----- 라벨 ----- */}
@@ -55,7 +53,7 @@ export default function TraitSlider({
           <Typography
             variant="sb4"
             as="span"
-            className={!isNeutral && !isRightDominant ? "text-point" : "text-gray-09"}
+            className={!isRightDominant ? "text-point" : "text-gray-09"}
           >
             {leftLabel}
           </Typography>
@@ -64,7 +62,7 @@ export default function TraitSlider({
         <Typography
           variant="sb4"
           as="span"
-          className={!isNeutral && isRightDominant ? "text-point" : "text-gray-09"}
+          className={isRightDominant ? "text-point" : "text-gray-09"}
         >
           {rightLabel}
         </Typography>
