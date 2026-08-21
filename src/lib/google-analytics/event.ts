@@ -16,6 +16,15 @@ export const GA_EVENTS = {
 
   // 문항 진행 관련 GA 이벤트
   QUESTION: {
+    // label은 호출부(QuestionPage.tsx)에서 문항 순번으로 덮어써서 전송됨.
+    // order가 바뀔 때마다(앞으로/뒤로/진행바 이동 모두) 매번 전송되어
+    // 같은 순번에 여러 번 찍힐 수 있지만, 문항별 도달 이탈 지점 분석에는
+    // 세션당 도달 여부만 보면 되므로 중복 자체는 문제되지 않음
+    VIEW: {
+      action: "question_view",
+      category: "question",
+      label: "",
+    },
     SUBMIT_COMPLETE: {
       action: "test_submit_complete",
       category: "question",
