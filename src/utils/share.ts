@@ -1,7 +1,16 @@
 export type ShareData = {
-  title: string;
+  /**
+   * 채팅 앱은 title 을 메시지 맨 앞에 그대로 이어붙인다.
+   * 문구가 그 자체로 완결된 경우엔 넘기지 않는다.
+   */
+  title?: string;
   text: string;
-  url: string;
+  /**
+   * 문구(text)에 링크가 이미 들어있으면 넘기지 않는다.
+   * 시스템 공유 시트가 text 와 url 을 어떻게 합칠지는 받는 앱이 정하는데,
+   * 카카오톡은 url 을 앞에 놓고 구분자도 넣지 않아 문구 첫 글자가 URL 에 눌러붙는다.
+   */
+  url?: string;
 };
 
 /** Web Share API(시스템 공유 시트) 사용 가능 여부. */
@@ -23,30 +32,17 @@ export async function share(data: ShareData) {
     return;
   }
 
-  await navigator.clipboard.writeText(data.url);
+  await navigator.clipboard.writeText(data.url ?? data.text);
 }
 
 /**
  * 친구 케미 테스트 모달에서 복사·공유하는 문구.
  * 링크에 내 결과 코드를 담아 보내면 받은 친구가 코드를 따로 입력하지 않아도 된다.
- */
-function chemiTestLines(resultName: string) {
-  return [`나 '${resultName}' 나왔어.`, "우리 케미는 몇 점일까? 여기서 확인해줘!"];
-}
-
-/**
- * 시스템 공유 시트의 text 로 넘기는 문구. 링크는 ShareData.url 이 담당한다.
- * 여기에 링크를 넣으면 시트가 url 을 덧붙여 링크가 두 번 들어가고,
- * 붙는 자리에 구분자가 없는 앱에서는 friend 값이 뒷 링크까지 삼켜 깨진다.
- */
-export function buildChemiTestShareText(resultName: string) {
-  return chemiTestLines(resultName).join("\n");
-}
-
-/**
- * 모달 표시·클립보드 복사용 문구. 둘 다 문자열 한 칸뿐이라 링크까지 합쳐서 넘긴다.
+ *
+ * 모달 표시·클립보드 복사·공유 시트에 모두 쓴다.
+ * 링크를 마지막 줄에 넣어 뒤에 아무것도 붙지 않게 하고, 공유 시트에는 이 문구만 넘긴다.
  * 시안(2054:14318)의 문구 박스가 158px 고정이라, 링크까지 한눈에 보이도록 3줄로 맞춘다.
  */
 export function buildChemiTestMessage({ resultName, url }: { resultName: string; url: string }) {
-  return [...chemiTestLines(resultName), url].join("\n");
+  return [`나 '${resultName}' 나왔어.`, "우리 케미는 몇 점일까? 여기서 확인해줘!", url].join("\n");
 }

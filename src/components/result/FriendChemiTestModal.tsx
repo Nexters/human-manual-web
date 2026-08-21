@@ -3,9 +3,14 @@ import Typography from "@/components/shared/Typography";
 type FriendChemiTestModalProps = {
   message: string;
   onShare: () => void;
+  onCopyLink: () => void;
 };
 
-export default function FriendChemiTestModal({ message, onShare }: FriendChemiTestModalProps) {
+export default function FriendChemiTestModal({
+  message,
+  onShare,
+  onCopyLink,
+}: FriendChemiTestModalProps) {
   return (
     <div className="flex w-full flex-col items-center gap-3">
       <Typography variant="me2" className="text-gray-06 -mt-5">
@@ -27,6 +32,13 @@ export default function FriendChemiTestModal({ message, onShare }: FriendChemiTe
       >
         <Typography variant="h2" as="span">
           복사 후 친구에게 공유
+        </Typography>
+      </button>
+
+      {/* 문구와 링크가 한 문자열이면 주소창에 붙여넣어도 이동할 수 없다. 링크만 복사할 길을 남긴다. */}
+      <button type="button" onClick={onCopyLink} className="text-gray-05 underline">
+        <Typography variant="me3" as="span">
+          링크만 복사하기
         </Typography>
       </button>
     </div>

@@ -1,8 +1,9 @@
 import type { RefObject } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Typography from "@/components/shared/Typography";
 import CopyIcon from "@/components/shared/icons/CopyIcon";
 import { useToast } from "@/hooks/useToast";
+import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useTestStore } from "@/stores/testStore";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
@@ -17,7 +18,7 @@ export default function ShareResult({ actionButtonMarkerRef }: ShareResultProps)
   const { id } = useParams<{ id: string }>();
   const inviteCode = id ?? "";
   const { open: openToast } = useToast();
-  const navigate = useNavigate();
+  const navigate = useFriendNavigate();
   const resetTest = useTestStore((state) => state.reset);
 
   const handleCopyCode = async () => {

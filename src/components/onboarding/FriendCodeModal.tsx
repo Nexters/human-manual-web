@@ -8,6 +8,7 @@ import { verifyResultCode } from "@/api/assessment";
 import { getCompatibility } from "@/api/compatibility";
 import { compatibilityQueryKey } from "@/hooks/useCompatibility";
 import { isResultCode } from "@/lib/resultCode";
+import { cn } from "@/lib/cn";
 
 const INVALID_CODE_MESSAGE = "코드를 다시 입력해주세요";
 const LOAD_FAIL_MESSAGE = "케미 결과를 불러오지 못했어요. 잠시 후 다시 시도해주세요";
@@ -29,9 +30,11 @@ export default function FriendCodeModal({
   const [loadFailed, setLoadFailed] = useState(false);
   const [checking, setChecking] = useState(false);
 
+  const mine = myCode.trim();
+  const canCheck = mine !== "";
+
   const handleCheckCompatibility = async () => {
-    const mine = myCode.trim();
-    if (!mine || checking) return;
+    if (!canCheck || checking) return;
 
     // 사용자가 직접 입력한 값은 형식부터 걸러서, 코드가 아닌 문자열을 API 로 보내지 않는다.
     setLoadFailed(false);
@@ -102,9 +105,13 @@ export default function FriendCodeModal({
             />
             <button
               type="button"
-              disabled={!myCode.trim() || checking}
+              disabled={!canCheck || checking}
               onClick={handleCheckCompatibility}
-              className="bg-gray-02 text-gray-07 flex h-14 w-[82px] shrink-0 items-center justify-center rounded-[10px] transition-opacity disabled:opacity-40"
+              className={cn(
+                "flex h-14 w-[82px] shrink-0 items-center justify-center rounded-[10px] transition-colors",
+                // 입력 전에는 회색, 코드를 입력하면 눌릴 수 있다는 걸 색으로 알린다.
+                canCheck ? "bg-main text-white" : "bg-gray-02 text-gray-07",
+              )}
             >
               {checking ? (
                 <Spinner className="size-5" />
