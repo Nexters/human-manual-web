@@ -57,6 +57,30 @@ const CLOSED_BOX_MAP: Record<ComboKey, string> = {
   matryoshka_box__utility_knife: matryoshkaBoxUtilityKnifeGif,
 };
 
+const DEFAULT_CLOSED_DURATION_MS = 4000;
+
+// 조합별 gif의 실제 재생 길이(ms). 빌드 시점에 고정된 정적 에셋이므로,
+// 런타임에 매번 fetch해 파싱하는 대신 미리 계산해 하드코딩한다.
+// 에셋이 교체되면 `node scripts/print-gif-durations.mjs`로 값을 다시 뽑아 갱신해야 한다.
+const CLOSED_BOX_DURATION_MAP: Record<ComboKey, number> = {
+  fragile_box__glove: 2400,
+  fragile_box__magic_wand: 2360,
+  fragile_box__chainsaw: 2400,
+  fragile_box__utility_knife: 2400,
+  minimal_box__glove: 2400,
+  minimal_box__magic_wand: 2400,
+  minimal_box__chainsaw: 2400,
+  minimal_box__utility_knife: 2400,
+  locked_box__glove: 2400,
+  locked_box__magic_wand: 2400,
+  locked_box__chainsaw: 2400,
+  locked_box__utility_knife: 2400,
+  matryoshka_box__glove: 2360,
+  matryoshka_box__magic_wand: 2440,
+  matryoshka_box__chainsaw: 2200,
+  matryoshka_box__utility_knife: 2320,
+};
+
 const OPEN_BOX_MAP: Record<ComboKey, string> = {
   fragile_box__glove: fragileBoxGloveImg,
   fragile_box__magic_wand: fragileBoxMagicWandImg,
@@ -90,4 +114,15 @@ export function getOpenBoxAsset(
 ): string | undefined {
   if (!packagingType || !openingToolType) return undefined;
   return OPEN_BOX_MAP[toComboKey(packagingType, openingToolType)];
+}
+
+export function getClosedBoxDurationMs(
+  packagingType?: PackagingType,
+  openingToolType?: OpeningToolType,
+): number {
+  if (!packagingType || !openingToolType) return DEFAULT_CLOSED_DURATION_MS;
+  return (
+    CLOSED_BOX_DURATION_MAP[toComboKey(packagingType, openingToolType)] ??
+    DEFAULT_CLOSED_DURATION_MS
+  );
 }
