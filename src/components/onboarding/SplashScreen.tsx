@@ -7,9 +7,14 @@ import splashBlocks from "@/assets/img/splash-blocks.png";
 type SplashScreenProps = {
   onStart: () => void;
   onCheckCompatibility: () => void;
+  onOpenMyResult: () => void;
 };
 
-export default function SplashScreen({ onStart, onCheckCompatibility }: SplashScreenProps) {
+export default function SplashScreen({
+  onStart,
+  onCheckCompatibility,
+  onOpenMyResult,
+}: SplashScreenProps) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -24,6 +29,12 @@ export default function SplashScreen({ onStart, onCheckCompatibility }: SplashSc
         <Button variant="outline" onClick={onCheckCompatibility}>
           친구와의 케미보기
         </Button>
+        {/* 결과 코드가 결과지에 닿는 유일한 열쇠라, 코드를 들고 온 사람에게 입구를 열어둔다. */}
+        <button type="button" onClick={onOpenMyResult} className="pt-1 pb-1">
+          <Typography variant="me3" className="text-gray-05 underline underline-offset-[3px]">
+            이미 테스트를 했다면?
+          </Typography>
+        </button>
       </div>
     </motion.div>
   );

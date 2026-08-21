@@ -12,6 +12,11 @@ export const GA_EVENTS = {
       category: "onboarding",
       label: "궁합_확인_시작",
     },
+    MY_RESULT_OPEN: {
+      action: "my_result_open",
+      category: "onboarding",
+      label: "내결과지_코드로_보기",
+    },
   },
 
   // 문항 진행 관련 GA 이벤트

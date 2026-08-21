@@ -7,6 +7,7 @@ import IntroStep from "@/components/onboarding/IntroStep";
 import PartIntroStep from "@/components/onboarding/PartIntroStep";
 import TestStartModal from "@/components/onboarding/TestStartModal";
 import InvitePreviewStep from "@/components/onboarding/InvitePreviewStep";
+import MyResultModal from "@/components/onboarding/MyResultModal";
 import { introOrder, introPreloadImages, type IntroKey } from "@/components/onboarding/introSteps";
 import {
   questionPreloadImages,
@@ -123,6 +124,23 @@ export default function OnboardingPage() {
     });
   }, [open, close, friendCode, handleStartTest, navigateToCompatibility]);
 
+  // 결과 코드가 결과지에 닿는 유일한 열쇠라, 코드를 들고 온 사람에게 입구를 열어둔다.
+  // friend 문맥이 있으면 그대로 이어붙어, 결과지에서 바로 그 친구와의 케미로 갈 수 있다.
+  const openMyResultModal = useCallback(() => {
+    trackEvent(GA_EVENTS.ONBOARDING.MY_RESULT_OPEN);
+    open({
+      title: "내 결과지 보기",
+      contents: (
+        <MyResultModal
+          onOpenResult={(resultCode) => {
+            close();
+            navigate(`/result/${resultCode}`);
+          }}
+        />
+      ),
+    });
+  }, [open, close, navigate]);
+
   useImagePreload(firstScreenPreloadImages);
   // 뒤에서 쓰는 커스텀 폰트(Waguri, ThePosterFont 등)도 첫 화면에서 미리 받아둬서,
   // 나중에 해당 화면에 처음 들어갔을 때 기본 폰트가 잠깐 보였다 바뀌는 걸 막는다.
@@ -153,7 +171,13 @@ export default function OnboardingPage() {
   }
 
   if (step === "splash-cta") {
-    return <SplashScreen onStart={() => handleStartTest("일반")} onCheckCompatibility={openTestStartModal} />;
+    return (
+      <SplashScreen
+        onStart={() => handleStartTest("일반")}
+        onCheckCompatibility={openTestStartModal}
+        onOpenMyResult={openMyResultModal}
+      />
+    );
   }
 
   if (step === "name-input") {
