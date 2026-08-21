@@ -7,8 +7,15 @@ import IntroStep from "@/components/onboarding/IntroStep";
 import PartIntroStep from "@/components/onboarding/PartIntroStep";
 import TestStartModal from "@/components/onboarding/TestStartModal";
 import { introOrder, introPreloadImages, type IntroKey } from "@/components/onboarding/introSteps";
+import {
+  questionPreloadImages,
+  unboxingPreloadImages,
+  resultPreloadImages,
+} from "@/constants/appPreloadAssets";
 import { useImagePreload } from "@/hooks/useImagePreload";
 import { useImagesReady } from "@/hooks/useImagesReady";
+import { useFontsReady } from "@/hooks/useFontsReady";
+import { ALL_FONT_SPECS } from "@/constants/fonts";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { useModal } from "@/hooks/useModal";
@@ -21,7 +28,17 @@ import characterNotebook from "@/assets/gif/character-notebook.gif";
 
 type Step = "splash-cta" | IntroKey | "name-input" | "part-intro";
 
-const onboardingPreloadImages = [...introPreloadImages, notebookBg, partIntroBg, characterNotebook];
+// 이후 화면(문항, 언박싱, 결과)에서 쓰는 에셋을 첫 화면(스플래시 CTA) 노출 동안 미리 받아둔다.
+// 캐릭터/결과 이미지처럼 API 응답으로 오는 값은 미리 알 수 없어 제외한다.
+const firstScreenPreloadImages = [
+  ...introPreloadImages,
+  notebookBg,
+  partIntroBg,
+  characterNotebook,
+  ...questionPreloadImages,
+  ...unboxingPreloadImages,
+  ...resultPreloadImages,
+];
 
 export default function OnboardingPage() {
   const navigate = useFriendNavigate();
@@ -107,8 +124,10 @@ export default function OnboardingPage() {
     return () => clearTimeout(timer);
   }, [step, friendCode, hasUnusableFriendParam, openTestStartModal]);
 
-  // 인트로/이름입력 스텝의 배경·캐릭터 이미지를 첫 화면(스플래시 CTA) 노출 동안 미리 받아둔다.
-  useImagePreload(onboardingPreloadImages);
+  useImagePreload(firstScreenPreloadImages);
+  // 뒤에서 쓰는 커스텀 폰트(Waguri, ThePosterFont 등)도 첫 화면에서 미리 받아둬서,
+  // 나중에 해당 화면에 처음 들어갔을 때 기본 폰트가 잠깐 보였다 바뀌는 걸 막는다.
+  useFontsReady(ALL_FONT_SPECS);
 
   if (!splashReady) {
     return <div className="min-h-dvh bg-white" />;

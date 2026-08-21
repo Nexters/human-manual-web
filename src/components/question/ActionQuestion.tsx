@@ -11,14 +11,14 @@ type ActionQuestionProps = {
 const ActionQuestion = ({ questionId, bubble, pressed, onPress }: ActionQuestionProps) => {
   if (pressed) {
     return (
-      <div className="flex flex-1 items-center justify-center">
+      <div key="pressed" className="flex flex-1 items-center justify-center">
         <AssetImage src={questionAsset(questionId, "pressed")} className="size-[300px]" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center">
+    <div key="unpressed" className="flex flex-1 flex-col items-center justify-center">
       <AssetImage
         src={questionAsset(questionId, "bubble")}
         alt={bubble}

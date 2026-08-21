@@ -7,7 +7,6 @@ const meta = {
   title: "Compatibility/MatchupProfileCard",
   component: MatchupProfileCard,
   args: {
-    role: "나",
     name: "팽이 지은",
     image: spinningTop,
     imageAlt: "팽이 캐릭터",
@@ -21,8 +20,6 @@ export const Me: Story = {};
 
 export const Friend: Story = {
   args: {
-    variant: "friend",
-    role: "친구",
     name: "곰인형 선우",
     image: bearLarge,
     imageAlt: "곰인형 캐릭터",

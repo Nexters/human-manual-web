@@ -20,9 +20,9 @@ export default function TopBar({ title, onBack, className }: TopBarProps) {
           type="button"
           onClick={onBack}
           aria-label="뒤로가기"
-          className="text-gray-09 absolute left-5"
+          className="text-gray-09 absolute left-5 flex size-[30px] items-center justify-center"
         >
-          <ChevronLeftIcon className="size-[30px]" />
+          <ChevronLeftIcon className="w-[10px]" />
         </button>
       )}
       {title && (

@@ -16,6 +16,7 @@ import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
 import { useAssessmentResult } from "@/hooks/useAssessment";
+import { useFontsReady } from "@/hooks/useFontsReady";
 import { getCompatibility } from "@/api/compatibility";
 import { compatibilityQueryKey } from "@/hooks/useCompatibility";
 import { useFriendCode } from "@/hooks/useFriendCode";
@@ -24,8 +25,13 @@ import { useToast } from "@/hooks/useToast";
 import { buildChemiTestMessage, canUseSystemShare, share } from "@/utils/share";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
+import { PRETENDARD_FONT_SPEC, WAGURI_FONT_SPEC } from "@/constants/fonts";
 
 const TOP_BAR_HEIGHT = 60;
+
+// 히어로 캐릭터 타이틀에 Waguri를 쓴다. 공유 링크로 온보딩 없이 바로 이 페이지에
+// 들어오는 경우가 있어, 온보딩 첫 화면의 폰트 프리로드를 못 받았을 수 있다.
+const RESULT_PAGE_FONT_SPECS = [PRETENDARD_FONT_SPEC, WAGURI_FONT_SPEC];
 
 export default function ResultPage() {
   const { id } = useParams<{ id: string }>();
@@ -41,6 +47,7 @@ export default function ResultPage() {
   const { open, close } = useModal();
   const { open: openToast } = useToast();
   const [checkingChemi, setCheckingChemi] = useState(false);
+  const fontsReady = useFontsReady(RESULT_PAGE_FONT_SPECS);
 
   const { ref: unboxingKitStartRef, hasPassed: isPastHero } = useScrollPassed<HTMLDivElement>({
     offset: TOP_BAR_HEIGHT,
@@ -54,7 +61,7 @@ export default function ResultPage() {
     trackEvent({ ...GA_EVENTS.RESULT.VIEW, label: data.overview.noun });
   }, [data, id]);
 
-  if (isPending) {
+  if (isPending || !fontsReady) {
     return <ResultPageSkeleton />;
   }
 

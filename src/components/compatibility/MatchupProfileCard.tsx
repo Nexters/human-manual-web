@@ -3,8 +3,6 @@ import Typography from "@/components/shared/Typography";
 import { cn } from "@/lib/cn";
 
 type MatchupProfileCardProps = {
-  variant?: "me" | "friend";
-  role: ReactNode;
   name: ReactNode;
   image: string;
   imageAlt: string;
@@ -12,8 +10,6 @@ type MatchupProfileCardProps = {
 };
 
 export default function MatchupProfileCard({
-  variant = "me",
-  role,
   name,
   image,
   imageAlt,
@@ -26,14 +22,9 @@ export default function MatchupProfileCard({
         className,
       )}
     >
-      <div className="flex flex-col items-center gap-1">
-        <Typography variant="sb3" className={cn(variant === "me" ? "text-sub-4" : "text-gray-06")}>
-          {role}
-        </Typography>
-        <Typography variant="h1" className="text-gray-07 text-center">
-          {name}
-        </Typography>
-      </div>
+      <Typography variant="h1" className="text-gray-07 text-center">
+        {name}
+      </Typography>
       <img src={image} alt={imageAlt} className="size-[102px] object-contain" />
     </div>
   );
