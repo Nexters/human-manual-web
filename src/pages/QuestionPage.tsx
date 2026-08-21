@@ -213,7 +213,7 @@ const QuestionPage = () => {
             goNext();
           }}
         >
-          {active.ctaLabel}
+          {active.name}
         </QuestionCtaButton>
       );
     }
