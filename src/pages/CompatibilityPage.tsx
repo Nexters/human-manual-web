@@ -9,12 +9,18 @@ import DetailAnalysisCard from "@/components/compatibility/DetailAnalysisCard";
 import LongTermTipCard from "@/components/compatibility/LongTermTipCard";
 import CompatibilityActionBar from "@/components/compatibility/CompatibilityActionBar";
 import { useCompatibility } from "@/hooks/useCompatibility";
+import { useFontsReady } from "@/hooks/useFontsReady";
 import { share } from "@/utils/share";
 import { saveElementAsImage } from "@/utils/captureImage";
 import { takeResultCode } from "@/lib/resultCode";
 import { useToast } from "@/hooks/useToast";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
+import { PRETENDARD_FONT_SPEC, THE_POSTER_FONT_SPEC } from "@/constants/fonts";
+
+// 상세 분석 카드에 ThePosterFont를 쓴다. 친구 초대 링크로 온보딩 없이 바로 이
+// 페이지에 들어오는 경우가 있어, 온보딩 첫 화면의 폰트 프리로드를 못 받았을 수 있다.
+const COMPATIBILITY_PAGE_FONT_SPECS = [PRETENDARD_FONT_SPEC, THE_POSTER_FONT_SPEC];
 
 export default function CompatibilityPage() {
   const navigate = useNavigate();
@@ -27,6 +33,7 @@ export default function CompatibilityPage() {
   const friend = takeResultCode(searchParams.get("friend")) ?? "";
 
   const { data, isLoading, isError } = useCompatibility(mine, friend);
+  const fontsReady = useFontsReady(COMPATIBILITY_PAGE_FONT_SPECS);
 
   // 친구 초대 링크로 바로 들어온 경우 앱 안에 쌓인 히스토리가 없어, 뒤로가기가
   // 앱 밖(원래 있던 카톡 등)으로 나가버린다. 그럴 땐 온보딩으로 보낸다.
@@ -53,7 +60,7 @@ export default function CompatibilityPage() {
     );
   }
 
-  if (isLoading) {
+  if (isLoading || !fontsReady) {
     // TODO: 스켈레톤 UI 추가
     return null;
   }

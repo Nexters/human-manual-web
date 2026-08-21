@@ -14,6 +14,8 @@ import {
 } from "@/constants/appPreloadAssets";
 import { useImagePreload } from "@/hooks/useImagePreload";
 import { useImagesReady } from "@/hooks/useImagesReady";
+import { useFontsReady } from "@/hooks/useFontsReady";
+import { ALL_FONT_SPECS } from "@/constants/fonts";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { useModal } from "@/hooks/useModal";
@@ -123,6 +125,9 @@ export default function OnboardingPage() {
   }, [step, friendCode, hasUnusableFriendParam, openTestStartModal]);
 
   useImagePreload(firstScreenPreloadImages);
+  // 뒤에서 쓰는 커스텀 폰트(Waguri, ThePosterFont 등)도 첫 화면에서 미리 받아둬서,
+  // 나중에 해당 화면에 처음 들어갔을 때 기본 폰트가 잠깐 보였다 바뀌는 걸 막는다.
+  useFontsReady(ALL_FONT_SPECS);
 
   if (!splashReady) {
     return <div className="min-h-dvh bg-white" />;
