@@ -16,6 +16,7 @@ import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import Spinner from "@/components/shared/Spinner";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
+import { useHasScrolled } from "@/hooks/useHasScrolled";
 import { useIsVisible } from "@/hooks/useIsVisible";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { getCompatibility } from "@/api/compatibility";
@@ -64,6 +65,8 @@ export default function ResultPage() {
   const { ref: shareResultEndRef, isVisible: hasReachedShareResultEnd } =
     useIsVisible<HTMLDivElement>({ threshold: 0 });
   const isShareResultVisible = hasReachedShareResultStart && !hasReachedShareResultEnd;
+  // 진입 직후 히어로 화면에서는 sticky 버튼을 숨기고, 200px 이상 스크롤한 뒤에만 보여준다.
+  const hasScrolledPastSticky = useHasScrolled(200);
 
   // 같은 결과 코드에 대해 refetch 등으로 중복 전송되지 않도록, id별로 1회만 기록한다.
   const trackedResultId = useRef<string | null>(null);
@@ -238,7 +241,7 @@ export default function ResultPage() {
       <ScrollButtons />
 
       {/* ------- 하단 고정 친구 케미 테스트 버튼 ------ */}
-      {!isShareResultVisible && (
+      {hasScrolledPastSticky && !isShareResultVisible && (
         <div className="animate-sticky-button-in fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer">
           <div className="w-full max-w-[400px]">
             <Button
