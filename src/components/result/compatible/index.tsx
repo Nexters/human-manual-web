@@ -33,7 +33,7 @@ export default function Compatible({ compatibleFriends }: CompatibleProps) {
                 alt={friend.noun}
                 className="size-[120px] object-contain"
               />
-              <div className="flex flex-col items-center gap-1">
+              <div className="flex flex-col items-center gap-1 px-4">
                 <Typography variant="h2" className="text-gray-08">
                   {friend.noun}
                 </Typography>
