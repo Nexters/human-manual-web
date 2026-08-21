@@ -19,10 +19,8 @@ import { useAssessmentResult } from "@/hooks/useAssessment";
 import { getCompatibility } from "@/api/compatibility";
 import { compatibilityQueryKey } from "@/hooks/useCompatibility";
 import { useFriendCode } from "@/hooks/useFriendCode";
-import { useFriendStore } from "@/stores/friendStore";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
-import { useTestStore } from "@/stores/testStore";
 import { buildChemiTestMessage, canUseSystemShare, share } from "@/utils/share";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
@@ -34,15 +32,9 @@ export default function ResultPage() {
   // 케미 페이지 URL 은 두 코드를 직접 담아 완성하므로, friend 를 덧붙이는 useFriendNavigate 를 쓰지 않는다.
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  // 친구 문맥의 출처는 URL 쿼리 하나다. 자기 자신과의 케미는 성립하지 않으므로 걸러낸다.
   const urlFriendCode = useFriendCode();
-  const rememberedFriendCode = useFriendStore((state) => state.friendCode);
-  const myResultCode = useTestStore((state) => state.resultCode);
-
-  // URL 을 잃어도 친구를 알아봐야 하지만, 남의 결과지를 열었을 때 내 친구가 따라붙으면 안 된다.
-  // 그래서 기억해둔 코드는 내가 방금 받은 결과지에서만, 자기 자신이 아닐 때만 쓴다.
-  const fallbackFriendCode = id === myResultCode ? rememberedFriendCode : null;
-  const friendCode =
-    (urlFriendCode ?? fallbackFriendCode) === id ? null : (urlFriendCode ?? fallbackFriendCode);
+  const friendCode = urlFriendCode === id ? null : urlFriendCode;
 
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
   const { data: friendData } = useAssessmentResult(friendCode ?? "");
