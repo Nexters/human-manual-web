@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { AnimatePresence, motion } from "framer-motion";
 import Hero from "@/components/result/hero";
 import UnboxingKit from "@/components/result/unboxingKit";
 import KeyFeatures from "@/components/result/keyFeatures";
@@ -16,6 +17,7 @@ import Typography from "@/components/shared/Typography";
 import Button from "@/components/shared/Button";
 import Spinner from "@/components/shared/Spinner";
 import { useScrollPassed } from "@/hooks/useScrollPassed";
+import { useHasScrolled } from "@/hooks/useHasScrolled";
 import { useIsVisible } from "@/hooks/useIsVisible";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { getCompatibility } from "@/api/compatibility";
@@ -58,6 +60,7 @@ export default function ResultPage() {
   });
   const { ref: shareResultMarkerRef, isVisible: isShareResultVisible } =
     useIsVisible<HTMLDivElement>({ threshold: 0 });
+  const hasScrolledPastSticky = useHasScrolled(200);
 
   // 같은 결과 코드에 대해 refetch 등으로 중복 전송되지 않도록, id별로 1회만 기록한다.
   const trackedResultId = useRef<string | null>(null);
@@ -228,20 +231,29 @@ export default function ResultPage() {
       <ScrollButtons />
 
       {/* ------- 하단 고정 친구 케미 테스트 버튼 ------ */}
-      {!isShareResultVisible && (
-        <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer">
-          <div className="w-full max-w-[400px]">
-            <Button
-              variant="solid"
-              className="w-full rounded-[10px]"
-              disabled={checkingChemi}
-              onClick={handleStickyButtonClick}
-            >
-              {checkingChemi ? <Spinner className="size-6" /> : stickyButtonLabel}
-            </Button>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {hasScrolledPastSticky && !isShareResultVisible && (
+          <motion.div
+            key="sticky-chemi-button"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-5 pb-[calc(env(safe-area-inset-bottom)+16px)] cursor-pointer"
+          >
+            <div className="w-full max-w-[400px]">
+              <Button
+                variant="solid"
+                className="w-full rounded-[10px]"
+                disabled={checkingChemi}
+                onClick={handleStickyButtonClick}
+              >
+                {checkingChemi ? <Spinner className="size-6" /> : stickyButtonLabel}
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
