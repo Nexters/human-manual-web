@@ -10,8 +10,12 @@ interface KeyFeaturesProps {
 }
 
 // TODO: 백엔드에서 태그별 배경색/글자색 필드를 내려주면 feature.tag_bg_color, feature.tag_text_color로 교체
-const TAG_BG_COLOR = "#FFE0E0";
-const TAG_TEXT_COLOR = "#B21200";
+const TAG_COLORS = [
+  { bg: "#FFE0E0", text: "#B21200" },
+  { bg: "#E6E0FF", text: "#5F00B2" },
+  { bg: "#E0F3FF", text: "#0068B2" },
+  { bg: "#FFEFE0", text: "#B26B00" },
+] as const;
 const DEFAULT_TAG = "열정";
 
 // ------- KeyFeatures UI ------
@@ -33,26 +37,32 @@ export default function KeyFeatures({
 
       {/* ----- 특징 카드 리스트 ----- */}
       <div className="flex flex-col gap-2">
-        {features.map((feature) => (
-          <div key={feature.title} className="flex flex-col gap-2 rounded-[10px] bg-white px-3.5 py-3">
-            <span
-              className="inline-flex w-fit items-center rounded-[5px] px-2 py-0.5"
-              style={{ backgroundColor: TAG_BG_COLOR, color: TAG_TEXT_COLOR }}
+        {features.map((feature, index) => {
+          const tagColor = TAG_COLORS[index % TAG_COLORS.length];
+          return (
+            <div
+              key={feature.title}
+              className="flex flex-col gap-2 rounded-[10px] bg-white px-3.5 py-3"
             >
-              <Typography variant="me3" as="span">
-                {feature.tag || DEFAULT_TAG}
-              </Typography>
-            </span>
-            <div className="flex flex-col gap-1">
-              <Typography variant="sb4" className="text-gray-09 break-keep">
-                {feature.title}
-              </Typography>
-              <Typography variant="me3" className="text-gray-07 break-keep">
-                {feature.description}
-              </Typography>
+              <span
+                className="inline-flex w-fit items-center rounded-[5px] px-2 py-0.5"
+                style={{ backgroundColor: tagColor.bg, color: tagColor.text }}
+              >
+                <Typography variant="me3" as="span">
+                  {feature.tag || DEFAULT_TAG}
+                </Typography>
+              </span>
+              <div className="flex flex-col gap-1">
+                <Typography variant="sb4" className="text-gray-09 break-keep">
+                  {feature.title}
+                </Typography>
+                <Typography variant="me3" className="text-gray-07 break-keep">
+                  {feature.description}
+                </Typography>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* ----- 안내 텍스트 ----- */}
