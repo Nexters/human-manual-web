@@ -182,14 +182,9 @@ export default function ShareResult({
         <hr className="border-t border-gray-02" />
 
         <div className="flex items-center justify-between gap-3">
-          <div className="flex flex-col gap-0.5">
-            <Typography variant="sb4" className="text-gray-09">
-              {ownerLabel} 설명서 링크
-            </Typography>
-            <Typography variant="me3" className="text-gray-05 break-keep">
-              케미 없이 결과만 보여줄 때
-            </Typography>
-          </div>
+          <Typography variant="sb4" className="text-gray-09">
+            테스트지 공유하기
+          </Typography>
           <button
             type="button"
             onClick={handleCopyLink}
