@@ -19,9 +19,9 @@ export default function PartIntroStep({ onBack, onNext }: PartIntroStepProps) {
         type="button"
         aria-label="뒤로가기"
         onClick={onBack}
-        className="text-gray-08 relative z-10 mt-[15px] ml-5"
+        className="text-gray-08 relative z-10 mt-[15px] ml-5 flex size-[30px] items-center justify-center"
       >
-        <ChevronLeftIcon className="size-[30px]" />
+        <ChevronLeftIcon className="w-[10px]" />
       </motion.button>
 
       <div className="relative z-10 flex flex-1 flex-col items-center px-5 pt-6">

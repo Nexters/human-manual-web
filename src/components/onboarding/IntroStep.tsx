@@ -25,9 +25,12 @@ export default function IntroStep({ step, onBack, onNext, onSkip }: IntroStepPro
         type="button"
         aria-label="뒤로가기"
         onClick={onBack}
-        className={cn("relative z-10 mt-[15px] ml-5 text-white", introIndex === 0 && "invisible")}
+        className={cn(
+          "relative z-10 mt-[15px] ml-5 flex size-[30px] items-center justify-center text-white",
+          introIndex === 0 && "invisible",
+        )}
       >
-        <ChevronLeftIcon className="size-[30px]" />
+        <ChevronLeftIcon className="w-[10px]" />
       </motion.button>
       <div className="relative flex flex-1 items-end justify-center pb-[6px]">
         <AnimatePresence mode="wait">
