@@ -32,7 +32,7 @@ export default function InvitePreviewStep({
         {friendNickname}님이 케미 테스트를 보냈어요
       </Typography>
 
-      <div className="mt-10 flex items-center gap-4">
+      <div className="mt-10 flex items-start gap-4">
         <div className="flex flex-col items-center gap-3">
           <img
             src={friendImageUrl}
@@ -49,9 +49,11 @@ export default function InvitePreviewStep({
           </div>
         </div>
 
-        <Typography variant="h2" className="text-gray-03">
-          ×
-        </Typography>
+        <div className="flex h-[134px] items-center justify-center">
+          <Typography variant="h2" className="text-gray-03">
+            ×
+          </Typography>
+        </div>
 
         <div className="flex flex-col items-center gap-3">
           <div className="flex size-[134px] items-center justify-center rounded-full bg-gray-02">
@@ -102,9 +104,6 @@ export default function InvitePreviewStep({
         <QuestionCtaButton tone="point" onClick={onStart}>
           내 장난감 만들고 케미 보기
         </QuestionCtaButton>
-        <Typography variant="me2" className="text-gray-05">
-          가입 없이 3분이면 충분해요
-        </Typography>
         <button type="button" onClick={onCheckExistingCode} className="mt-2">
           <Typography variant="sb4" className="text-gray-06 underline">
             이미 테스트해서 코드가 있어요
