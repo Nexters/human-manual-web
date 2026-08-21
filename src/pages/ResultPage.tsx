@@ -25,12 +25,7 @@ import { useFriendStore } from "@/stores/friendStore";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
 import { useTestStore } from "@/stores/testStore";
-import {
-  buildChemiTestMessage,
-  buildChemiTestShareText,
-  canUseSystemShare,
-  share,
-} from "@/utils/share";
+import { buildChemiTestMessage, canUseSystemShare, share } from "@/utils/share";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
 
@@ -125,12 +120,9 @@ export default function ResultPage() {
     // navigator.share 가 있으면 share() 가 시스템 공유 시트만 띄운다. 없을 때는
     // share() 의 폴백이 클립보드를 URL 로 덮어써서 문구가 사라지므로 직접 안내한다.
     if (canUseSystemShare()) {
-      // 링크는 url 로만 넘긴다. text 에 링크를 같이 담으면 시트가 둘을 붙여 링크가 두 번 들어간다.
-      await share({
-        title: "친구 케미 테스트",
-        text: buildChemiTestShareText(overview.result_name),
-        url: chemiTestUrl,
-      });
+      // url 은 넘기지 않는다. 카카오톡이 url 을 문구 앞에 구분자 없이 붙여서
+      // 문구 첫 글자가 URL 에 눌러붙고, friend 값이 그 글자까지 삼킨다.
+      await share({ title: "친구 케미 테스트", text: chemiTestMessage });
     } else {
       openToast("문구를 복사했어요");
     }
