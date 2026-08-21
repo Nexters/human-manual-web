@@ -7,9 +7,10 @@ const meta = {
   title: "Compatibility/MatchupProfileCard",
   component: MatchupProfileCard,
   args: {
-    name: "팽이 지은",
+    nickname: "지은",
     image: spinningTop,
     imageAlt: "팽이 캐릭터",
+    onViewResult: () => {},
   },
 } satisfies Meta<typeof MatchupProfileCard>;
 
@@ -20,7 +21,7 @@ export const Me: Story = {};
 
 export const Friend: Story = {
   args: {
-    name: "곰인형 선우",
+    nickname: "선우",
     image: bearLarge,
     imageAlt: "곰인형 캐릭터",
   },

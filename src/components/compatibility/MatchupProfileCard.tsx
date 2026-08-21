@@ -3,33 +3,39 @@ import Typography from "@/components/shared/Typography";
 import { cn } from "@/lib/cn";
 
 type MatchupProfileCardProps = {
-  name: ReactNode;
+  nickname: ReactNode;
   image: string;
   imageAlt: string;
+  onViewResult: () => void;
   className?: string;
 };
 
 export default function MatchupProfileCard({
-  name,
+  nickname,
   image,
   imageAlt,
+  onViewResult,
   className,
 }: MatchupProfileCardProps) {
   return (
-    <div
-      className={cn(
-        "flex w-[171px] flex-col items-center gap-6 rounded-[100px] bg-white pt-9 pb-10 shadow-[0_4px_15px_rgba(0,0,0,0.06)]",
-        className,
-      )}
-    >
-      <Typography
-        variant="h1"
-        className="text-gray-07 text-center"
-        style={{ fontFamily: "'Waguri', var(--font-sans)" }}
-      >
-        {name}
+    <div className={cn("flex flex-col items-center gap-3", className)}>
+      <img
+        src={image}
+        alt={imageAlt}
+        className="size-[134px] rounded-full bg-white object-contain p-3 shadow-[0_4px_15px_rgba(0,0,0,0.06)]"
+      />
+      <Typography variant="h2" className="text-gray-07">
+        {nickname}님
       </Typography>
-      <img src={image} alt={imageAlt} className="size-[102px] object-contain" />
+      <button
+        type="button"
+        onClick={onViewResult}
+        className="bg-gray-01 rounded-full px-4 py-2 transition-colors hover:bg-gray-02"
+      >
+        <Typography variant="me3" as="span" className="text-gray-05 font-semibold">
+          자세히 보기
+        </Typography>
+      </button>
     </div>
   );
 }

@@ -15,14 +15,15 @@ import { useFontsReady } from "@/hooks/useFontsReady";
 import { share } from "@/utils/share";
 import { saveElementAsImage } from "@/utils/captureImage";
 import { takeResultCode } from "@/lib/resultCode";
+import { appendFriendParam } from "@/lib/friendParam";
 import { useToast } from "@/hooks/useToast";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
-import { PRETENDARD_FONT_SPEC, WAGURI_FONT_SPEC } from "@/constants/fonts";
+import { PRETENDARD_FONT_SPEC } from "@/constants/fonts";
 
-// 매치업 프로필 카드 이름에 Waguri를 쓴다. 친구 초대 링크로 온보딩 없이 바로 이
-// 페이지에 들어오는 경우가 있어, 온보딩 첫 화면의 폰트 프리로드를 못 받았을 수 있다.
-const COMPATIBILITY_PAGE_FONT_SPECS = [PRETENDARD_FONT_SPEC, WAGURI_FONT_SPEC];
+// 매치업 프로필 카드와 상세 분석 카드가 더 이상 커스텀 폰트를 쓰지 않아,
+// 이 페이지는 기본 프리텐다드 프리로드만 필요하다.
+const COMPATIBILITY_PAGE_FONT_SPECS = [PRETENDARD_FONT_SPEC];
 
 export default function CompatibilityPage() {
   const navigate = useNavigate();
@@ -111,16 +112,23 @@ export default function CompatibilityPage() {
       {topBar}
 
       <div ref={contentRef} className="flex flex-1 flex-col gap-8 bg-gray-00 px-5 pt-[54px] pb-8">
-        <div className="flex justify-center gap-2">
+        <div className="flex items-start justify-center gap-4">
           <MatchupProfileCard
-            name={`${data.mine.noun} ${data.mine.nickname}`}
+            nickname={data.mine.nickname}
             image={data.mine.image_url}
             imageAlt={`${data.mine.noun} 캐릭터`}
+            onViewResult={() => navigate(appendFriendParam(`/result/${mine}`, friend))}
           />
+          <div className="flex h-[134px] items-center justify-center">
+            <Typography variant="h2" className="text-gray-03">
+              ×
+            </Typography>
+          </div>
           <MatchupProfileCard
-            name={`${data.friend.noun} ${data.friend.nickname}`}
+            nickname={data.friend.nickname}
             image={data.friend.image_url}
             imageAlt={`${data.friend.noun} 캐릭터`}
+            onViewResult={() => navigate(appendFriendParam(`/result/${friend}`, mine))}
           />
         </div>
 
