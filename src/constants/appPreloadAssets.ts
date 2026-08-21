@@ -1,6 +1,5 @@
 import { questionAsset, characterAsset } from "@/constants/assets";
 import unboxingClosedGif from "@/assets/gif/unboxing.gif";
-import boxOpenImg from "@/assets/img/unboxing/box-open.png";
 import deliveryBunnyGif from "@/assets/gif/delivery-bunny.gif";
 import roomBg from "@/assets/img/backgrounds/room-bg.png";
 import resultCheckIcon from "@/assets/img/result/check.png";
@@ -46,6 +45,8 @@ export const questionPreloadImages: string[] = [
   ...CHARACTER_VALUES.map(characterAsset),
 ];
 
-export const unboxingPreloadImages = [unboxingClosedGif, boxOpenImg, deliveryBunnyGif, roomBg];
+// 열림 이미지는 조합별로 16종이라 사전 프리로드 대상에서 제외한다.
+// 언박싱 화면 진입 시점에 useAssessmentResult로 조합을 먼저 조회한 뒤 필요한 이미지만 불러온다.
+export const unboxingPreloadImages = [unboxingClosedGif, deliveryBunnyGif, roomBg];
 
 export const resultPreloadImages = [resultCheckIcon, resultErrorIcon, resultChargeImg];
