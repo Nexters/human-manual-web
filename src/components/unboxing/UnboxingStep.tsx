@@ -3,13 +3,21 @@ import QuestionCtaButton from "@/components/question/QuestionCtaButton";
 import UnboxingBadgeCard from "./UnboxingBadgeCard";
 import { getClosedBoxAsset, getOpenBoxAsset } from "./unboxingAssets";
 import roomBg from "@/assets/img/backgrounds/room-bg.png";
+import type { OpeningToolType, PackagingType } from "@/types/assessment";
 
 type UnboxingStepProps = {
   phase: "loading" | "done";
   onConfirm: () => void;
+  packagingType?: PackagingType;
+  openingToolType?: OpeningToolType;
 };
 
-export default function UnboxingStep({ phase, onConfirm }: UnboxingStepProps) {
+export default function UnboxingStep({
+  phase,
+  onConfirm,
+  packagingType,
+  openingToolType,
+}: UnboxingStepProps) {
   return (
     <div className="relative min-h-dvh overflow-hidden">
       <img
@@ -31,7 +39,12 @@ export default function UnboxingStep({ phase, onConfirm }: UnboxingStepProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6 }}
-          src={phase === "loading" ? getClosedBoxAsset() : getOpenBoxAsset()}
+          src={
+            phase === "loading"
+              ? getClosedBoxAsset(packagingType, openingToolType)
+              : (getOpenBoxAsset(packagingType, openingToolType) ??
+                getClosedBoxAsset(packagingType, openingToolType))
+          }
           alt=""
           className="absolute left-1/2 top-[58%] z-10 w-[377px] -translate-x-1/2 -translate-y-1/2"
         />
