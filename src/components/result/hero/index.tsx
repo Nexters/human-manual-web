@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import resultBg from "@/assets/img/backgrounds/room-bg.png";
 import Typography from "@/components/shared/Typography";
@@ -15,6 +16,10 @@ interface HeroProps {
   imageUrl?: string;
   isTopBarDark?: boolean;
 }
+
+// HeroTopBar 가 fixed h-[60px] 로 화면 위를 덮는다. 스크롤 목적지에서 그만큼 빼야
+// 다음 섹션 제목이 상단바에 가리지 않는다.
+const TOP_BAR_HEIGHT = 60;
 
 const TAG_POSITIONS = [
   "absolute top-[2%] right-[2%]",
@@ -36,6 +41,17 @@ export default function Hero({
   // 값이 실시간 재계산될 수 있어, 그 안의 배경/캐릭터(% 기준 배치)가 함께
   // 흔들린다. 마운트 시점의 높이를 한 번만 측정해 고정 px로 써서 이를 막는다.
   const viewportHeight = useInitialViewportHeight();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // 히어로가 화면을 꽉 채워서 아래에 뭐가 더 있는지 안 보인다. 화살표를 눌러 바로 다음
+  // 섹션(핵심 특징)으로 내려보낸다.
+  const handleScrollToContent = () => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const contentTop = window.scrollY + section.getBoundingClientRect().bottom - TOP_BAR_HEIGHT;
+    window.scrollTo({ top: contentTop, behavior: "smooth" });
+  };
 
   // 케미 페이지에서 "자세히 보기" 로 넘어온 경우처럼 앱 안에 히스토리가 쌓여 있으면
   // 온 곳으로 돌려보낸다. 링크로 바로 들어와 히스토리가 없을 때만 온보딩으로 보낸다
@@ -49,7 +65,11 @@ export default function Hero({
   };
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ minHeight: viewportHeight }}>
+    <section
+      ref={sectionRef}
+      className="relative w-full overflow-hidden"
+      style={{ minHeight: viewportHeight }}
+    >
       <img
         src={resultBg}
         alt=""
@@ -93,18 +113,24 @@ export default function Hero({
       </div>
 
       {/* ----- 하단 CTA 섹션 ----- */}
-      <div className="absolute inset-x-0 bottom-0 z-10 flex h-[192px] flex-col items-center justify-end gap-1 pb-8">
+      <div className="absolute inset-x-0 bottom-0 z-10 flex h-[192px] flex-col items-center justify-end pb-8">
         <div
           className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent to-gray-00"
           aria-hidden
         />
-        <Typography variant="sb3" className="text-gray-08">
-          내 장난감 설명서 보러가기
-        </Typography>
-        <div className="flex flex-col items-center gap-0 -space-y-1">
-          <ChevronLeftIcon className="rotate-180 w-3 h-3 text-gray-08" />
-          <ChevronLeftIcon className="rotate-180 w-3 h-3 text-gray-08" />
-        </div>
+        <button
+          type="button"
+          onClick={handleScrollToContent}
+          className="flex flex-col items-center gap-1"
+        >
+          <Typography variant="sb3" className="text-gray-08">
+            내 장난감 설명서 보러가기
+          </Typography>
+          <span className="flex flex-col items-center gap-0 -space-y-1">
+            <ChevronLeftIcon className="rotate-180 w-3 h-3 text-gray-08" />
+            <ChevronLeftIcon className="rotate-180 w-3 h-3 text-gray-08" />
+          </span>
+        </button>
       </div>
     </section>
   );
