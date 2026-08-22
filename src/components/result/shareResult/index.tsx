@@ -131,7 +131,8 @@ export default function ShareResult({
           </Typography>
         </div>
 
-        <div className="flex items-center justify-center gap-4 py-1">
+        {/* × 는 이름줄까지 포함한 세로 가운데가 아니라 장난감 카드의 가운데에 맞춘다. */}
+        <div className="flex items-start justify-center gap-4 py-1">
           <div className="flex flex-col items-center gap-3">
             <div className={`${TOY_SLOT} bg-gray-01`}>
               <img src={imageUrl} alt="" className="size-14 object-contain" />
@@ -141,9 +142,11 @@ export default function ShareResult({
             </Typography>
           </div>
 
-          <Typography variant="me2" as="span" className="text-gray-04">
-            ×
-          </Typography>
+          <div className="flex h-20 items-center">
+            <Typography variant="me2" as="span" className="text-gray-04">
+              ×
+            </Typography>
+          </div>
 
           <div className="flex flex-col items-center gap-3">
             {hasFriend && friendImageUrl ? (
