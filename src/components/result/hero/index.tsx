@@ -83,7 +83,7 @@ export default function Hero({
           퍼센트 top으로 뷰포트 높이에 비례해 배치했더니, 화면이 짧은 기기(특히 안드로이드)에서
           위 타이틀 블록(고정 px 높이)과 겹치는 문제가 있었다. 타이틀 다음 flow에 자연스럽게
           이어지도록 relative로 바꾸고, 태그만 이 박스 기준으로 absolute 배치한다. */}
-      <div className="relative z-10 mx-auto mt-4 h-[320px] w-[320px]">
+      <div className="relative z-10 mx-auto mt-20 h-[320px] w-[320px]">
         <img src={imageUrl} alt={title} className="h-full w-full object-contain" />
         {tags.map((tag, idx) => (
           <HeroTag key={idx} className={TAG_POSITIONS[idx]}>
