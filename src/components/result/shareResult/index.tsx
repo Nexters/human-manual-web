@@ -26,9 +26,13 @@ const TOY_SLOT = "flex size-20 items-center justify-center rounded-[20px]";
 
 // ------- ShareResult UI ------
 // 궁합(Compatible) 데이터와 무관하게 결과 코드(id)만으로 동작하는 공유 UI라 별도 섹션으로 분리했다.
-// 빈 친구 자리와 가려진 케미 지수로 "친구가 있어야 채워지는 칸" 을 먼저 보여주고, 그 아래에서
-// 초대를 받는다. 친구가 이미 정해져 있으면 그 자리를 채우고 CTA 를 케미 보기로 바꾼다.
-// 코드·링크는 케미 없이 결과만 보낼 때 쓰는 보조 수단이라 맨 아래로 내렸다.
+//
+// "코드를 복사해둬야 한다" 와 "케미는 친구가 테스트해야 나온다" 를 둘 다 놓친다는 피드백이 있어,
+// 목적이 다른 둘을 각각 제목·이유·행동을 갖춘 카드로 갈랐다. 코드가 먼저 오는 건 그게 없으면
+// 결과지로 돌아올 방법이 아예 없기 때문이다.
+//
+// 케미 미리보기의 "??%" 는 뺐다. 링크를 보낸 사람 화면은 실제로 채워지지 않는데(서버가 누가
+// 내 링크로 들어왔는지 알려주지 않는다) 곧 채워질 것처럼 읽혀서, 기대와 동작이 어긋났다.
 export default function ShareResult({
   nickname,
   imageUrl,
@@ -79,26 +83,55 @@ export default function ShareResult({
 
   return (
     <div className="flex flex-col items-center gap-4 px-5 pt-6 pb-8">
-      {/* ------- 섹션 안내 ------ */}
-      <div className="flex flex-col items-center gap-2">
-        <Typography variant="h2" className="text-gray-09">
-          친구와 나의 케미는?
-        </Typography>
-        <Typography variant="me3" className="text-center text-gray-05 break-keep">
-          {hasFriend ? (
-            "둘 사이 설명서가 준비됐어요"
-          ) : (
-            <>
-              친구도 장난감을 만들면
-              <br />둘 사이 설명서가 나와요
-            </>
-          )}
-        </Typography>
+      {/* ------- 1. 내 코드 보관 ------ */}
+      {/* 로그인이 없어 이 코드가 결과지에 닿는 유일한 열쇠다. 케미보다 먼저 두고,
+          왜 필요한지를 문장으로 밝혀야 사람들이 복사한다. */}
+      <div className="ring-sub-5 flex w-full flex-col gap-[14px] rounded-[20px] bg-white p-5 ring-2">
+        <div className="flex flex-col gap-1">
+          <Typography variant="sb3" className="text-gray-09">
+            먼저, 코드를 저장해두세요
+          </Typography>
+          <Typography variant="me3" className="text-gray-06 break-keep">
+            Pakit 은 로그인이 없어요. 이 코드가 결과를 다시 여는 <strong>유일한 열쇠</strong>예요.
+          </Typography>
+        </div>
+
+        <div className="bg-gray-01 flex flex-col gap-1 rounded-[12px] px-4 py-3">
+          <Typography variant="me4" className="text-gray-05">
+            {ownerLabel} 코드
+          </Typography>
+          <div className="flex items-center justify-between gap-3">
+            <Typography variant="h3" className="text-gray-09">
+              {inviteCode}
+            </Typography>
+            <button
+              type="button"
+              onClick={handleCopyCode}
+              className="text-main flex shrink-0 items-center gap-1"
+            >
+              <CopyIcon className="size-4" />
+              <Typography variant="sb4" as="span">
+                복사
+              </Typography>
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* ------- 케미 미리보기 ------ */}
-      <div className="flex w-full flex-col gap-5 rounded-[20px] bg-white p-5">
-        <div className="flex items-center justify-center gap-4">
+      {/* ------- 2. 케미 ------ */}
+      <div className="flex w-full flex-col gap-4 rounded-[20px] bg-white p-5">
+        <div className="flex flex-col gap-1">
+          <Typography variant="sb3" className="text-gray-09">
+            {hasFriend ? "친구와의 케미가 준비됐어요" : "친구와의 케미도 볼 수 있어요"}
+          </Typography>
+          <Typography variant="me3" className="text-gray-06 break-keep">
+            {hasFriend
+              ? "둘 사이 설명서가 만들어졌어요."
+              : "친구가 링크로 테스트를 마치면 친구 화면에 둘 사이 설명서가 떠요."}
+          </Typography>
+        </div>
+
+        <div className="flex items-center justify-center gap-4 py-1">
           <div className="flex flex-col items-center gap-3">
             <div className={`${TOY_SLOT} bg-gray-01`}>
               <img src={imageUrl} alt="" className="size-14 object-contain" />
@@ -130,78 +163,35 @@ export default function ShareResult({
           </div>
         </div>
 
-        <hr className="border-t border-gray-02" />
-
-        <div className="flex flex-col items-center gap-1">
-          <Typography variant="me3" className="text-gray-05">
-            둘의 케미 지수
-          </Typography>
-          <span className="text-[36px] leading-none font-bold text-gray-03">??%</span>
-        </div>
+        <button
+          type="button"
+          onClick={hasFriend ? onViewChemi : onSendChemiTest}
+          disabled={isCheckingChemi}
+          className="bg-sub-4 flex h-[54px] w-full items-center justify-center rounded-[15px] text-white transition-opacity hover:opacity-90 active:opacity-80 disabled:opacity-60"
+        >
+          {isCheckingChemi ? (
+            <Spinner className="size-6" />
+          ) : (
+            <Typography variant="h3" as="span">
+              {hasFriend
+                ? `${friendNickname}님과의 케미 보러가기`
+                : "친구에게 테스트 링크 공유하기"}
+            </Typography>
+          )}
+        </button>
       </div>
 
-      {/* ------- 케미로 넘어가는 유일한 입구 ------ */}
-      <button
-        type="button"
-        onClick={hasFriend ? onViewChemi : onSendChemiTest}
-        disabled={isCheckingChemi}
-        className="bg-sub-4 flex h-[54px] w-full items-center justify-center rounded-[15px] text-white transition-opacity hover:opacity-90 active:opacity-80 disabled:opacity-60"
-      >
-        {isCheckingChemi ? (
-          <Spinner className="size-6" />
-        ) : (
-          <Typography variant="h3" as="span">
-            {hasFriend ? `${friendNickname}님과의 케미 보러가기` : "친구에게 테스트 링크 공유하기"}
+      {/* ------- 3. 케미 없이 결과만 보낼 때 ------ */}
+      <div className="flex w-full items-center justify-between gap-3 rounded-[20px] bg-white px-5 py-4">
+        <Typography variant="sb4" className="text-gray-09">
+          결과지 링크 공유하기
+        </Typography>
+        <button type="button" onClick={handleCopyLink} className="flex shrink-0 items-center gap-1">
+          <LinkIcon className="size-4 text-gray-05" />
+          <Typography variant="me3" className="text-gray-05">
+            복사
           </Typography>
-        )}
-      </button>
-
-      {/* ------- 케미 없이 결과만 보낼 때 쓰는 보조 수단 ------ */}
-      <div className="flex w-full flex-col gap-4 rounded-[20px] bg-white p-5">
-        {/* 로그인이 없어 이 코드가 결과지에 닿는 유일한 열쇠다. 잃으면 되찾을 방법이 없다. */}
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <Typography variant="me3" className="text-gray-05">
-                {ownerLabel} 코드
-              </Typography>
-              <Typography variant="sb3" className="text-gray-09">
-                {inviteCode}
-              </Typography>
-            </div>
-            <button
-              type="button"
-              onClick={handleCopyCode}
-              className="flex shrink-0 items-center gap-1"
-            >
-              <CopyIcon className="size-4 text-gray-05" />
-              <Typography variant="me3" className="text-gray-05">
-                복사
-              </Typography>
-            </button>
-          </div>
-          <Typography variant="me4" className="text-gray-04 break-keep">
-            복사해두면 나중에 이 결과를 다시 볼 수 있어요
-          </Typography>
-        </div>
-
-        <hr className="border-t border-gray-02" />
-
-        <div className="flex items-center justify-between gap-3">
-          <Typography variant="sb4" className="text-gray-09">
-            결과지 링크 공유하기
-          </Typography>
-          <button
-            type="button"
-            onClick={handleCopyLink}
-            className="flex shrink-0 items-center gap-1"
-          >
-            <LinkIcon className="size-4 text-gray-05" />
-            <Typography variant="me3" className="text-gray-05">
-              복사
-            </Typography>
-          </button>
-        </div>
+        </button>
       </div>
 
       <button type="button" onClick={handleRetry}>
