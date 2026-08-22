@@ -122,7 +122,7 @@ export default function ShareResult({
       <div className="flex w-full flex-col gap-4 rounded-[20px] bg-white p-5">
         <div className="flex flex-col gap-1">
           <Typography variant="sb3" className="text-gray-09">
-            {hasFriend ? "친구와의 케미가 준비됐어요" : "친구와의 케미도 볼 수 있어요"}
+            {hasFriend ? "친구와의 케미가 준비됐어요" : "친구와의 케미를 볼 수 있어요"}
           </Typography>
           <Typography variant="me3" className="text-gray-06 break-keep">
             {hasFriend
