@@ -84,15 +84,15 @@ export default function ShareResult({
   return (
     <div className="flex flex-col items-center gap-4 px-5 pt-6 pb-8">
       {/* ------- 1. 내 코드 보관 ------ */}
-      {/* 로그인이 없어 이 코드가 결과지에 닿는 유일한 열쇠다. 케미보다 먼저 두고,
-          왜 필요한지를 문장으로 밝혀야 사람들이 복사한다. */}
+      {/* 로그인이 없어 이 코드가 결과지·케미에 닿는 유일한 열쇠다. 케미보다 먼저 두고,
+          무엇을 못 하게 되는지를 문장으로 밝혀야 사람들이 복사한다. */}
       <div className="ring-sub-5 flex w-full flex-col gap-[14px] rounded-[20px] bg-white p-5 ring-2">
         <div className="flex flex-col gap-1">
           <Typography variant="sb3" className="text-gray-09">
             먼저, 코드를 저장해두세요
           </Typography>
           <Typography variant="me3" className="text-gray-06 break-keep">
-            Pakit 은 로그인이 없어요. 이 코드가 결과를 다시 여는 <strong>유일한 열쇠</strong>예요.
+            이 코드가 있어야 내 결과지를 다시 보거나 친구와 케미를 볼 수 있어요.
           </Typography>
         </div>
 
