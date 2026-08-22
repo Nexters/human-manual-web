@@ -1,4 +1,3 @@
-import { useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import TopBar from "@/components/shared/TopBar";
 import InfoCard from "@/components/shared/InfoCard";
@@ -13,10 +12,8 @@ import CoupangPartnersAd from "@/components/shared/CoupangPartnersAd";
 import { useCompatibility } from "@/hooks/useCompatibility";
 import { useFontsReady } from "@/hooks/useFontsReady";
 import { share } from "@/utils/share";
-import { saveElementAsImage } from "@/utils/captureImage";
 import { takeResultCode } from "@/lib/resultCode";
 import { appendFriendParam } from "@/lib/friendParam";
-import { useToast } from "@/hooks/useToast";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
 import { PRETENDARD_FONT_SPEC } from "@/constants/fonts";
@@ -28,9 +25,6 @@ const COMPATIBILITY_PAGE_FONT_SPECS = [PRETENDARD_FONT_SPEC];
 export default function CompatibilityPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { open: openToast } = useToast();
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [isSaving, setIsSaving] = useState(false);
   // 공유 시트에서 복사한 값은 링크 뒤에 설명 문구가 눌러붙어 오므로, 코드만 떼어내 쓴다.
   const mine = takeResultCode(searchParams.get("mine")) ?? "";
   const friend = takeResultCode(searchParams.get("friend")) ?? "";
@@ -96,28 +90,11 @@ export default function CompatibilityPage() {
     });
   };
 
-  const handleSave = async () => {
-    if (!contentRef.current || isSaving) return;
-
-    trackEvent(GA_EVENTS.COMPATIBILITY.RESULT_SAVE);
-    setIsSaving(true);
-    try {
-      await saveElementAsImage(
-        contentRef.current,
-        `${data.mine.nickname}-${data.friend.nickname}-케미.png`,
-      );
-    } catch {
-      openToast("이미지 저장에 실패했어요. 잠시 후 다시 시도해주세요");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   return (
     <div className="bg-gray-00 flex min-h-dvh flex-col">
       {topBar}
 
-      <div ref={contentRef} className="flex flex-1 flex-col gap-8 bg-gray-00 px-5 pt-[54px] pb-8">
+      <div className="flex flex-1 flex-col gap-8 bg-gray-00 px-5 pt-[54px] pb-8">
         <div className="flex items-start justify-center gap-4">
           <MatchupProfileCard
             nickname={data.mine.nickname}
@@ -207,11 +184,7 @@ export default function CompatibilityPage() {
         />
       </div>
 
-      <CompatibilityActionBar
-        onSave={() => void handleSave()}
-        onShare={handleShare}
-        saveDisabled={isSaving}
-      />
+      <CompatibilityActionBar onShare={handleShare} />
 
       {/* ------- 쿠팡 파트너스 광고 ------ */}
       <CoupangPartnersAd />
