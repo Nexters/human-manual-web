@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import SplashScreen from "@/components/onboarding/SplashScreen";
 import { splashImages } from "@/constants/splashAssets";
@@ -9,6 +9,7 @@ import PartIntroStep from "@/components/onboarding/PartIntroStep";
 import TestStartModal from "@/components/onboarding/TestStartModal";
 import InvitePreviewStep from "@/components/onboarding/InvitePreviewStep";
 import MyResultModal from "@/components/onboarding/MyResultModal";
+import CompatibilityPageSkeleton from "@/components/compatibility/skeleton";
 import { introOrder, introPreloadImages, type IntroKey } from "@/components/onboarding/introSteps";
 import {
   questionPreloadImages,
@@ -55,6 +56,10 @@ export default function OnboardingPage() {
   // 궁합 확인 이동은 이미 완성된 URL(입력받은 코드)을 그대로 써야 하므로,
   // URL의 friend 값을 덮어쓰는 useFriendNavigate를 거치지 않는다.
   const navigateToCompatibility = useNavigate();
+  // 케미 페이지의 "테스트 시작하기" 처럼, 다른 화면에서 곧바로 테스트를 시작시키는 신호.
+  // 인트로는 라우트가 아니라 이 페이지 내부 step 이라 URL 로는 가리킬 수 없다.
+  const location = useLocation();
+  const startTestRequested = (location.state as { startTest?: boolean } | null)?.startTest === true;
   // 링크로 받은 친구 코드. 형식이 깨진 값은 없는 것으로 취급한다.
   const friendCode = useFriendCode();
   const {
@@ -141,6 +146,14 @@ export default function OnboardingPage() {
     [resetTest],
   );
 
+  // 신호는 한 번만 소비한다. handleStartTest 가 히스토리를 쌓으므로 재실행되면 안 된다.
+  const startTestConsumed = useRef(false);
+  useEffect(() => {
+    if (!startTestRequested || startTestConsumed.current) return;
+    startTestConsumed.current = true;
+    handleStartTest("궁합유입");
+  }, [startTestRequested, handleStartTest]);
+
   const openTestStartModal = useCallback(() => {
     // 친구 코드를 물고 들어왔는지에 따라 유입 경로가 다르다. 수집 데이터의 연속성을 위해
     // 1input 팝업이 쓰던 라벨을 그대로 이어 쓴다.
@@ -175,10 +188,10 @@ export default function OnboardingPage() {
   const openMyResultModal = useCallback(() => {
     trackEvent(GA_EVENTS.ONBOARDING.MY_RESULT_OPEN);
     open({
-      title: "내 결과지 보기",
+      title: "결과지 보기",
       contents: (
         <MyResultModal
-          onOpenResult={(resultCode) => {
+          onSubmit={(resultCode) => {
             close();
             navigate(`/result/${resultCode}`);
           }}
@@ -200,7 +213,11 @@ export default function OnboardingPage() {
   // 친구 코드 조회가 끝나기 전에는 스플래시가 잠깐 보였다가 바뀌는 걸 막기 위해 대기한다.
   if (step === "splash-cta" && friendCode) {
     // 자동 케미로 넘어가는 중이면 초대 화면이 잠깐 보였다 사라지는 걸 막는다.
-    if (friendPreviewPending || (canAutoChemi && !autoChemiFailed)) {
+    // 도착지가 케미 페이지이므로 그 스켈레톤을 그대로 보여준다.
+    if (canAutoChemi && !autoChemiFailed) {
+      return <CompatibilityPageSkeleton />;
+    }
+    if (friendPreviewPending) {
       return <div className="min-h-dvh bg-white" />;
     }
     if (!friendPreviewError && friendPreview) {
