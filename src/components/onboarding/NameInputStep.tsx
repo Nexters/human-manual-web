@@ -11,6 +11,8 @@ type NameInputStepProps = {
 };
 
 export default function NameInputStep({ name, onNameChange, onNext }: NameInputStepProps) {
+  const canGoNext = Boolean(name.trim());
+
   return (
     <div className="relative flex h-full min-h-dvh flex-col overflow-hidden">
       <img src={notebookBg} alt="" className="absolute inset-0 size-full object-cover" />
@@ -32,13 +34,21 @@ export default function NameInputStep({ name, onNameChange, onNext }: NameInputS
           placeholder="이름을 입력해주세요"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
+          onKeyDown={(e) => {
+            // 한글은 Enter 로 조합을 확정한다. 그 Enter 까지 받으면 마지막 글자가
+            // 확정되기 전에 넘어가 이름이 잘린다.
+            if (e.nativeEvent.isComposing) return;
+            if (e.key !== "Enter" || !canGoNext) return;
+            onNext();
+          }}
+          enterKeyHint="next"
           maxLength={6}
           className="text-center"
         />
         <div className="flex-1" />
       </div>
       <div className="relative px-5 pb-10">
-        <Button className="w-full" disabled={!name.trim()} onClick={onNext}>
+        <Button className="w-full" disabled={!canGoNext} onClick={onNext}>
           다음
         </Button>
       </div>
