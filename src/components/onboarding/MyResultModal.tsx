@@ -5,6 +5,7 @@ import FieldError from "@/components/shared/FieldError";
 import Spinner from "@/components/shared/Spinner";
 import { verifyResultCode } from "@/api/assessment";
 import { isResultCode } from "@/lib/resultCode";
+import { useMyResultStore } from "@/stores/myResultStore";
 
 const INVALID_CODE_MESSAGE = "코드를 다시 입력해주세요";
 
@@ -16,7 +17,9 @@ type MyResultModalProps = {
 // 결과 코드가 결과지에 닿는 유일한 열쇠라, 다른 기기에서 오거나 스토리지를 잃은 사람에게는
 // 코드를 직접 넣는 길이 있어야 한다. 존재를 확인한 뒤에만 이동해서 빈 결과지를 열지 않는다.
 export default function MyResultModal({ onOpenResult }: MyResultModalProps) {
-  const [code, setCode] = useState("");
+  // 이 브라우저에서 테스트를 마쳤다면 코드를 이미 알고 있다. 다시 묻지 않고 채워준다.
+  const savedResultCode = useMyResultStore((state) => state.resultCode);
+  const [code, setCode] = useState(savedResultCode ?? "");
   const [invalid, setInvalid] = useState(false);
   const [checking, setChecking] = useState(false);
 

@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import SplashScreen from "@/components/onboarding/SplashScreen";
 import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
@@ -24,6 +25,9 @@ import { useCompletedTestCount } from "@/hooks/useCompletedTestCount";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { useModal } from "@/hooks/useModal";
+import { getCompatibility } from "@/api/compatibility";
+import { compatibilityQueryKey } from "@/hooks/useCompatibility";
+import { useMyResultStore } from "@/stores/myResultStore";
 import { findFirstIncompleteOrder, useTestStore } from "@/stores/testStore";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
@@ -60,6 +64,9 @@ export default function OnboardingPage() {
   } = useAssessmentResult(friendCode ?? "");
   const participantCount = useCompletedTestCount();
   const { open, close } = useModal();
+  const queryClient = useQueryClient();
+  // 이 브라우저에서 테스트를 마쳤는지. 친구 링크 자동 케미와 코드 자동 채우기의 근거다.
+  const savedResultCode = useMyResultStore((state) => state.resultCode);
 
   const nickname = useTestStore((state) => state.nickname);
   const answers = useTestStore((state) => state.answers);
@@ -69,6 +76,41 @@ export default function OnboardingPage() {
 
   const [step, setStep] = useState<Step>("splash-cta");
   const [name, setName] = useState(nickname);
+
+  // 친구 링크로 들어왔는데 내 코드가 이미 이 브라우저에 있으면, 초대 화면을 거치지 않고
+  // 둘의 케미를 바로 연다. 자기 자신과의 케미는 성립하지 않으므로 같은 코드는 제외한다.
+  const canAutoChemi = Boolean(friendCode && savedResultCode && savedResultCode !== friendCode);
+  const [autoChemiFailed, setAutoChemiFailed] = useState(false);
+  const autoChemiTried = useRef(false);
+
+  useEffect(() => {
+    if (!canAutoChemi || autoChemiTried.current) return;
+    autoChemiTried.current = true;
+
+    const mine = savedResultCode as string;
+    const friend = friendCode as string;
+
+    void (async () => {
+      try {
+        // 조회가 성공한 뒤에만 넘긴다. 저장된 코드가 만료됐을 수도 있어서다.
+        await queryClient.fetchQuery({
+          queryKey: compatibilityQueryKey(mine, friend),
+          queryFn: () => getCompatibility(mine, friend),
+        });
+        trackEvent({
+          ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
+          label: "친구링크_자동케미",
+        });
+        navigateToCompatibility(
+          `/compatibility?mine=${encodeURIComponent(mine)}&friend=${encodeURIComponent(friend)}`,
+          { replace: true },
+        );
+      } catch {
+        // 케미를 못 만들면 초대 미리보기를 그대로 보여준다.
+        setAutoChemiFailed(true);
+      }
+    })();
+  }, [canAutoChemi, savedResultCode, friendCode, queryClient, navigateToCompatibility]);
 
   // 스플래시 자체 이미지가 다 로드될 때까지는 깨진 이미지가 보이지 않도록 렌더링을 미룬다.
   const splashReady = useImagesReady(splashImages);
@@ -157,7 +199,8 @@ export default function OnboardingPage() {
   // 친구 링크로 들어온 경우, 모달 대신 초대 미리보기 화면으로 바로 보낸다.
   // 친구 코드 조회가 끝나기 전에는 스플래시가 잠깐 보였다가 바뀌는 걸 막기 위해 대기한다.
   if (step === "splash-cta" && friendCode) {
-    if (friendPreviewPending) {
+    // 자동 케미로 넘어가는 중이면 초대 화면이 잠깐 보였다 사라지는 걸 막는다.
+    if (friendPreviewPending || (canAutoChemi && !autoChemiFailed)) {
       return <div className="min-h-dvh bg-white" />;
     }
     if (!friendPreviewError && friendPreview) {

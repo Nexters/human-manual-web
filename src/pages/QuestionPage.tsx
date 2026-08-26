@@ -22,6 +22,7 @@ import {
   toMbtiString,
   useTestStore,
 } from "@/stores/testStore";
+import { useMyResultStore } from "@/stores/myResultStore";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
 
@@ -43,6 +44,8 @@ const QuestionPage = () => {
   const clearAnswer = useTestStore((state) => state.clearAnswer);
   const setMbtiAxis = useTestStore((state) => state.setMbtiAxis);
   const setResultCode = useTestStore((state) => state.setResultCode);
+  // 진행 상태와 달리 reset() 에 지워지지 않는 별도 키에도 남긴다.
+  const rememberResultCode = useMyResultStore((state) => state.setResultCode);
   const reset = useTestStore((state) => state.reset);
 
   const [resetOpen, setResetOpen] = useState(false);
@@ -118,6 +121,7 @@ const QuestionPage = () => {
       const result = await submitAssessment(buildSubmission({ nickname, answers, mbti }));
       trackEvent(GA_EVENTS.QUESTION.SUBMIT_COMPLETE);
       setResultCode(result.result_code);
+      rememberResultCode(result.result_code);
       navigate("/unboxing");
     } catch (error) {
       trackEvent(GA_EVENTS.QUESTION.SUBMIT_FAIL);

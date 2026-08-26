@@ -8,6 +8,7 @@ import { verifyResultCode } from "@/api/assessment";
 import { getCompatibility } from "@/api/compatibility";
 import { compatibilityQueryKey } from "@/hooks/useCompatibility";
 import { isResultCode } from "@/lib/resultCode";
+import { useMyResultStore } from "@/stores/myResultStore";
 
 const INVALID_CODE_MESSAGE = "코드를 다시 입력해주세요";
 const LOAD_FAIL_MESSAGE = "케미 결과를 불러오지 못했어요. 잠시 후 다시 시도해주세요";
@@ -24,7 +25,9 @@ export default function TestStartModal({
   onCheckCompatibility,
 }: TestStartModalProps) {
   const queryClient = useQueryClient();
-  const [myCode, setMyCode] = useState("");
+  // 내 코드는 이 브라우저에 남아 있으면 다시 묻지 않는다. 친구 코드만 받으면 된다.
+  const savedResultCode = useMyResultStore((state) => state.resultCode);
+  const [myCode, setMyCode] = useState(savedResultCode ?? "");
   const [friendCode, setFriendCode] = useState(initialFriendCode ?? "");
   const [myCodeInvalid, setMyCodeInvalid] = useState(false);
   const [friendCodeInvalid, setFriendCodeInvalid] = useState(false);
