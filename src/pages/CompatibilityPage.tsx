@@ -45,7 +45,10 @@ export default function CompatibilityPage() {
   const rememberResultCode = useMyResultStore((state) => state.setResultCode);
   const { open: openModal, close: closeModal } = useModal();
   const queryClient = useQueryClient();
-  const { data: myResult } = useAssessmentResult(savedResultCode ?? "");
+  // 저장된 코드가 삭제·만료됐으면 조회가 실패한다. 그때만 코드 없음으로 되돌린다 —
+  // 아직 안 온 것과 없는 것을 구분하지 않으면 죽은 코드로 링크를 만들어 준다.
+  const { data: myResult, isError: myResultError } = useAssessmentResult(savedResultCode ?? "");
+  const hasMyCode = Boolean(savedResultCode) && !myResultError;
   const fontsReady = useFontsReady(COMPATIBILITY_PAGE_FONT_SPECS);
 
   // 친구 초대 링크로 바로 들어온 경우 앱 안에 쌓인 히스토리가 없어, 뒤로가기가
@@ -299,6 +302,7 @@ export default function CompatibilityPage() {
           카드를 계속 가려서 다 읽었는지 알 수 없었다. */}
       <div className="flex flex-col items-center gap-4 px-5 pb-8">
         <NextChemiCard
+          hasMyCode={hasMyCode}
           myImageUrl={myResult?.overview.image_url}
           onCopyMyChemiLink={() => void handleCopyMyChemiLink(savedResultCode ?? "")}
           onStartTest={() => navigate("/", { state: { startTest: true } })}

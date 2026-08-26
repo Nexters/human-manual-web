@@ -5,7 +5,12 @@ import TextField from "@/components/shared/TextField";
 import FieldError from "@/components/shared/FieldError";
 
 type NextChemiCardProps = {
-  /** 이 브라우저에서 테스트를 마친 사람의 장난감 이미지. 없으면 물음표 자리로 둔다. */
+  /**
+   * 이 브라우저에서 테스트를 마친 사람인지. 저장된 결과 코드의 존재로 판단한다 —
+   * 아래 이미지 조회가 끝나기를 기다리면 그동안 처음 온 사람으로 취급돼 버린다.
+   */
+  hasMyCode: boolean;
+  /** 그 사람의 장난감 이미지. 조회가 늦게 끝나므로 없는 동안도 화면이 성립해야 한다. */
   myImageUrl?: string;
   onCopyMyChemiLink: () => void;
   onStartTest: () => void;
@@ -28,14 +33,13 @@ const TOY_SLOT = "flex size-[72px] items-center justify-center rounded-[18px]";
 // 잘못 고르면 남의 코드가 링크에 박혀 나간다(결과지에서 겪은 것과 같은 종류의 버그다).
 // 대신 이 브라우저에 저장된 결과 코드 하나로만 판단한다 — 있으면 그 사람이 나다.
 export default function NextChemiCard({
+  hasMyCode,
   myImageUrl,
   onCopyMyChemiLink,
   onStartTest,
   onEnterCode,
   onCheckFriendChemi,
 }: NextChemiCardProps) {
-  const hasMyCode = Boolean(myImageUrl);
-
   const [friendCodeInput, setFriendCodeInput] = useState("");
   const [friendCodeError, setFriendCodeError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -69,7 +73,9 @@ export default function NextChemiCard({
         <div className="flex flex-col items-center gap-[10px]">
           {hasMyCode ? (
             <div className={`${TOY_SLOT} bg-gray-01`}>
-              <img src={myImageUrl} alt="" className="size-12 object-contain" />
+              {/* 이미지가 아직 안 왔을 뿐 누구인지는 안다. 점선 물음표(=모르는 사람)로
+                  바꾸지 않고 빈 칸으로 둔다. */}
+              {myImageUrl && <img src={myImageUrl} alt="" className="size-12 object-contain" />}
             </div>
           ) : (
             <div className={`${TOY_SLOT} border-gray-03 border-2 border-dashed`}>
