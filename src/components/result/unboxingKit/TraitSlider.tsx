@@ -29,12 +29,17 @@ export default function TraitSlider({
   // 우세한 쪽 라벨의 값(50~100)만큼 그 쪽에서부터 채운다.
   const fillPercent = isRightDominant ? value : 100 - value;
 
+  // 어느 쪽이 우세한지를 색으로도 구분한다 — 왼쪽은 분홍, 오른쪽은 파랑.
+  // 막대는 연한 쪽, 라벨은 같은 계열의 진한 쪽을 써서 작은 글씨의 대비를 확보한다.
+  const fillClass = isRightDominant ? "bg-main-light" : "bg-point";
+  const activeLabelClass = isRightDominant ? "text-main" : "text-sub-4";
+
   return (
     <div className="flex flex-col gap-3">
       {/* ----- 슬라이더 바 ----- */}
       <div className="relative h-2 w-full rounded-full bg-gray-02 overflow-hidden">
         <div
-          className="absolute top-0 h-full bg-point transition-all duration-300"
+          className={`absolute top-0 h-full transition-all duration-300 ${fillClass}`}
           style={
             isRightDominant
               ? { right: 0, width: `${fillPercent}%` }
@@ -48,12 +53,12 @@ export default function TraitSlider({
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          className="flex items-center gap-1 hover:opacity-70 transition-opacity"
+          className="flex items-center gap-1"
         >
           <Typography
             variant="sb4"
             as="span"
-            className={!isRightDominant ? "text-point" : "text-gray-09"}
+            className={!isRightDominant ? activeLabelClass : "text-gray-05"}
           >
             {leftLabel}
           </Typography>
@@ -62,7 +67,7 @@ export default function TraitSlider({
         <Typography
           variant="sb4"
           as="span"
-          className={isRightDominant ? "text-point" : "text-gray-09"}
+          className={isRightDominant ? activeLabelClass : "text-gray-05"}
         >
           {rightLabel}
         </Typography>
