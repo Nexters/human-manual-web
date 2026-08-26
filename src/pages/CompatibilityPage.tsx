@@ -5,6 +5,7 @@ import Typography from "@/components/shared/Typography";
 import MatchupProfileCard from "@/components/compatibility/MatchupProfileCard";
 import SynergyScoreCard from "@/components/compatibility/SynergyScoreCard";
 import DetailAnalysisCard from "@/components/compatibility/DetailAnalysisCard";
+import DetailAnalysisModal from "@/components/compatibility/DetailAnalysisModal";
 import { DETAIL_CONTENT, DETAIL_ORDER } from "@/components/compatibility/detailAnalysisContent";
 import LongTermTipCard from "@/components/compatibility/LongTermTipCard";
 import NextChemiCard from "@/components/compatibility/NextChemiCard";
@@ -190,6 +191,25 @@ export default function CompatibilityPage() {
     return null;
   };
 
+  // 그리드 칸에서 잘린 설명을 자르지 않고 크게 보여준다. 제목은 모달 헤더가 아니라
+  // 본문 안에 두어 아이콘 아래로 오게 한다 — 헤더에 넣으면 아이콘보다 위로 올라간다.
+  const openDetailModal = (
+    content: (typeof DETAIL_CONTENT)[keyof typeof DETAIL_CONTENT],
+    description: string,
+  ) => {
+    openModal({
+      contents: (
+        <DetailAnalysisModal
+          icon={content.icon}
+          titleBefore={content.titleBefore}
+          titleHighlight={content.titleHighlight}
+          titleAfter={content.titleAfter}
+          description={description}
+        />
+      ),
+    });
+  };
+
   const handleShare = () => {
     trackEvent(GA_EVENTS.COMPATIBILITY.RESULT_SHARE);
     return share({
@@ -264,6 +284,7 @@ export default function CompatibilityPage() {
                   titleHighlight={content.titleHighlight}
                   titleAfter={content.titleAfter}
                   description={detail.description}
+                  onClick={() => openDetailModal(content, detail.description)}
                 />
               );
             })}
