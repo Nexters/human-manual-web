@@ -124,7 +124,7 @@ export default function Hero({
           className="flex flex-col items-center gap-1"
         >
           <Typography variant="sb3" className="text-gray-08">
-            내 장난감 설명서 보러가기
+            장난감 설명서 보러가기
           </Typography>
           <span className="flex flex-col items-center gap-0 -space-y-1">
             <ChevronLeftIcon className="rotate-180 w-3 h-3 text-gray-08" />
