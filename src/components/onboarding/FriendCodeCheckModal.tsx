@@ -11,6 +11,7 @@ import { isResultCode } from "@/lib/resultCode";
 import { useMyResultStore } from "@/stores/myResultStore";
 
 const INVALID_CODE_MESSAGE = "코드를 다시 입력해주세요";
+const SAME_CODE_MESSAGE = "친구 코드와 다른 내 코드를 입력해주세요";
 const LOAD_FAIL_MESSAGE = "케미 결과를 불러오지 못했어요. 잠시 후 다시 시도해주세요";
 
 type FriendCodeCheckModalProps = {
@@ -32,13 +33,16 @@ export default function FriendCodeCheckModal({
   const savedResultCode = useMyResultStore((state) => state.resultCode);
   const [myCode, setMyCode] = useState(savedResultCode ?? "");
   const [myCodeInvalid, setMyCodeInvalid] = useState(false);
+  const [sameCode, setSameCode] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
   const [checking, setChecking] = useState(false);
 
   const mine = myCode.trim();
   const friend = friendCode.trim();
-  // 서버는 mine 과 friend 가 같아도 200 으로 자기 자신과의 궁합을 돌려주므로 여기서 막는다.
-  const canCheck = mine !== "" && friend !== "" && mine !== friend;
+  // 값이 채워져 있으면 누를 수 있게 둔다. 내 코드는 스토리지에서 자동으로 채워지므로,
+  // 그 값이 우연히 친구 코드와 같더라도 "왜 안 눌리지" 가 되지 않도록 mine === friend 는
+  // 비활성 조건이 아니라 클릭 후 안내 메시지로 처리한다.
+  const canCheck = mine !== "" && friend !== "";
 
   const handleCheckCompatibility = async () => {
     if (!canCheck || checking) return;
@@ -49,6 +53,12 @@ export default function FriendCodeCheckModal({
     setLoadFailed(false);
     if (!mineFormatValid) return;
     // friend 는 useFriendCode 가 형식 검증을 마친 값이라 여기서 다시 막지 않는다.
+
+    // 서버는 두 코드가 같아도 200 으로 자기 자신과의 궁합을 돌려주므로 여기서 막는다.
+    if (mine === friend) {
+      setSameCode(true);
+      return;
+    }
 
     setChecking(true);
     try {
@@ -88,6 +98,7 @@ export default function FriendCodeCheckModal({
             onChange={(e) => {
               setMyCode(e.target.value);
               setMyCodeInvalid(false);
+              setSameCode(false);
               setLoadFailed(false);
             }}
             onKeyDown={(e) => {
@@ -96,6 +107,7 @@ export default function FriendCodeCheckModal({
             className="placeholder:text-gray-04 h-[56px] border-[1.5px] px-4 text-[18px] font-semibold placeholder:font-semibold"
           />
           {myCodeInvalid && <FieldError message={INVALID_CODE_MESSAGE} />}
+          {sameCode && <FieldError message={SAME_CODE_MESSAGE} />}
           {loadFailed && <FieldError message={LOAD_FAIL_MESSAGE} />}
         </div>
 
