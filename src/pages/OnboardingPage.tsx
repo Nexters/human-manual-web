@@ -8,6 +8,7 @@ import IntroStep from "@/components/onboarding/IntroStep";
 import PartIntroStep from "@/components/onboarding/PartIntroStep";
 import TestStartModal from "@/components/onboarding/TestStartModal";
 import InvitePreviewStep from "@/components/onboarding/InvitePreviewStep";
+import FriendCodeCheckModal from "@/components/onboarding/FriendCodeCheckModal";
 import MyResultModal from "@/components/onboarding/MyResultModal";
 import CompatibilityPageSkeleton from "@/components/compatibility/skeleton";
 import { introOrder, introPreloadImages, type IntroKey } from "@/components/onboarding/introSteps";
@@ -72,6 +73,7 @@ export default function OnboardingPage() {
   const queryClient = useQueryClient();
   // 이 브라우저에서 테스트를 마쳤는지. 친구 링크 자동 케미와 코드 자동 채우기의 근거다.
   const savedResultCode = useMyResultStore((state) => state.resultCode);
+  const rememberResultCode = useMyResultStore((state) => state.setResultCode);
 
   const nickname = useTestStore((state) => state.nickname);
   const answers = useTestStore((state) => state.answers);
@@ -183,6 +185,30 @@ export default function OnboardingPage() {
     });
   }, [open, close, friendCode, handleStartTest, navigateToCompatibility]);
 
+  // 친구 초대 링크로 들어온 사람이 "이미 테스트 했다면?" 을 누르면, 내 코드만 받는다.
+  // 친구 코드는 URL 에 있으니, TestStartModal(코드 2개) 대신 코드 1개짜리 모달을 연다.
+  // 조회·이동 흐름은 openTestStartModal 의 케미 경로와 동일하다.
+  const openFriendCodeCheckModal = useCallback(() => {
+    if (!friendCode) return;
+    open({
+      contents: (
+        <FriendCodeCheckModal
+          friendCode={friendCode}
+          onCheckCompatibility={(myCode) => {
+            close();
+            trackEvent({
+              ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
+              label: "친구코드팝업_확인버튼",
+            });
+            navigateToCompatibility(
+              `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(friendCode)}`,
+            );
+          }}
+        />
+      ),
+    });
+  }, [open, close, friendCode, navigateToCompatibility]);
+
   // 결과 코드가 결과지에 닿는 유일한 열쇠라, 코드를 들고 온 사람에게 입구를 열어둔다.
   // friend 문맥이 있으면 그대로 이어붙어, 결과지에서 바로 그 친구와의 케미로 갈 수 있다.
   const openMyResultModal = useCallback(() => {
@@ -193,12 +219,15 @@ export default function OnboardingPage() {
         <MyResultModal
           onSubmit={(resultCode) => {
             close();
+            // 다른 기기·스토리지 유실로 코드를 직접 넣은 사람도 이 브라우저에서
+            // 테스트를 마친 것으로 취급한다 — 이후 케미 화면의 "나" 자리가 채워진다.
+            rememberResultCode(resultCode);
             navigate(`/result/${resultCode}`);
           }}
         />
       ),
     });
-  }, [open, close, navigate]);
+  }, [open, close, navigate, rememberResultCode]);
 
   useImagePreload(firstScreenPreloadImages);
   // 뒤에서 쓰는 커스텀 폰트(Waguri, ThePosterFont 등)도 첫 화면에서 미리 받아둬서,
@@ -227,7 +256,8 @@ export default function OnboardingPage() {
           friendNoun={friendPreview.overview.noun}
           friendImageUrl={friendPreview.overview.image_url}
           onStart={() => handleStartTest("친구초대유입")}
-          onCheckExistingCode={openTestStartModal}
+          onCheckExistingCode={openFriendCodeCheckModal}
+          onViewFriendResult={() => navigate(`/result/${friendCode}`)}
         />
       );
     }

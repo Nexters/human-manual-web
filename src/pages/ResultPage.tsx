@@ -19,8 +19,6 @@ import { useScrollPassed } from "@/hooks/useScrollPassed";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useFontsReady } from "@/hooks/useFontsReady";
 import { getCompatibility } from "@/api/compatibility";
-import { verifyResultCode } from "@/api/assessment";
-import { isResultCode } from "@/lib/resultCode";
 import { compatibilityQueryKey } from "@/hooks/useCompatibility";
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { useModal } from "@/hooks/useModal";
@@ -166,37 +164,6 @@ export default function ResultPage() {
     }
   };
 
-  // 결과지 하단에서 친구 코드만 받아 케미로 보낸다. 내 코드는 URL 에 있어 입력받지 않는다.
-  // 궁합 API 는 어느 코드가 없는 코드인지 알려주지 않아, 실패한 뒤에 코드 존재를 따로 확인한다.
-  const handleCheckFriendChemi = async (inputCode: string): Promise<string | null> => {
-    if (!id) return "잠시 후 다시 시도해주세요";
-
-    const friend = inputCode.trim();
-    if (!isResultCode(friend)) return "코드를 다시 입력해주세요";
-    // 서버는 두 코드가 같아도 200 으로 자기 자신과의 궁합을 돌려주므로 여기서 막는다.
-    if (friend === id) return "친구 코드를 입력해주세요";
-
-    try {
-      // 케미 조회가 성공한 뒤에만 이동한다. 캐시에 담아두면 이동 직후 바로 렌더된다.
-      await queryClient.fetchQuery({
-        queryKey: compatibilityQueryKey(id, friend),
-        queryFn: () => getCompatibility(id, friend),
-      });
-    } catch {
-      const exists = await verifyResultCode(friend);
-      return exists
-        ? "케미 결과를 불러오지 못했어요. 잠시 후 다시 시도해주세요"
-        : "코드를 다시 입력해주세요";
-    }
-
-    trackEvent({
-      ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
-      label: "결과지_친구코드입력",
-    });
-    navigate(`/compatibility?mine=${encodeURIComponent(id)}&friend=${encodeURIComponent(friend)}`);
-    return null;
-  };
-
   const openChemiTestModal = () => {
     trackEvent(GA_EVENTS.RESULT.CHEMI_TEST_OPEN);
     open({
@@ -252,11 +219,9 @@ export default function ResultPage() {
         nickname={resultNickname}
         imageUrl={overview.image_url}
         friendNickname={friendNickname}
-        friendImageUrl={friendData?.overview.image_url}
         isCheckingChemi={checkingChemi}
         onSendChemiTest={openChemiTestModal}
         onViewChemi={() => void handleViewChemi()}
-        onCheckFriendChemi={handleCheckFriendChemi}
       />
 
       {/* ------- 쿠팡 파트너스 광고 ------ */}

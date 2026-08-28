@@ -76,7 +76,7 @@ export const mockCompatibility: CompatibilityOutput = {
     },
   ],
   relationship_tip: {
-    title: "함께 있을 때 기억해주세요",
+    title: "더 오래 잘 지내려면",
     description: "서로 다른 속도를 인정하면 더 오래, 더 편하게 만날 수 있어요.",
   },
 };

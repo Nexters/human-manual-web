@@ -11,6 +11,7 @@ const meta = {
     friendImageUrl: bearLarge,
     onStart: () => {},
     onCheckExistingCode: () => {},
+    onViewFriendResult: () => {},
   },
   parameters: {
     layout: "fullscreen",

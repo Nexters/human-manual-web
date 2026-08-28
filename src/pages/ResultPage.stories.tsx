@@ -55,8 +55,8 @@ export const Default: Story = {
   ],
 };
 
-// 친구 초대 링크로 들어와 남의 결과지를 보는 경우. sticky 버튼 라벨이
-// "OO님과의 케미 보러가기"로 바뀐다.
+// 친구 초대 링크(?friend=)로 들어와 테스트를 마친 경우.
+// ShareResult 첫 버튼이 "OO님과 테스트 바로 확인"으로 바뀐다.
 export const ViewingFriendResult: Story = {
   decorators: [
     (Story) => {
