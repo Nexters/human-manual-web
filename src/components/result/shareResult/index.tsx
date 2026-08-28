@@ -148,7 +148,7 @@ export default function ShareResult({
               <Spinner className="size-6" />
             ) : (
               <Typography variant="h2" as="span">
-                {friendNickname}님과 테스트 바로 확인
+                {friendNickname}님과 케미 바로 확인
               </Typography>
             )}
           </button>
