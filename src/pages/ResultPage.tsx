@@ -92,6 +92,7 @@ export default function ResultPage() {
   const resultNickname = data.participant.nickname;
   const heroTitle = resultNickname ? `${overview.noun} ${resultNickname}` : overview.noun;
   const friendNickname = friendCode ? friendData?.participant.nickname : undefined;
+  const friendImageUrl = friendCode ? friendData?.overview.image_url : undefined;
 
   // 링크에 내 결과 코드를 담아 보내면, 받은 친구는 코드를 입력하지 않아도 케미를 볼 수 있다.
   const chemiTestUrl = (() => {
@@ -219,6 +220,7 @@ export default function ResultPage() {
         nickname={resultNickname}
         imageUrl={overview.image_url}
         friendNickname={friendNickname}
+        friendImageUrl={friendImageUrl}
         isCheckingChemi={checkingChemi}
         onSendChemiTest={openChemiTestModal}
         onViewChemi={() => void handleViewChemi()}

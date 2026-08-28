@@ -16,9 +16,12 @@ interface ShareResultProps {
   imageUrl: string;
   /**
    * 친구 링크(?friend=)로 이 결과지에 이어진 상대의 닉네임.
-   * 있으면 첫 버튼이 "공유하기" 대신 "○○님과 테스트 바로 확인"으로 바뀐다.
+   * 있으면 첫 버튼이 "공유하기" 대신 "○○님과 테스트 바로 확인"으로 바뀌고,
+   * 프로필 대결 오른쪽 칸도 물음표 placeholder 대신 친구 정보로 채워진다.
    */
   friendNickname?: string;
+  /** 친구의 장난감 이미지. friendNickname 이 있을 때 프로필 대결 오른쪽 자리에 들어간다. */
+  friendImageUrl?: string;
   /** 케미 조회 중이면 첫 버튼을 스피너로 잠근다. */
   isCheckingChemi?: boolean;
   /** "친구에게 케미 테스트 공유하기" — 기존 공유 모달을 연다. */
@@ -52,6 +55,7 @@ export default function ShareResult({
   nickname,
   imageUrl,
   friendNickname,
+  friendImageUrl,
   isCheckingChemi = false,
   onSendChemiTest,
   onViewChemi,
@@ -123,12 +127,18 @@ export default function ShareResult({
 
         <div className="flex flex-col items-center gap-2">
           <div className="relative flex size-[93px] items-center justify-center rounded-full bg-white">
-            <img src={friendBear} alt="" className="size-[78px] object-contain" />
-            {/* 물음표 원본 비율(24x41)을 유지하도록 높이만 지정하고 너비는 auto */}
-            <img src={questionMark} alt="" className="absolute h-[18px] w-auto" />
+            {hasFriend && friendImageUrl ? (
+              <img src={friendImageUrl} alt="" className="size-[72px] object-contain" />
+            ) : (
+              <>
+                <img src={friendBear} alt="" className="size-[78px] object-contain" />
+                {/* 물음표 원본 비율(24x41)을 유지하도록 높이만 지정하고 너비는 auto */}
+                <img src={questionMark} alt="" className="absolute h-[18px] w-auto" />
+              </>
+            )}
           </div>
           <Typography variant="sb4" className="text-gray-07">
-            친구
+            {hasFriend && friendNickname ? `${friendNickname}님` : "친구"}
           </Typography>
         </div>
       </div>
