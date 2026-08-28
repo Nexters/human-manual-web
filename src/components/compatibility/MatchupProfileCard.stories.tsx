@@ -8,11 +8,10 @@ const meta = {
   component: MatchupProfileCard,
   args: {
     nickname: "지은",
+    noun: "팽이",
     image: spinningTop,
     imageAlt: "팽이 캐릭터",
-    resultCode: "ZajTQcpn",
     onViewResult: () => {},
-    onCopyCode: () => {},
   },
 } satisfies Meta<typeof MatchupProfileCard>;
 
@@ -24,8 +23,8 @@ export const Me: Story = {};
 export const Friend: Story = {
   args: {
     nickname: "선우",
+    noun: "곰인형",
     image: bearLarge,
     imageAlt: "곰인형 캐릭터",
-    resultCode: "RpJ1GUfB",
   },
 };

@@ -12,49 +12,56 @@ export default function CompatibilityPageSkeleton() {
       </div>
 
       <div className="flex flex-col gap-8 px-5 pt-[54px] pb-8">
+        {/* 헤드라인과 설명 (프로필 위) */}
+        <div className="flex flex-col items-center gap-3">
+          <SkeletonBox className="h-7 w-56" />
+          <SkeletonBox className="h-5 w-4/5" />
+        </div>
+
         {/* 매치업 — 장난감 두 칸과 × */}
         <div className="flex items-start justify-center gap-4">
           <div className="flex flex-col items-center gap-3">
-            <SkeletonBox className="size-[134px] rounded-[20px]" />
+            <SkeletonBox className="size-[134px] rounded-full" />
             <SkeletonBox className="h-5 w-16" />
+            <SkeletonBox className="h-8 w-24 rounded-full" />
           </div>
           <div className="flex h-[134px] items-center">
             <SkeletonBox className="size-5 rounded-full" />
           </div>
           <div className="flex flex-col items-center gap-3">
-            <SkeletonBox className="size-[134px] rounded-[20px]" />
+            <SkeletonBox className="size-[134px] rounded-full" />
             <SkeletonBox className="h-5 w-16" />
+            <SkeletonBox className="h-8 w-24 rounded-full" />
           </div>
         </div>
 
-        {/* 헤드라인과 설명 */}
-        <div className="flex flex-col items-center gap-3">
-          <SkeletonBox className="h-7 w-56" />
-          <SkeletonBox className="h-5 w-full" />
-          <SkeletonBox className="h-5 w-4/5" />
-        </div>
-
         {/* 케미 게이지 */}
-        <div className="flex flex-col gap-4 rounded-[20px] bg-white p-5">
+        <div className="flex flex-col gap-4 rounded-[10px] bg-white p-4">
           <SkeletonBox className="h-6 w-28" />
           <SkeletonBox className="h-2 w-full rounded-full" />
           <SkeletonBox className="h-5 w-3/4" />
         </div>
 
-        {/* 상세 분석 2×2 */}
-        <div className="grid grid-cols-2 gap-[10px]">
-          <SkeletonBox className="h-[132px] rounded-[20px]" />
-          <SkeletonBox className="h-[132px] rounded-[20px]" />
-          <SkeletonBox className="h-[132px] rounded-[20px]" />
-          <SkeletonBox className="h-[132px] rounded-[20px]" />
+        {/* 상세 분석 아코디언 4칸 */}
+        <div className="flex flex-col gap-[10px]">
+          <SkeletonBox className="h-[52px] rounded-[10px]" />
+          <SkeletonBox className="h-[52px] rounded-[10px]" />
+          <SkeletonBox className="h-[52px] rounded-[10px]" />
+          <SkeletonBox className="h-[52px] rounded-[10px]" />
         </div>
 
         {/* 팁 카드 */}
         <div className="flex flex-col gap-4">
           <SkeletonBox className="h-6 w-40 self-center" />
-          <SkeletonBox className="h-[108px] rounded-[20px]" />
-          <SkeletonBox className="h-[108px] rounded-[20px]" />
+          <SkeletonBox className="h-[108px] rounded-[10px]" />
+          <SkeletonBox className="h-[108px] rounded-[10px]" />
         </div>
+      </div>
+
+      {/* 다른 친구랑 케미 보기 — 버튼 두 개 */}
+      <div className="flex flex-col gap-3 px-5 pb-8">
+        <SkeletonBox className="h-[54px] rounded-[10px]" />
+        <SkeletonBox className="h-[54px] rounded-[10px]" />
       </div>
     </div>
   );

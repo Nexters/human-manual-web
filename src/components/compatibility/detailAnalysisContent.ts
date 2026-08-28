@@ -8,37 +8,28 @@ type DetailKey = CompatibilityDetailOutput["key"];
 
 type DetailContent = {
   icon: string;
-  titleBefore: string;
-  titleHighlight: string;
-  titleAfter: string;
+  /** 아코디언 헤더에 그대로 쓰는 질문형 제목. */
+  question: string;
 };
 
-// 카드 제목·강조 단어·아이콘은 Figma 시안(2028:5168)에 고정된 문구라 서버 데이터
-// 대신 key별 상수로 관리한다. description만 서버 값을 그대로 쓴다.
+// 아코디언 제목·아이콘은 Figma 시안(2945:17757)에 고정된 문구라 서버 데이터 대신
+// key별 상수로 관리한다. description만 서버 값을 그대로 쓴다.
 export const DETAIL_CONTENT: Record<DetailKey, DetailContent> = {
   distance: {
     icon: distanceIcon,
-    titleBefore: "우리 사이의 ",
-    titleHighlight: "거리감",
-    titleAfter: "",
+    question: "우리 사이의 거리감은?",
   },
   conflict: {
     icon: conflictIcon,
-    titleBefore: "",
-    titleHighlight: "서운함",
-    titleAfter: "을 푸는 속도",
+    question: "서운함을 푸는 속도는?",
   },
   care: {
     icon: careIcon,
-    titleBefore: "",
-    titleHighlight: "마음",
-    titleAfter: "을 주고 받는 방식",
+    question: "마음을 주고 받는 방식은?",
   },
   pace: {
     icon: paceIcon,
-    titleBefore: "함께 ",
-    titleHighlight: "노는",
-    titleAfter: " 방식",
+    question: "함께 노는 방식은?",
   },
 };
 

@@ -1,9 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import Typography from "@/components/shared/Typography";
 
 const LOADER_SCRIPT_SRC = "https://ads-partners.coupang.com/g.js";
-const AD_CONFIG =
-  '{"id":1020614,"template":"carousel","trackingCode":"AF6485415","width":"350","height":"70","tsource":""}';
+
+// g.js는 container를 지정하지 않으면 "문서의 마지막 <script>" 옆에 위젯을 꽂는다.
+// 그게 페이지 컬럼(max-w-[440px]) 밖일 수 있어, 삽입 위치를 우리 컨테이너로 못박는다.
+const adConfig = (containerId: string) =>
+  `{"id":1020614,"template":"carousel","trackingCode":"AF6485415","width":"350","height":"70","tsource":"","container":"#${containerId}"}`;
 
 // Storybook은 스토리 전환·HMR마다 이 컴포넌트를 다시 마운트하는데, g.js 로더의
 // onload가 비동기라 언마운트 cleanup과 타이밍이 어긋나면 광고가 여러 개 쌓여
@@ -19,6 +22,7 @@ const isStorybook =
  */
 export default function CoupangPartnersAd() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const containerId = `coupang-ad-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
 
   useEffect(() => {
     if (isStorybook) return;
@@ -29,7 +33,7 @@ export default function CoupangPartnersAd() {
     loaderScript.src = LOADER_SCRIPT_SRC;
     loaderScript.onload = () => {
       const initScript = document.createElement("script");
-      initScript.textContent = `new PartnersCoupang.G(${AD_CONFIG});`;
+      initScript.textContent = `new PartnersCoupang.G(${adConfig(containerId)});`;
       container.appendChild(initScript);
     };
     container.appendChild(loaderScript);
@@ -37,13 +41,13 @@ export default function CoupangPartnersAd() {
     return () => {
       container.innerHTML = "";
     };
-  }, []);
+  }, [containerId]);
 
   if (isStorybook) return null;
 
   return (
     <div>
-      <div ref={containerRef} />
+      <div id={containerId} ref={containerRef} className="flex flex-col items-center" />
       <Typography variant="me4" className="text-gray-05 text-center text-[10px]">
         이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
       </Typography>
