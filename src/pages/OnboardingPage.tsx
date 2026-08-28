@@ -73,6 +73,7 @@ export default function OnboardingPage() {
   const queryClient = useQueryClient();
   // 이 브라우저에서 테스트를 마쳤는지. 친구 링크 자동 케미와 코드 자동 채우기의 근거다.
   const savedResultCode = useMyResultStore((state) => state.resultCode);
+  const rememberResultCode = useMyResultStore((state) => state.setResultCode);
 
   const nickname = useTestStore((state) => state.nickname);
   const answers = useTestStore((state) => state.answers);
@@ -218,12 +219,15 @@ export default function OnboardingPage() {
         <MyResultModal
           onSubmit={(resultCode) => {
             close();
+            // 다른 기기·스토리지 유실로 코드를 직접 넣은 사람도 이 브라우저에서
+            // 테스트를 마친 것으로 취급한다 — 이후 케미 화면의 "나" 자리가 채워진다.
+            rememberResultCode(resultCode);
             navigate(`/result/${resultCode}`);
           }}
         />
       ),
     });
-  }, [open, close, navigate]);
+  }, [open, close, navigate, rememberResultCode]);
 
   useImagePreload(firstScreenPreloadImages);
   // 뒤에서 쓰는 커스텀 폰트(Waguri, ThePosterFont 등)도 첫 화면에서 미리 받아둬서,
