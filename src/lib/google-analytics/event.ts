@@ -17,6 +17,12 @@ export const GA_EVENTS = {
       category: "onboarding",
       label: "내결과지_코드로_보기",
     },
+    // 모달을 연 것과 달리, 코드 검증까지 통과해 결과지로 실제 이동할 때만 전송됨
+    MY_RESULT_CODE_VERIFIED: {
+      action: "my_result_code_verified",
+      category: "onboarding",
+      label: "내결과지_코드입력_성공",
+    },
   },
 
   // 문항 진행 관련 GA 이벤트
