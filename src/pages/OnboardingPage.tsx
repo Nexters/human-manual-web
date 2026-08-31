@@ -222,6 +222,7 @@ export default function OnboardingPage() {
             // 다른 기기·스토리지 유실로 코드를 직접 넣은 사람도 이 브라우저에서
             // 테스트를 마친 것으로 취급한다 — 이후 케미 화면의 "나" 자리가 채워진다.
             rememberResultCode(resultCode);
+            trackEvent(GA_EVENTS.ONBOARDING.MY_RESULT_CODE_VERIFIED);
             navigate(`/result/${resultCode}`);
           }}
         />
