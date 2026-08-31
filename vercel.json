@@ -4,6 +4,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://api.pakit.kr/api/:path*"
+    },
+    {
+      "source": "/:path((?!api/).*)",
+      "destination": "/index.html"
     }
   ]
 }
