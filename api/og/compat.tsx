@@ -1,11 +1,78 @@
 import { ImageResponse } from "@vercel/og";
-import { fallbackResponse, fetchJson, loadPretendardBold, takeResultCode } from "../_og-lib.js";
-import type { CompatibilityData } from "../_og-lib.js";
-import { PersonColumn } from "../_og-components.js";
 
-export const config = { runtime: "edge" };
+export const config = { runtime: "nodejs" };
 
 const CACHE_CONTROL = "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400";
+
+// src/lib/resultCode.ts 와 동일한 규칙. api/ 는 Vercel이 함수별로 개별 컴파일하며
+// 파일 간 상대 import가 있으면 그 컴파일이 깨지는 사례가 있어 필요한 코드를 인라인한다.
+const RESULT_CODE_LENGTH = 8;
+const RESULT_CODE_PATTERN = new RegExp(`^[A-Za-z0-9_-]{${RESULT_CODE_LENGTH}}$`);
+
+function takeResultCode(value: string | null | undefined): string | null {
+  const code = value?.slice(0, RESULT_CODE_LENGTH);
+  return code && RESULT_CODE_PATTERN.test(code) ? code : null;
+}
+
+interface CompatibilityPerson {
+  nickname: string;
+  noun: string;
+  image_url: string;
+}
+
+interface CompatibilityData {
+  mine: CompatibilityPerson;
+  friend: CompatibilityPerson;
+  headline: string;
+  description: string;
+}
+
+async function fetchCompatibility(mine: string, friend: string): Promise<CompatibilityData | null> {
+  try {
+    const res = await fetch(
+      `https://api.pakit.kr/api/compatibility?mine=${mine}&friend=${friend}`,
+      { signal: AbortSignal.timeout(4000) },
+    );
+    if (!res.ok) return null;
+    return (await res.json()) as CompatibilityData;
+  } catch {
+    return null;
+  }
+}
+
+function fallbackResponse(origin: string): Response {
+  return Response.redirect(new URL("/og-image-compatibility.jpg", origin), 302);
+}
+
+function loadPretendardBold(origin: string): Promise<ArrayBuffer> {
+  return fetch(new URL("/og/fonts/pretendard-bold.woff", origin)).then((res) => res.arrayBuffer());
+}
+
+function PersonColumn({ imageSrc, noun, name }: { imageSrc: string; noun: string; name: string }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+      <img
+        src={imageSrc}
+        width={180}
+        height={180}
+        style={{ objectFit: "contain", borderRadius: "50%", background: "#FFFFFF" }}
+      />
+      <div
+        style={{
+          display: "flex",
+          background: "#FCE7F3",
+          borderRadius: 999,
+          padding: "8px 20px",
+          fontSize: 20,
+          color: "#831843",
+        }}
+      >
+        {noun}
+      </div>
+      <div style={{ display: "flex", fontSize: 30, fontWeight: 700, color: "#1F2937" }}>{name}</div>
+    </div>
+  );
+}
 
 export default async function handler(req: Request) {
   const url = new URL(req.url);
@@ -15,9 +82,7 @@ export default async function handler(req: Request) {
   const friend = takeResultCode(url.searchParams.get("friend"));
   if (!mine || !friend) return fallbackResponse(origin);
 
-  const data = await fetchJson<CompatibilityData>(
-    `/api/compatibility?mine=${mine}&friend=${friend}`,
-  );
+  const data = await fetchCompatibility(mine, friend);
   if (!data) return fallbackResponse(origin);
 
   const fontData = await loadPretendardBold(origin);
