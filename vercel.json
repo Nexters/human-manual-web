@@ -2,6 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/api/og/:path*",
+      "destination": "/api/og/:path*"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://api.pakit.kr/api/:path*"
     },

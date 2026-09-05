@@ -1,0 +1,132 @@
+// 카카오톡·페이스북 등 링크 미리보기 봇은 JS를 실행하지 않고 index.html 의 정적
+// <meta og:*> 만 읽는다. 이 미들웨어는 그 봇 요청에 한해, 공유된 결과·케미 데이터로
+// og:title/description/image 를 채운 HTML을 대신 응답한다. 일반 사용자는 그대로
+// React 앱(index.html)을 받는다 — 아래에서 반환값이 없으면 요청이 통과된다.
+export const config = {
+  matcher: ["/((?!api/|og/|assets/|favicon|_vercel).*)"],
+};
+
+const BOT_UA =
+  /kakaotalk-scrap|facebookexternalhit|facebot|twitterbot|slackbot|discordbot|telegrambot|whatsapp|line-poker|skypeuripreview|embedly|redditbot|googlebot|bingbot/i;
+
+const RESULT_CODE_LENGTH = 8;
+const RESULT_CODE_PATTERN = new RegExp(`^[A-Za-z0-9_-]{${RESULT_CODE_LENGTH}}$`);
+
+function takeResultCode(value: string | null | undefined): string | null {
+  const code = value?.slice(0, RESULT_CODE_LENGTH);
+  return code && RESULT_CODE_PATTERN.test(code) ? code : null;
+}
+
+async function fetchJson(pathname: string): Promise<Record<string, unknown> | null> {
+  try {
+    const res = await fetch(`https://api.pakit.kr${pathname}`, {
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+// HTML 속성 안에 그대로 넣을 문자열이므로 escape 필수 (닉네임·headline 등 사용자·서버 문자열).
+function esc(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+interface OgMeta {
+  image: string;
+  title: string;
+  description: string;
+}
+
+async function resolveOgMeta(url: URL, origin: string): Promise<OgMeta | null> {
+  if (url.pathname.startsWith("/result/")) {
+    const code = takeResultCode(url.pathname.split("/")[2]);
+    if (!code) return null;
+    const data = await fetchJson(`/api/results/${code}`);
+    if (!data) return null;
+    const overview = data.overview as Record<string, unknown>;
+    const participant = data.participant as Record<string, unknown>;
+    return {
+      image: `${origin}/api/og/result?code=${code}`,
+      title: `${participant.nickname}님의 장난감은 '${overview.noun}'`,
+      description: `${overview.adjective} · ${overview.rarity}`,
+    };
+  }
+
+  if (url.pathname === "/" && url.searchParams.has("friend")) {
+    const code = takeResultCode(url.searchParams.get("friend"));
+    if (!code) return null;
+    const data = await fetchJson(`/api/results/${code}`);
+    if (!data) return null;
+    const participant = data.participant as Record<string, unknown>;
+    return {
+      image: `${origin}/api/og/invite?code=${code}`,
+      title: `${participant.nickname}님과의 케미를 보고 싶다면?`,
+      description: "나랑 얼마나 잘 맞을까? 지금 확인해보세요",
+    };
+  }
+
+  if (url.pathname === "/compatibility") {
+    const mine = takeResultCode(url.searchParams.get("mine"));
+    const friend = takeResultCode(url.searchParams.get("friend"));
+    if (!mine || !friend) return null;
+    const data = await fetchJson(`/api/compatibility?mine=${mine}&friend=${friend}`);
+    if (!data) return null;
+    return {
+      image: `${origin}/api/og/compat?mine=${mine}&friend=${friend}`,
+      title: data.headline as string,
+      description: data.description as string,
+    };
+  }
+
+  return null;
+}
+
+export default async function middleware(req: Request) {
+  const ua = req.headers.get("user-agent") ?? "";
+  if (!BOT_UA.test(ua)) return; // 일반 사용자 → 통과, React 앱 그대로
+
+  const url = new URL(req.url);
+  const origin = url.origin;
+
+  const og = await resolveOgMeta(url, origin);
+  if (!og) return; // 매칭 없음 · 데이터 없음(잘못된 코드 등) → 기본 정적 OG로 통과
+
+  const html = await fetch(`${origin}/index.html`).then((r) => r.text());
+  const patched = html
+    .replace(
+      /<meta property="og:title"[^>]*>/,
+      `<meta property="og:title" content="${esc(og.title)}" />`,
+    )
+    .replace(
+      /<meta property="og:description"[^>]*>/,
+      `<meta property="og:description" content="${esc(og.description)}" />`,
+    )
+    .replace(
+      /<meta property="og:image"[^>]*>/,
+      `<meta property="og:image" content="${og.image}" />`,
+    )
+    .replace(/<meta property="og:image:width"[^>]*>\s*/, "")
+    .replace(/<meta property="og:image:height"[^>]*>\s*/, "")
+    .replace(
+      /<meta name="twitter:image"[^>]*>/,
+      `<meta name="twitter:image" content="${og.image}" />`,
+    )
+    .replace(
+      '<meta property="og:site_name"',
+      `<meta property="og:url" content="${esc(req.url)}" />\n    <meta property="og:site_name"`,
+    );
+
+  return new Response(patched, {
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "public, max-age=300, s-maxage=300",
+    },
+  });
+}
