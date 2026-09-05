@@ -1,6 +1,3 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-
 // src/lib/resultCode.ts 와 동일한 규칙(OpenAPI AssessmentSubmissionOutput.result_code 제약:
 // URL-safe 8자). 공유 문구가 뒤에 붙어 넘어오는 경우가 있어 앞 8자만 본다.
 const RESULT_CODE_LENGTH = 8;
@@ -29,13 +26,14 @@ export function fallbackResponse(origin: string): Response {
 
 // Pretendard Bold subset. 시안 원래 폰트(WAGURI)는 1.4MB로 콜드스타트가 무거워
 // 1차는 이걸로 진행하고, 실제 이미지 확인 후 필요하면 교체한다.
+// Edge 런타임(@vercel/og 표준 실행 환경)은 fs를 못 쓰므로, 배경·캐릭터 이미지와
+// 동일하게 public/ 자산을 fetch로 가져온다.
 let fontDataPromise: Promise<ArrayBuffer> | null = null;
 
-export function loadPretendardBold(): Promise<ArrayBuffer> {
+export function loadPretendardBold(origin: string): Promise<ArrayBuffer> {
   if (!fontDataPromise) {
-    const fontPath = path.join(process.cwd(), "api/_fonts/pretendard-bold.woff");
-    fontDataPromise = readFile(fontPath).then(
-      (buf) => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer,
+    fontDataPromise = fetch(new URL("/og/fonts/pretendard-bold.woff", origin)).then((res) =>
+      res.arrayBuffer(),
     );
   }
   return fontDataPromise;

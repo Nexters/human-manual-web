@@ -3,7 +3,7 @@ import { fallbackResponse, fetchJson, loadPretendardBold, takeResultCode } from 
 import type { CompatibilityData } from "../_og-lib.js";
 import { PersonColumn } from "../_og-components.js";
 
-export const config = { runtime: "nodejs" };
+export const config = { runtime: "edge" };
 
 const CACHE_CONTROL = "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400";
 
@@ -20,7 +20,7 @@ export default async function handler(req: Request) {
   );
   if (!data) return fallbackResponse(origin);
 
-  const fontData = await loadPretendardBold();
+  const fontData = await loadPretendardBold(origin);
 
   return new ImageResponse(
     <div
