@@ -1,6 +1,6 @@
 import { ImageResponse } from "@vercel/og";
-import { fallbackResponse, fetchJson, loadPretendardBold, takeResultCode } from "../_og-lib";
-import type { ResultData } from "../_og-lib";
+import { fallbackResponse, fetchJson, loadPretendardBold, takeResultCode } from "../_og-lib.js";
+import type { ResultData } from "../_og-lib.js";
 
 export const config = { runtime: "nodejs" };
 

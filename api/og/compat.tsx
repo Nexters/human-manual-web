@@ -1,7 +1,7 @@
 import { ImageResponse } from "@vercel/og";
-import { fallbackResponse, fetchJson, loadPretendardBold, takeResultCode } from "../_og-lib";
-import type { CompatibilityData } from "../_og-lib";
-import { PersonColumn } from "../_og-components";
+import { fallbackResponse, fetchJson, loadPretendardBold, takeResultCode } from "../_og-lib.js";
+import type { CompatibilityData } from "../_og-lib.js";
+import { PersonColumn } from "../_og-components.js";
 
 export const config = { runtime: "nodejs" };
 
