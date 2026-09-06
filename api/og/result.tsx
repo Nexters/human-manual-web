@@ -69,29 +69,23 @@ const SCALE = 1.5;
 // 프레임 안에 맞도록 640 으로. top 은 살짝 위로 넘치게.
 const CHAR = { size: 520, left: 640, top: -10 };
 
-// 태그 3개 — 실제 앱 결과지(src/components/result/hero/index.tsx)의 TAG_POSITIONS
-// 를 그대로 옮긴다. 앱은 320x320 캐릭터 박스 기준:
-//   0: top-[2%]  right-[2%]     (우상단 모서리)
-//   1: bottom-[15%] left-[-3%]  (좌하단, 박스 왼쪽으로 3% 밖)
-//   2: bottom-[-5%] right-[7%]  (하단, 박스 밑으로 5%)
-// pill 은 각 모서리에 붙고, right/bottom 기준이라 pill 크기와 무관하게 정렬된다.
-// anchor: 'tr' = pill 오른쪽 위 모서리를 (left,top)에 맞춤 등.
+// 태그 3개 — 앱 결과지(hero)는 정사각 캐릭터 박스 모서리에 태그를 붙인다. 하지만
+// 우리 캐릭터는 object-contain 이라 가로로 긴 캐릭터(헬리콥터 등)는 520 박스 안에서
+// 세로가 훨씬 작게, 세로 중앙 정렬로 렌더된다. 그래서 태그를 박스가 아니라 캐릭터의
+// 실제 시각 영역에 맞춰야 붙어 보인다. 대부분 캐릭터가 박스의 세로 ~60% 를 차지한다고
+// 보고, 그 영역(vTop ~ vBot)의 모서리에 태그를 건다.
+const CHAR_V_FILL = 0.62; // 캐릭터가 박스 세로에서 차지하는 비율(근사)
+const vPad = (CHAR.size * (1 - CHAR_V_FILL)) / 2;
+const vTop = CHAR.top + vPad;
+const vBot = CHAR.top + CHAR.size - vPad;
+
 const TAG_ANCHORS: { left: number; top: number; anchor: "tr" | "bl" | "br" }[] = [
-  {
-    left: CHAR.left + CHAR.size * 0.98,
-    top: CHAR.top + CHAR.size * 0.02,
-    anchor: "tr",
-  },
-  {
-    left: CHAR.left - CHAR.size * 0.03,
-    top: CHAR.top + CHAR.size * 0.85,
-    anchor: "bl",
-  },
-  {
-    left: CHAR.left + CHAR.size * 0.93,
-    top: CHAR.top + CHAR.size * 1.05,
-    anchor: "br",
-  },
+  // 우상단 모서리
+  { left: CHAR.left + CHAR.size * 0.95, top: vTop, anchor: "tr" },
+  // 좌하단 (캐릭터 왼쪽 가장자리보다 살짝 밖)
+  { left: CHAR.left + CHAR.size * 0.05, top: vBot - CHAR.size * 0.12, anchor: "bl" },
+  // 하단 (캐릭터 발밑)
+  { left: CHAR.left + CHAR.size * 0.9, top: vBot + CHAR.size * 0.06, anchor: "br" },
 ];
 
 // 시안(2952:9748 등): rgba(255,255,255,0.8), radius 24.33, Pretendard SemiBold
