@@ -14,23 +14,6 @@ function takeResultCode(value: string | null | undefined): string | null {
   return code && RESULT_CODE_PATTERN.test(code) ? code : null;
 }
 
-// runtime: "nodejs" 함수의 req 는 Node IncomingMessage 다(웹 Request 아님).
-interface NodeReq {
-  url?: string;
-  headers: Record<string, string | string[] | undefined>;
-}
-
-function firstHeader(h: NodeReq["headers"], key: string): string | undefined {
-  const v = h[key];
-  return Array.isArray(v) ? v[0] : v;
-}
-
-function resolveUrl(req: NodeReq): URL {
-  const host = firstHeader(req.headers, "host") ?? "pakit.kr";
-  const proto = firstHeader(req.headers, "x-forwarded-proto") ?? "https";
-  return new URL(req.url ?? "/", `${proto}://${host}`);
-}
-
 interface ResultData {
   participant: { nickname: string };
   overview: { noun: string; image_url: string };
@@ -90,8 +73,10 @@ function PersonColumn({ imageSrc, noun, name }: { imageSrc: string; noun: string
   );
 }
 
-export default async function handler(req: NodeReq) {
-  const url = resolveUrl(req);
+// Vercel Node 함수에서 Web Response 를 반환하려면 default export 가 아니라
+// named HTTP 메서드(GET)로 내보내야 한다. 이 시그니처의 request 는 웹 표준 Request.
+export async function GET(request: Request) {
+  const url = new URL(request.url);
   const origin = url.origin;
 
   const code = takeResultCode(url.searchParams.get("code"));
