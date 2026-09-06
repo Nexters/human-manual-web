@@ -88,19 +88,37 @@ function CharacterColumn({
           display: "flex",
         }}
       />
-      {/* 캐릭터 (회전 없음 — 앱 결과지와 동일하게 정면). 원 중앙에 놓는다. */}
+      {/* 캐릭터 (회전 없음 — 앱 결과지와 동일하게 정면). 원 중앙에 놓는다.
+          placeholder(곰돌이)는 시안(2972:18667)에서 흰색 실루엣 + 회색 물음표.
+          bear-white.png 는 알파는 유지하고 RGB 만 순백으로 만든 파일. */}
       <img
         src={imageSrc}
-        width={CHAR_BOX}
-        height={CHAR_BOX}
+        width={placeholder ? 131 * H : CHAR_BOX}
+        height={placeholder ? 132 * H : CHAR_BOX}
         style={{
           position: "absolute",
-          left: centerX - CHAR_BOX / 2,
-          top: V(130.77) + CIRCLE / 2 - CHAR_BOX / 2,
+          left: centerX - (placeholder ? (131 * H) / 2 : CHAR_BOX / 2),
+          top: V(130.77) + CIRCLE / 2 - (placeholder ? (132 * H) / 2 : CHAR_BOX / 2),
           objectFit: "contain",
-          opacity: placeholder ? 0.9 : 1,
         }}
       />
+      {placeholder && (
+        <div
+          style={{
+            position: "absolute",
+            left: centerX,
+            top: V(130.77) + CIRCLE / 2,
+            transform: "translate(-50%, -50%)",
+            display: "flex",
+            fontSize: 28 * H,
+            fontWeight: 700,
+            letterSpacing: -1.121 * H,
+            color: "#B0B8C1",
+          }}
+        >
+          ?
+        </div>
+      )}
       {/* noun pill */}
       <div
         style={{
@@ -249,7 +267,7 @@ export async function GET(request: Request) {
       {/* 오른쪽: 곰돌이 (아직 상대를 모름) */}
       <CharacterColumn
         centerX={centerX + COL_DX}
-        imageSrc={`${origin}/og/bear.png`}
+        imageSrc={`${origin}/og/bear-white.png`}
         noun="???"
         name="나"
         placeholder
