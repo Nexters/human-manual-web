@@ -61,34 +61,35 @@ const TEXT_SHADOW = "0px 4px 15px rgba(0,0,0,0.15)";
 // 아래 15px 는 배경 여백.
 const SCALE = 1.5;
 
-// 캐릭터 — 시안: 중앙~우측, 세로를 거의 가득. 단 캐릭터 PNG 는 1020x1020 정사각에
-// 캐릭터마다 다른 여백이 있어(헬리콥터는 가로로 긺) 박스가 화면 밖으로 나가면
-// 프로펠러·꼬리가 잘린다. 박스가 오른쪽으로 안 넘치도록 left+size <= 1200 유지.
-const CHAR = { top: 5, left: 585, size: 610 };
+// 캐릭터 — 시안(2952:9741): 중심 x = 프레임중앙+110, size 454, top -53 (800 기준).
+// 회전(-40.97deg)은 팽이 3D 모델이 원래 기울어진 것이라 적용하지 않는다(로봇·
+// 헬리콥터 등은 정면). OG(x1.5): 중심 x = 600+165 = 765, size 681, top -80.
+// 캐릭터 PNG 는 1020x1020 정사각(여백은 캐릭터마다 다름).
+const CHAR = { top: -80, left: 765 - 681 / 2, size: 681 };
 
-// 태그 3개 — 앱 결과지(src/components/result/hero)처럼 캐릭터 주변 배치.
-// 앱: top-[2%] right-[2%] / bottom-[15%] left-[-3%] / bottom-[-5%] right-[7%].
-// 화면(1200x630) 밖으로 안 나가게 좌표를 클램프한다.
-const TAG_MAX_W = 260;
-const clampX = (x: number) => Math.max(24, Math.min(x, 1200 - TAG_MAX_W - 24));
-const clampY = (y: number) => Math.max(16, Math.min(y, 630 - 60));
+// 태그 3개 — 시안 pill 절대좌표 x1.5. (2952:9750 / 9753 / 9747)
+//   도파민 MAX      pill left578 top46  w114 -> 867 / 69 / 171
+//   장난꾸러기      pill left327 top246 w103 -> 490 / 369 / 154
+//   혼자서도 잘놀아요 pill left521 top312 w146 -> 781 / 468 / 219
 const TAG_ANCHORS: { top: number; left: number }[] = [
-  { top: clampY(CHAR.top + CHAR.size * 0.06), left: clampX(CHAR.left + CHAR.size * 0.62) },
-  { top: clampY(CHAR.top + CHAR.size * 0.62), left: clampX(CHAR.left - CHAR.size * 0.05) },
-  { top: clampY(CHAR.top + CHAR.size * 0.9), left: clampX(CHAR.left + CHAR.size * 0.5) },
+  { top: 69, left: 867 },
+  { top: 369, left: 490 },
+  { top: 468, left: 781 },
 ];
 
+// 시안(2952:9748 등): rgba(255,255,255,0.8), radius 24.33, Pretendard SemiBold
+// 15.925, 자간 -0.637. 폰트는 Bold woff 하나만 로드하므로 weight 700 로 렌더.
 const TAG_STYLE = {
   display: "flex" as const,
   alignItems: "center" as const,
   justifyContent: "center" as const,
   position: "absolute" as const,
-  padding: `${9 * SCALE}px ${16 * SCALE}px`,
-  background: "rgba(255,255,255,0.7)",
-  borderRadius: 999,
-  fontSize: 16 * SCALE,
+  padding: `${8 * SCALE}px ${15 * SCALE}px`,
+  background: "rgba(255,255,255,0.8)",
+  borderRadius: 24.33 * SCALE,
+  fontSize: 15.925 * SCALE,
   fontWeight: 700,
-  letterSpacing: -0.64 * SCALE,
+  letterSpacing: -0.637 * SCALE,
   color: "#4E5968",
   whiteSpace: "nowrap" as const,
 };
