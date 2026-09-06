@@ -67,7 +67,7 @@ async function resolveOgMeta(url: URL, origin: string): Promise<OgMeta | null> {
       title: rarity
         ? `${nickname}님은 ${rarity}의 '${noun}'`
         : `${nickname}님의 장난감은 '${noun}'`,
-      description: `${adjective} 장난감이래요. 나는 어떤 장난감일까? 👀`,
+      description: `${adjective} 장난감이래요. 나는 어떤 장난감일까?`,
     };
   }
 
@@ -81,7 +81,7 @@ async function resolveOgMeta(url: URL, origin: string): Promise<OgMeta | null> {
     return {
       image: `${origin}/api/og/invite?code=${code}`,
       title: `${nickname}님과의 케미, 궁금하지 않아요?`,
-      description: "나랑 얼마나 잘 맞을까? 지금 확인해보세요 👀",
+      description: "나랑 얼마나 잘 맞을까? 지금 확인해보세요",
     };
   }
 
@@ -99,7 +99,7 @@ async function resolveOgMeta(url: URL, origin: string): Promise<OgMeta | null> {
     return {
       image: `${origin}/api/og/compat?mine=${mine}&friend=${friend}`,
       title: `${mineName}님과 ${friendName}님의 케미 결과가 나왔어요`,
-      description: `${headline} — 우리 궁합 자세히 보기 👀`,
+      description: `${headline} — 우리 궁합 자세히 보기`,
     };
   }
 
