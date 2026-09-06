@@ -56,32 +56,37 @@ async function fetchFont(origin: string, path: string): Promise<ArrayBuffer | nu
 
 const TEXT_SHADOW = "0px 4px 15px rgba(0,0,0,0.15)";
 
-// Figma 시안(node 2952:9716)은 800x400 프레임. OG 는 1200x630 이라 시안 전체를
-// x1.5 스케일해 옮긴다(폰트 크기 포함). 세로는 600 이 되어 상단 정렬.
-// 태그 3개의 위치는 시안 절대 좌표 x1.5.
-const TAG_POSITIONS: { top: number; left: number; width: number }[] = [
-  { top: 69, left: 867, width: 171 }, // 도파민 MAX (우상단)
-  { top: 369, left: 490, width: 154 }, // 장난꾸러기 (좌하단)
-  { top: 468, left: 781, width: 219 }, // 혼자서도 잘놀아요 (우하단)
+// Figma 시안(node 2952:9716, Frame 2147228628)은 800x400. OG 는 1200x630 이라
+// 시안 좌표를 x1.5 스케일해 옮긴다(폰트·여백 포함). 세로 400x1.5=600 이므로
+// 아래 15px 는 배경 여백.
+const SCALE = 1.5;
+
+// 태그 3개 — 앱 결과지(src/components/result/hero) 와 동일하게 캐릭터 박스 기준
+// 상대 배치. 캐릭터 박스는 아래 CHAR 로 정의. 앱 기준:
+//   0: top-[2%]  right-[2%]      (우상단)
+//   1: bottom-[15%] left-[-3%]   (좌하단, 박스 밖으로 살짝)
+//   2: bottom-[-5%] right-[7%]   (발밑)
+const CHAR = { top: -20 * SCALE, left: 360 * SCALE, size: 470 * SCALE };
+const TAG_ANCHORS: { top: number; left: number }[] = [
+  { top: CHAR.top + CHAR.size * 0.02, left: CHAR.left + CHAR.size * 0.78 },
+  { top: CHAR.top + CHAR.size * 0.7, left: CHAR.left - CHAR.size * 0.06 },
+  { top: CHAR.top + CHAR.size * 1.02, left: CHAR.left + CHAR.size * 0.62 },
 ];
 
-function tagStyle(pos: (typeof TAG_POSITIONS)[number]) {
-  return {
-    display: "flex" as const,
-    alignItems: "center" as const,
-    justifyContent: "center" as const,
-    position: "absolute" as const,
-    top: pos.top,
-    left: pos.left,
-    width: pos.width,
-    height: 63,
-    background: "rgba(255,255,255,0.8)",
-    borderRadius: 999,
-    fontSize: 24,
-    color: "#4E5968",
-    whiteSpace: "nowrap" as const,
-  };
-}
+const TAG_STYLE = {
+  display: "flex" as const,
+  alignItems: "center" as const,
+  justifyContent: "center" as const,
+  position: "absolute" as const,
+  padding: `${9 * SCALE}px ${16 * SCALE}px`,
+  background: "rgba(255,255,255,0.7)",
+  borderRadius: 999,
+  fontSize: 16 * SCALE,
+  fontWeight: 700,
+  letterSpacing: -0.64 * SCALE,
+  color: "#4E5968",
+  whiteSpace: "nowrap" as const,
+};
 
 // Vercel Node 함수에서 Web Response 를 반환하려면 default export 가 아니라
 // named HTTP 메서드(GET)로 내보내야 한다. 이 시그니처의 request 는 웹 표준 Request.
@@ -122,26 +127,26 @@ export async function GET(request: Request) {
         style={{ position: "absolute", top: 0, left: 0 }}
       />
 
-      {/* 캐릭터 — 앱 결과지처럼 정면, 회전 없음. 우측에 크게.
+      {/* 캐릭터 — 앱 결과지처럼 정면, 회전 없음. 시안대로 중앙~우측에 크게.
           캐릭터 PNG 는 1020x1020 정사각(캐릭터마다 여백 다름). */}
       <img
         src={overview.image_url}
-        width={520}
-        height={520}
+        width={CHAR.size}
+        height={CHAR.size}
         style={{
           position: "absolute",
-          top: 60,
-          right: 30,
+          top: CHAR.top,
+          left: CHAR.left,
           objectFit: "contain",
         }}
       />
 
-      {/* 좌측 텍스트 블록 — 배경 벽(파란) 영역 안(세로 ~330px)에 다 들어가야 한다. */}
+      {/* 좌측 텍스트 블록 — 시안: left 57*1.5, top 45*1.5 부터 세로로 쌓임 */}
       <div
         style={{
           position: "absolute",
-          top: 54,
-          left: 86,
+          top: 45 * SCALE,
+          left: 57 * SCALE,
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-start",
@@ -151,10 +156,11 @@ export async function GET(request: Request) {
           style={{
             display: "flex",
             background: "#B4F861",
-            borderRadius: 20,
-            padding: "8px 20px",
-            fontSize: 25,
+            borderRadius: 15 * SCALE,
+            padding: `${6 * SCALE}px ${14 * SCALE}px`,
+            fontSize: 18 * SCALE,
             fontWeight: 700,
+            letterSpacing: -0.72 * SCALE,
             color: "#333D4B",
           }}
         >
@@ -163,8 +169,10 @@ export async function GET(request: Request) {
         <div
           style={{
             display: "flex",
-            marginTop: 16,
-            fontSize: 27,
+            marginTop: 18 * SCALE,
+            fontSize: 20 * SCALE,
+            fontWeight: 700,
+            letterSpacing: -0.8 * SCALE,
             color: "#FFFFFF",
             textShadow: TEXT_SHADOW,
           }}
@@ -174,9 +182,10 @@ export async function GET(request: Request) {
         <div
           style={{
             display: "flex",
-            marginTop: 4,
-            fontSize: 52,
-            lineHeight: 1.1,
+            marginTop: 6 * SCALE,
+            fontSize: 40 * SCALE,
+            lineHeight: 1,
+            letterSpacing: -1.6 * SCALE,
             color: "#FFFFFF",
             fontFamily: waguri ? "WAGURI" : "Pretendard",
             textShadow: TEXT_SHADOW,
@@ -186,9 +195,9 @@ export async function GET(request: Request) {
         </div>
       </div>
 
-      {/* 태그 3개 — 시안 좌표 x1.5 */}
+      {/* 태그 3개 — 앱 결과지처럼 캐릭터 주변에 배치 */}
       {tags.slice(0, 3).map((tag, i) => (
-        <div key={tag} style={tagStyle(TAG_POSITIONS[i])}>
+        <div key={tag} style={{ ...TAG_STYLE, top: TAG_ANCHORS[i].top, left: TAG_ANCHORS[i].left }}>
           {tag}
         </div>
       ))}
