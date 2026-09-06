@@ -56,22 +56,27 @@ async function fetchFont(origin: string, path: string): Promise<ArrayBuffer | nu
 
 const TEXT_SHADOW = "0px 4px 15px rgba(0,0,0,0.15)";
 
-// Figma 시안(node 2952:9716)은 800x630 뷰이고 OG 는 1200x630 이라 X 좌표는 x1.5 스케일.
-// 캐릭터 주변 3개 태그 위치는 시안 좌표를 그대로 옮긴 것.
-const TAG_POSITIONS: { top: number; left?: number; right?: number }[] = [
-  { top: 72, right: 60 }, // 우상단 (도파민 MAX)
-  { top: 387, left: 490 }, // 좌하단 (장난꾸러기)
-  { top: 491, left: 781 }, // 우하단 (혼자서도 잘놀아요)
+// Figma 시안(node 2952:9716)은 800x400 프레임. OG 는 1200x630 이라 시안 전체를
+// x1.5 스케일해 옮긴다(폰트 크기 포함). 세로는 600 이 되어 상단 정렬.
+// 태그 3개의 위치는 시안 절대 좌표 x1.5.
+const TAG_POSITIONS: { top: number; left: number; width: number }[] = [
+  { top: 69, left: 867, width: 171 }, // 도파민 MAX (우상단)
+  { top: 369, left: 490, width: 154 }, // 장난꾸러기 (좌하단)
+  { top: 468, left: 781, width: 219 }, // 혼자서도 잘놀아요 (우하단)
 ];
 
-function tagStyle(pos: { top: number; left?: number; right?: number }) {
+function tagStyle(pos: (typeof TAG_POSITIONS)[number]) {
   return {
     display: "flex" as const,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
     position: "absolute" as const,
-    ...pos,
+    top: pos.top,
+    left: pos.left,
+    width: pos.width,
+    height: 63,
     background: "rgba(255,255,255,0.8)",
-    borderRadius: 36,
-    padding: "12px 24px",
+    borderRadius: 999,
     fontSize: 24,
     color: "#4E5968",
     whiteSpace: "nowrap" as const,
@@ -117,12 +122,12 @@ export async function GET(request: Request) {
         style={{ position: "absolute", top: 0, left: 0 }}
       />
 
-      {/* 캐릭터 — 시안: 우측 상단, 크게, -41도 회전 */}
+      {/* 캐릭터 — 시안: 컨테이너 중심 (765, 261), inner 483px */}
       <div
         style={{
           position: "absolute",
-          top: -83,
-          left: 600 + 165,
+          top: 261 - 340,
+          left: 765 - 340,
           width: 681,
           height: 681,
           display: "flex",
@@ -130,19 +135,14 @@ export async function GET(request: Request) {
           justifyContent: "center",
         }}
       >
-        <img
-          src={overview.image_url}
-          width={483}
-          height={483}
-          style={{ objectFit: "contain", transform: "rotate(-41deg)" }}
-        />
+        <img src={overview.image_url} width={483} height={483} style={{ objectFit: "contain" }} />
       </div>
 
-      {/* 좌측 텍스트 블록 */}
+      {/* 좌측 텍스트 블록 — 시안 x1.5 */}
       <div
         style={{
           position: "absolute",
-          top: 66,
+          top: 68,
           left: 86,
           display: "flex",
           flexDirection: "column",
@@ -154,7 +154,7 @@ export async function GET(request: Request) {
             display: "flex",
             background: "#B4F861",
             borderRadius: 23,
-            padding: "10px 22px",
+            padding: "8px 22px",
             fontSize: 27,
             fontWeight: 700,
             color: "#333D4B",
@@ -165,7 +165,7 @@ export async function GET(request: Request) {
         <div
           style={{
             display: "flex",
-            marginTop: 22,
+            marginTop: 18,
             fontSize: 30,
             color: "#FFFFFF",
             textShadow: TEXT_SHADOW,
@@ -176,8 +176,9 @@ export async function GET(request: Request) {
         <div
           style={{
             display: "flex",
-            marginTop: 8,
-            fontSize: 63,
+            marginTop: 4,
+            fontSize: 60,
+            lineHeight: 1,
             color: "#FFFFFF",
             fontFamily: waguri ? "WAGURI" : "Pretendard",
             textShadow: TEXT_SHADOW,
@@ -187,7 +188,7 @@ export async function GET(request: Request) {
         </div>
       </div>
 
-      {/* 태그 3개 */}
+      {/* 태그 3개 — 시안 좌표 x1.5 */}
       {tags.slice(0, 3).map((tag, i) => (
         <div key={tag} style={tagStyle(TAG_POSITIONS[i])}>
           {tag}
