@@ -122,28 +122,19 @@ export async function GET(request: Request) {
         style={{ position: "absolute", top: 0, left: 0 }}
       />
 
-      {/* 캐릭터 — 시안(2952:9741): 우상단, -41도 회전.
-          캐릭터 PNG 마다 여백이 달라(팽이는 여백 큼, 헬리콥터는 꽉 참) 잘림을
-          막으려고 컨테이너 중심을 시안보다 살짝 왼쪽(720)으로, inner 는 430으로 줄임. */}
-      <div
+      {/* 캐릭터 — 앱 결과지처럼 정면, 회전 없음. 우측에 크게.
+          캐릭터 PNG 는 1020x1020 정사각(캐릭터마다 여백 다름). */}
+      <img
+        src={overview.image_url}
+        width={520}
+        height={520}
         style={{
           position: "absolute",
-          top: 205 - 320,
-          left: 730 - 320,
-          width: 640,
-          height: 640,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          top: 60,
+          right: 30,
+          objectFit: "contain",
         }}
-      >
-        <img
-          src={overview.image_url}
-          width={400}
-          height={400}
-          style={{ objectFit: "contain", transform: "rotate(-41deg)" }}
-        />
-      </div>
+      />
 
       {/* 좌측 텍스트 블록 — 배경 벽(파란) 영역 안(세로 ~330px)에 다 들어가야 한다. */}
       <div
