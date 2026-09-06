@@ -57,17 +57,17 @@ async function fetchFont(origin: string, path: string): Promise<ArrayBuffer | nu
 }
 
 // ---- 시안(2952:9640, 800x450) 좌표를 OG(1200x630)로 옮긴다 ----
-// 가로: x1.5. 세로: 시안 450, OG 630 이라 요소를 세로 중앙 정렬한다.
-// (시안 y - 225) * 1.5 + 315 로 환산. invite.tsx 와 동일한 레이아웃.
-const V = (y: number) => (y - 225) * 1.5 + 315;
-const H = 1.5;
+// 가로 x1.5, 세로 x1.4 (450 -> 630). invite.tsx 와 동일한 레이아웃.
+const H = 1.5; // 가로
+const V = (y: number) => y * 1.4; // 세로
 
 const TITLE_SHADOW = "0px 2px 4px rgba(0,0,0,0.1)";
 const NAME_SHADOW = "0px 2.156px 8.623px rgba(0,0,0,0.1)";
 
 const COL_DX = 117 * H;
 const CIRCLE = 175.662 * H;
-const CHAR_BOX = 174.25 * H;
+// 시안: 캐릭터 이미지 박스(174.25) 안에서 실제 캐릭터는 123.519. 원의 ~70%.
+const CHAR_BOX = 123.519 * H;
 
 function CharacterColumn({
   centerX,
@@ -94,6 +94,7 @@ function CharacterColumn({
           display: "flex",
         }}
       />
+      {/* 캐릭터 (회전 없음). 원 중앙에 놓는다. */}
       <img
         src={imageSrc}
         width={CHAR_BOX}
@@ -101,7 +102,7 @@ function CharacterColumn({
         style={{
           position: "absolute",
           left: centerX - CHAR_BOX / 2,
-          top: V(122),
+          top: V(130.77) + CIRCLE / 2 - CHAR_BOX / 2,
           objectFit: "contain",
         }}
       />
