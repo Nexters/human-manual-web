@@ -128,8 +128,8 @@ export async function GET(request: Request) {
       <div
         style={{
           position: "absolute",
-          top: 255 - 320,
-          left: 720 - 320,
+          top: 205 - 320,
+          left: 730 - 320,
           width: 640,
           height: 640,
           display: "flex",
@@ -139,8 +139,8 @@ export async function GET(request: Request) {
       >
         <img
           src={overview.image_url}
-          width={430}
-          height={430}
+          width={400}
+          height={400}
           style={{ objectFit: "contain", transform: "rotate(-41deg)" }}
         />
       </div>
