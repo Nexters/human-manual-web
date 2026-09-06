@@ -44,13 +44,9 @@ function fallbackResponse(origin: string): Response {
   return Response.redirect(new URL("/og-image-compatibility.jpg", origin), 302);
 }
 
-// Pretendard Bold subset. 시안 원래 폰트(WAGURI)는 1.4MB로 콜드스타트가 무거워
-// 1차는 이걸로 진행하고, 실제 이미지 확인 후 필요하면 교체한다.
-async function loadPretendardBold(origin: string): Promise<ArrayBuffer | null> {
+async function fetchFont(origin: string, path: string): Promise<ArrayBuffer | null> {
   try {
-    const res = await fetch(new URL("/og/fonts/pretendard-bold.woff", origin), {
-      signal: AbortSignal.timeout(4000),
-    });
+    const res = await fetch(new URL(path, origin), { signal: AbortSignal.timeout(5000) });
     if (!res.ok) return null;
     return await res.arrayBuffer();
   } catch {
@@ -58,16 +54,26 @@ async function loadPretendardBold(origin: string): Promise<ArrayBuffer | null> {
   }
 }
 
-function tagStyle(position: { top: number; left?: number; right?: number }) {
+const TEXT_SHADOW = "0px 4px 15px rgba(0,0,0,0.15)";
+
+// Figma 시안(node 2952:9716)은 800x630 뷰이고 OG 는 1200x630 이라 X 좌표는 x1.5 스케일.
+// 캐릭터 주변 3개 태그 위치는 시안 좌표를 그대로 옮긴 것.
+const TAG_POSITIONS: { top: number; left?: number; right?: number }[] = [
+  { top: 72, right: 60 }, // 우상단 (도파민 MAX)
+  { top: 387, left: 490 }, // 좌하단 (장난꾸러기)
+  { top: 491, left: 781 }, // 우하단 (혼자서도 잘놀아요)
+];
+
+function tagStyle(pos: { top: number; left?: number; right?: number }) {
   return {
     display: "flex" as const,
     position: "absolute" as const,
-    ...position,
-    background: "#FFFFFF",
-    borderRadius: 999,
-    padding: "12px 22px",
-    fontSize: 22,
-    color: "#374151",
+    ...pos,
+    background: "rgba(255,255,255,0.8)",
+    borderRadius: 36,
+    padding: "12px 24px",
+    fontSize: 24,
+    color: "#4E5968",
     whiteSpace: "nowrap" as const,
   };
 }
@@ -85,9 +91,13 @@ export async function GET(request: Request) {
   if (!data) return fallbackResponse(origin);
 
   const { overview, participant } = data;
-  const fontData = await loadPretendardBold(origin);
+  // 제목은 시안대로 WAGURI, 나머지 텍스트는 Pretendard.
+  const [pretendard, waguri] = await Promise.all([
+    fetchFont(origin, "/og/fonts/pretendard-bold.woff"),
+    fetchFont(origin, "/og/fonts/waguri.ttf"),
+  ]);
   // satori 는 한글을 그리려면 폰트가 반드시 있어야 한다. 로드 실패 시 정적 이미지로.
-  if (!fontData) return fallbackResponse(origin);
+  if (!pretendard) return fallbackResponse(origin);
   const tags = overview.tags ?? [];
 
   return new ImageResponse(
@@ -107,54 +117,92 @@ export async function GET(request: Request) {
         style={{ position: "absolute", top: 0, left: 0 }}
       />
 
+      {/* 캐릭터 — 시안: 우측 상단, 크게, -41도 회전 */}
+      <div
+        style={{
+          position: "absolute",
+          top: -83,
+          left: 600 + 165,
+          width: 681,
+          height: 681,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <img
+          src={overview.image_url}
+          width={483}
+          height={483}
+          style={{ objectFit: "contain", transform: "rotate(-41deg)" }}
+        />
+      </div>
+
       {/* 좌측 텍스트 블록 */}
       <div
         style={{
           position: "absolute",
-          top: 64,
-          left: 64,
+          top: 66,
+          left: 86,
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-start",
-          gap: 16,
-          maxWidth: 560,
         }}
       >
         <div
           style={{
             display: "flex",
-            background: "#C7F464",
-            borderRadius: 999,
-            padding: "10px 24px",
-            fontSize: 26,
-            color: "#1F2937",
+            background: "#B4F861",
+            borderRadius: 23,
+            padding: "10px 22px",
+            fontSize: 27,
+            fontWeight: 700,
+            color: "#333D4B",
           }}
         >
           {overview.rarity}
         </div>
-        <div style={{ display: "flex", fontSize: 26, color: "#F3F4F6" }}>{overview.adjective}</div>
-        <div style={{ display: "flex", fontSize: 48, color: "#FFFFFF", lineHeight: 1.25 }}>
+        <div
+          style={{
+            display: "flex",
+            marginTop: 22,
+            fontSize: 30,
+            color: "#FFFFFF",
+            textShadow: TEXT_SHADOW,
+          }}
+        >
+          {overview.adjective}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            marginTop: 8,
+            fontSize: 63,
+            color: "#FFFFFF",
+            fontFamily: waguri ? "WAGURI" : "Pretendard",
+            textShadow: TEXT_SHADOW,
+          }}
+        >
           {overview.noun} {participant.nickname}
         </div>
       </div>
 
-      {/* 우측 캐릭터 */}
-      <img
-        src={overview.image_url}
-        width={420}
-        height={420}
-        style={{ position: "absolute", right: 40, top: 110, objectFit: "contain" }}
-      />
-
-      {/* 태그 3개: 위(캐릭터 위) / 좌하 / 우하 */}
-      {tags[0] && <div style={tagStyle({ top: 40, right: 40 })}>{tags[0]}</div>}
-      {tags[1] && <div style={tagStyle({ top: 350, left: 60 })}>{tags[1]}</div>}
-      {tags[2] && <div style={tagStyle({ top: 400, right: 60 })}>{tags[2]}</div>}
+      {/* 태그 3개 */}
+      {tags.slice(0, 3).map((tag, i) => (
+        <div key={tag} style={tagStyle(TAG_POSITIONS[i])}>
+          {tag}
+        </div>
+      ))}
     </div>,
     {
       width: 1200,
       height: 630,
-      fonts: [{ name: "Pretendard", data: fontData, weight: 700, style: "normal" }],
+      fonts: [
+        { name: "Pretendard", data: pretendard, weight: 700, style: "normal" },
+        ...(waguri
+          ? [{ name: "WAGURI", data: waguri, weight: 400 as const, style: "normal" as const }]
+          : []),
+      ],
       headers: { "Cache-Control": CACHE_CONTROL },
     },
   );
