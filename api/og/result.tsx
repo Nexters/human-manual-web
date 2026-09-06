@@ -69,16 +69,29 @@ const SCALE = 1.5;
 // 프레임 안에 맞도록 640 으로. top 은 살짝 위로 넘치게.
 const CHAR = { size: 520, left: 640, top: -10 };
 
-// 태그 3개 — 시안(800기준) 캐릭터 박스 left283/top-53/size454 대비 pill 위치를
-// 비율로 환산해, 축소된 우리 캐릭터 박스(CHAR)에 다시 얹는다. 이러면 캐릭터
-// 크기를 바꿔도 태그가 캐릭터에 붙어 따라온다.
-//   도파민 MAX  (578,46)  -> (0.65, 0.22)
-//   장난꾸러기  (327,246) -> (0.10, 0.66)
-//   혼자서도    (521,312) -> (0.52, 0.80)
-const TAG_ANCHORS: { top: number; left: number }[] = [
-  { left: CHAR.left + CHAR.size * 0.65, top: CHAR.top + CHAR.size * 0.22 },
-  { left: CHAR.left + CHAR.size * 0.1, top: CHAR.top + CHAR.size * 0.66 },
-  { left: CHAR.left + CHAR.size * 0.52, top: CHAR.top + CHAR.size * 0.8 },
+// 태그 3개 — 실제 앱 결과지(src/components/result/hero/index.tsx)의 TAG_POSITIONS
+// 를 그대로 옮긴다. 앱은 320x320 캐릭터 박스 기준:
+//   0: top-[2%]  right-[2%]     (우상단 모서리)
+//   1: bottom-[15%] left-[-3%]  (좌하단, 박스 왼쪽으로 3% 밖)
+//   2: bottom-[-5%] right-[7%]  (하단, 박스 밑으로 5%)
+// pill 은 각 모서리에 붙고, right/bottom 기준이라 pill 크기와 무관하게 정렬된다.
+// anchor: 'tr' = pill 오른쪽 위 모서리를 (left,top)에 맞춤 등.
+const TAG_ANCHORS: { left: number; top: number; anchor: "tr" | "bl" | "br" }[] = [
+  {
+    left: CHAR.left + CHAR.size * 0.98,
+    top: CHAR.top + CHAR.size * 0.02,
+    anchor: "tr",
+  },
+  {
+    left: CHAR.left - CHAR.size * 0.03,
+    top: CHAR.top + CHAR.size * 0.85,
+    anchor: "bl",
+  },
+  {
+    left: CHAR.left + CHAR.size * 0.93,
+    top: CHAR.top + CHAR.size * 1.05,
+    anchor: "br",
+  },
 ];
 
 // 시안(2952:9748 등): rgba(255,255,255,0.8), radius 24.33, Pretendard SemiBold
@@ -205,12 +218,23 @@ export async function GET(request: Request) {
         </div>
       </div>
 
-      {/* 태그 3개 — 앱 결과지처럼 캐릭터 주변에 배치 */}
-      {tags.slice(0, 3).map((tag, i) => (
-        <div key={tag} style={{ ...TAG_STYLE, top: TAG_ANCHORS[i].top, left: TAG_ANCHORS[i].left }}>
-          {tag}
-        </div>
-      ))}
+      {/* 태그 3개 — 앱 결과지처럼 캐릭터 모서리에 붙인다. anchor 로 pill 의 어느
+          모서리를 (left,top)에 맞출지 정한다(right/bottom 기준이면 pill 크기와
+          무관하게 캐릭터에 붙는다). */}
+      {tags.slice(0, 3).map((tag, i) => {
+        const a = TAG_ANCHORS[i];
+        const pos =
+          a.anchor === "tr"
+            ? { top: a.top, right: 1200 - a.left }
+            : a.anchor === "bl"
+              ? { bottom: 630 - a.top, left: a.left }
+              : { bottom: 630 - a.top, right: 1200 - a.left };
+        return (
+          <div key={tag} style={{ ...TAG_STYLE, ...pos }}>
+            {tag}
+          </div>
+        );
+      })}
     </div>,
     {
       width: 1200,
