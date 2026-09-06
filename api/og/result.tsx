@@ -17,6 +17,24 @@ function takeResultCode(value: string | null | undefined): string | null {
   return code && RESULT_CODE_PATTERN.test(code) ? code : null;
 }
 
+// runtime: "nodejs" 함수의 req 는 Node IncomingMessage 다(웹 Request 아님).
+// req.url 은 상대 경로("/api/og/result?..."), req.headers 는 plain 객체.
+interface NodeReq {
+  url?: string;
+  headers: Record<string, string | string[] | undefined>;
+}
+
+function firstHeader(h: NodeReq["headers"], key: string): string | undefined {
+  const v = h[key];
+  return Array.isArray(v) ? v[0] : v;
+}
+
+function resolveUrl(req: NodeReq): URL {
+  const host = firstHeader(req.headers, "host") ?? "pakit.kr";
+  const proto = firstHeader(req.headers, "x-forwarded-proto") ?? "https";
+  return new URL(req.url ?? "/", `${proto}://${host}`);
+}
+
 interface ResultData {
   participant: { nickname: string };
   overview: {
@@ -24,7 +42,7 @@ interface ResultData {
     adjective: string;
     noun: string;
     image_url: string;
-    tags: string[];
+    tags?: string[];
   };
 }
 
@@ -46,8 +64,16 @@ function fallbackResponse(origin: string): Response {
 
 // Pretendard Bold subset. 시안 원래 폰트(WAGURI)는 1.4MB로 콜드스타트가 무거워
 // 1차는 이걸로 진행하고, 실제 이미지 확인 후 필요하면 교체한다.
-function loadPretendardBold(origin: string): Promise<ArrayBuffer> {
-  return fetch(new URL("/og/fonts/pretendard-bold.woff", origin)).then((res) => res.arrayBuffer());
+async function loadPretendardBold(origin: string): Promise<ArrayBuffer | null> {
+  try {
+    const res = await fetch(new URL("/og/fonts/pretendard-bold.woff", origin), {
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!res.ok) return null;
+    return await res.arrayBuffer();
+  } catch {
+    return null;
+  }
 }
 
 function tagStyle(position: { top: number; left?: number; right?: number }) {
@@ -64,8 +90,8 @@ function tagStyle(position: { top: number; left?: number; right?: number }) {
   };
 }
 
-export default async function handler(req: Request) {
-  const url = new URL(req.url);
+export default async function handler(req: NodeReq) {
+  const url = resolveUrl(req);
   const origin = url.origin;
 
   const code = takeResultCode(url.searchParams.get("code"));
@@ -76,6 +102,9 @@ export default async function handler(req: Request) {
 
   const { overview, participant } = data;
   const fontData = await loadPretendardBold(origin);
+  // satori 는 한글을 그리려면 폰트가 반드시 있어야 한다. 로드 실패 시 정적 이미지로.
+  if (!fontData) return fallbackResponse(origin);
+  const tags = overview.tags ?? [];
 
   return new ImageResponse(
     <div
@@ -134,9 +163,9 @@ export default async function handler(req: Request) {
       />
 
       {/* 태그 3개: 위(캐릭터 위) / 좌하 / 우하 */}
-      {overview.tags[0] && <div style={tagStyle({ top: 40, right: 40 })}>{overview.tags[0]}</div>}
-      {overview.tags[1] && <div style={tagStyle({ top: 350, left: 60 })}>{overview.tags[1]}</div>}
-      {overview.tags[2] && <div style={tagStyle({ top: 400, right: 60 })}>{overview.tags[2]}</div>}
+      {tags[0] && <div style={tagStyle({ top: 40, right: 40 })}>{tags[0]}</div>}
+      {tags[1] && <div style={tagStyle({ top: 350, left: 60 })}>{tags[1]}</div>}
+      {tags[2] && <div style={tagStyle({ top: 400, right: 60 })}>{tags[2]}</div>}
     </div>,
     {
       width: 1200,

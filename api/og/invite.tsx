@@ -14,6 +14,23 @@ function takeResultCode(value: string | null | undefined): string | null {
   return code && RESULT_CODE_PATTERN.test(code) ? code : null;
 }
 
+// runtime: "nodejs" 함수의 req 는 Node IncomingMessage 다(웹 Request 아님).
+interface NodeReq {
+  url?: string;
+  headers: Record<string, string | string[] | undefined>;
+}
+
+function firstHeader(h: NodeReq["headers"], key: string): string | undefined {
+  const v = h[key];
+  return Array.isArray(v) ? v[0] : v;
+}
+
+function resolveUrl(req: NodeReq): URL {
+  const host = firstHeader(req.headers, "host") ?? "pakit.kr";
+  const proto = firstHeader(req.headers, "x-forwarded-proto") ?? "https";
+  return new URL(req.url ?? "/", `${proto}://${host}`);
+}
+
 interface ResultData {
   participant: { nickname: string };
   overview: { noun: string; image_url: string };
@@ -35,8 +52,16 @@ function fallbackResponse(origin: string): Response {
   return Response.redirect(new URL("/og-image-compatibility.jpg", origin), 302);
 }
 
-function loadPretendardBold(origin: string): Promise<ArrayBuffer> {
-  return fetch(new URL("/og/fonts/pretendard-bold.woff", origin)).then((res) => res.arrayBuffer());
+async function loadPretendardBold(origin: string): Promise<ArrayBuffer | null> {
+  try {
+    const res = await fetch(new URL("/og/fonts/pretendard-bold.woff", origin), {
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!res.ok) return null;
+    return await res.arrayBuffer();
+  } catch {
+    return null;
+  }
 }
 
 function PersonColumn({ imageSrc, noun, name }: { imageSrc: string; noun: string; name: string }) {
@@ -65,8 +90,8 @@ function PersonColumn({ imageSrc, noun, name }: { imageSrc: string; noun: string
   );
 }
 
-export default async function handler(req: Request) {
-  const url = new URL(req.url);
+export default async function handler(req: NodeReq) {
+  const url = resolveUrl(req);
   const origin = url.origin;
 
   const code = takeResultCode(url.searchParams.get("code"));
@@ -77,6 +102,7 @@ export default async function handler(req: Request) {
 
   const { overview, participant } = data;
   const fontData = await loadPretendardBold(origin);
+  if (!fontData) return fallbackResponse(origin);
 
   return new ImageResponse(
     <div
