@@ -61,16 +61,21 @@ const TEXT_SHADOW = "0px 4px 15px rgba(0,0,0,0.15)";
 // 아래 15px 는 배경 여백.
 const SCALE = 1.5;
 
-// 태그 3개 — 앱 결과지(src/components/result/hero) 와 동일하게 캐릭터 박스 기준
-// 상대 배치. 캐릭터 박스는 아래 CHAR 로 정의. 앱 기준:
-//   0: top-[2%]  right-[2%]      (우상단)
-//   1: bottom-[15%] left-[-3%]   (좌하단, 박스 밖으로 살짝)
-//   2: bottom-[-5%] right-[7%]   (발밑)
-const CHAR = { top: -20 * SCALE, left: 360 * SCALE, size: 470 * SCALE };
+// 캐릭터 — 시안: 중앙~우측, 세로를 거의 가득. 단 캐릭터 PNG 는 1020x1020 정사각에
+// 캐릭터마다 다른 여백이 있어(헬리콥터는 가로로 긺) 박스가 화면 밖으로 나가면
+// 프로펠러·꼬리가 잘린다. 박스가 오른쪽으로 안 넘치도록 left+size <= 1200 유지.
+const CHAR = { top: 5, left: 585, size: 610 };
+
+// 태그 3개 — 앱 결과지(src/components/result/hero)처럼 캐릭터 주변 배치.
+// 앱: top-[2%] right-[2%] / bottom-[15%] left-[-3%] / bottom-[-5%] right-[7%].
+// 화면(1200x630) 밖으로 안 나가게 좌표를 클램프한다.
+const TAG_MAX_W = 260;
+const clampX = (x: number) => Math.max(24, Math.min(x, 1200 - TAG_MAX_W - 24));
+const clampY = (y: number) => Math.max(16, Math.min(y, 630 - 60));
 const TAG_ANCHORS: { top: number; left: number }[] = [
-  { top: CHAR.top + CHAR.size * 0.02, left: CHAR.left + CHAR.size * 0.78 },
-  { top: CHAR.top + CHAR.size * 0.7, left: CHAR.left - CHAR.size * 0.06 },
-  { top: CHAR.top + CHAR.size * 1.02, left: CHAR.left + CHAR.size * 0.62 },
+  { top: clampY(CHAR.top + CHAR.size * 0.06), left: clampX(CHAR.left + CHAR.size * 0.62) },
+  { top: clampY(CHAR.top + CHAR.size * 0.62), left: clampX(CHAR.left - CHAR.size * 0.05) },
+  { top: clampY(CHAR.top + CHAR.size * 0.9), left: clampX(CHAR.left + CHAR.size * 0.5) },
 ];
 
 const TAG_STYLE = {
