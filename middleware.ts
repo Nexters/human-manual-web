@@ -98,24 +98,36 @@ export default async function middleware(req: Request) {
   const og = await resolveOgMeta(url, origin);
   if (!og) return; // 매칭 없음 · 데이터 없음(잘못된 코드 등) → 기본 정적 OG로 통과
 
-  const html = await fetch(`${origin}/index.html`).then((r) => r.text());
+  const res = await fetch(`${origin}/index.html`);
+  if (!res.ok) return; // index.html 을 못 받으면 봇에게 깨진 HTML 대신 통과
+  const html = await res.text();
+
+  // index.html 의 <meta> 태그는 prettier 로 여러 줄에 걸쳐 있을 수 있다
+  // (예: <meta\n  property="og:description"\n  content="..."\n/>).
+  // 속성 순서·줄바꿈에 관계없이 그 property/name 을 가진 <meta ...> 한 개를 잡는다.
+  // [^>]* 는 개행을 포함하므로 여러 줄도 매칭된다. 핵심은 `<meta` 와 속성 사이,
+  // 속성들 사이의 공백을 \s+ 로 허용하는 것.
+  const metaTag = (attr: string, value: string) =>
+    new RegExp(`<meta\\s+[^>]*?${attr}="${value}"[^>]*?/?>`, "i");
+
   const patched = html
     .replace(
-      /<meta property="og:title"[^>]*>/,
+      metaTag("property", "og:title"),
       `<meta property="og:title" content="${esc(og.title)}" />`,
     )
     .replace(
-      /<meta property="og:description"[^>]*>/,
+      metaTag("property", "og:description"),
       `<meta property="og:description" content="${esc(og.description)}" />`,
     )
+    .replace(metaTag("property", "og:image"), `<meta property="og:image" content="${og.image}" />`)
+    .replace(metaTag("property", "og:image:width"), "")
+    .replace(metaTag("property", "og:image:height"), "")
     .replace(
-      /<meta property="og:image"[^>]*>/,
-      `<meta property="og:image" content="${og.image}" />`,
+      metaTag("name", "twitter:description"),
+      `<meta name="twitter:description" content="${esc(og.description)}" />`,
     )
-    .replace(/<meta property="og:image:width"[^>]*>\s*/, "")
-    .replace(/<meta property="og:image:height"[^>]*>\s*/, "")
     .replace(
-      /<meta name="twitter:image"[^>]*>/,
+      metaTag("name", "twitter:image"),
       `<meta name="twitter:image" content="${og.image}" />`,
     )
     .replace(
