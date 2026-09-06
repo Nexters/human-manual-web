@@ -122,27 +122,34 @@ export async function GET(request: Request) {
         style={{ position: "absolute", top: 0, left: 0 }}
       />
 
-      {/* 캐릭터 — 시안: 컨테이너 중심 (765, 261), inner 483px */}
+      {/* 캐릭터 — 시안(2952:9741): 우상단, -41도 회전.
+          캐릭터 PNG 마다 여백이 달라(팽이는 여백 큼, 헬리콥터는 꽉 참) 잘림을
+          막으려고 컨테이너 중심을 시안보다 살짝 왼쪽(720)으로, inner 는 430으로 줄임. */}
       <div
         style={{
           position: "absolute",
-          top: 261 - 340,
-          left: 765 - 340,
-          width: 681,
-          height: 681,
+          top: 255 - 320,
+          left: 720 - 320,
+          width: 640,
+          height: 640,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <img src={overview.image_url} width={483} height={483} style={{ objectFit: "contain" }} />
+        <img
+          src={overview.image_url}
+          width={430}
+          height={430}
+          style={{ objectFit: "contain", transform: "rotate(-41deg)" }}
+        />
       </div>
 
-      {/* 좌측 텍스트 블록 — 시안 x1.5 */}
+      {/* 좌측 텍스트 블록 — 배경 벽(파란) 영역 안(세로 ~330px)에 다 들어가야 한다. */}
       <div
         style={{
           position: "absolute",
-          top: 68,
+          top: 54,
           left: 86,
           display: "flex",
           flexDirection: "column",
@@ -153,9 +160,9 @@ export async function GET(request: Request) {
           style={{
             display: "flex",
             background: "#B4F861",
-            borderRadius: 23,
-            padding: "8px 22px",
-            fontSize: 27,
+            borderRadius: 20,
+            padding: "8px 20px",
+            fontSize: 25,
             fontWeight: 700,
             color: "#333D4B",
           }}
@@ -165,8 +172,8 @@ export async function GET(request: Request) {
         <div
           style={{
             display: "flex",
-            marginTop: 18,
-            fontSize: 30,
+            marginTop: 16,
+            fontSize: 27,
             color: "#FFFFFF",
             textShadow: TEXT_SHADOW,
           }}
@@ -177,8 +184,8 @@ export async function GET(request: Request) {
           style={{
             display: "flex",
             marginTop: 4,
-            fontSize: 60,
-            lineHeight: 1,
+            fontSize: 52,
+            lineHeight: 1.1,
             color: "#FFFFFF",
             fontFamily: waguri ? "WAGURI" : "Pretendard",
             textShadow: TEXT_SHADOW,
