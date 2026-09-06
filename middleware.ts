@@ -44,18 +44,30 @@ interface OgMeta {
   description: string;
 }
 
+// 카톡 카드 문구는 "호기심 유발" 방향. 명사(noun)에 조사를 직접 붙이면 받침에 따라
+// "로봇래요"처럼 깨지므로, adjective 가 수식하는 "장난감이래요" 형태로 회피한다.
+function str(v: unknown, fallback: string): string {
+  return typeof v === "string" && v.trim() ? v : fallback;
+}
+
 async function resolveOgMeta(url: URL, origin: string): Promise<OgMeta | null> {
   if (url.pathname.startsWith("/result/")) {
     const code = takeResultCode(url.pathname.split("/")[2]);
     if (!code) return null;
     const data = await fetchJson(`/api/results/${code}`);
     if (!data) return null;
-    const overview = data.overview as Record<string, unknown>;
-    const participant = data.participant as Record<string, unknown>;
+    const overview = (data.overview ?? {}) as Record<string, unknown>;
+    const participant = (data.participant ?? {}) as Record<string, unknown>;
+    const nickname = str(participant.nickname, "친구");
+    const noun = str(overview.noun, "장난감");
+    const adjective = str(overview.adjective, "나를 닮은");
+    const rarity = str(overview.rarity, "");
     return {
       image: `${origin}/api/og/result?code=${code}`,
-      title: `${participant.nickname}님의 장난감은 '${overview.noun}'`,
-      description: `${overview.adjective} · ${overview.rarity}`,
+      title: rarity
+        ? `${nickname}님은 ${rarity}의 '${noun}'`
+        : `${nickname}님의 장난감은 '${noun}'`,
+      description: `${adjective} 장난감이래요. 나는 어떤 장난감일까? 👀`,
     };
   }
 
@@ -64,11 +76,12 @@ async function resolveOgMeta(url: URL, origin: string): Promise<OgMeta | null> {
     if (!code) return null;
     const data = await fetchJson(`/api/results/${code}`);
     if (!data) return null;
-    const participant = data.participant as Record<string, unknown>;
+    const participant = (data.participant ?? {}) as Record<string, unknown>;
+    const nickname = str(participant.nickname, "친구");
     return {
       image: `${origin}/api/og/invite?code=${code}`,
-      title: `${participant.nickname}님과의 케미를 보고 싶다면?`,
-      description: "나랑 얼마나 잘 맞을까? 지금 확인해보세요",
+      title: `${nickname}님과의 케미, 궁금하지 않아요?`,
+      description: "나랑 얼마나 잘 맞을까? 지금 확인해보세요 👀",
     };
   }
 
@@ -78,10 +91,15 @@ async function resolveOgMeta(url: URL, origin: string): Promise<OgMeta | null> {
     if (!mine || !friend) return null;
     const data = await fetchJson(`/api/compatibility?mine=${mine}&friend=${friend}`);
     if (!data) return null;
+    const mineP = (data.mine ?? {}) as Record<string, unknown>;
+    const friendP = (data.friend ?? {}) as Record<string, unknown>;
+    const mineName = str(mineP.nickname, "나");
+    const friendName = str(friendP.nickname, "친구");
+    const headline = str(data.headline, "우리의 케미");
     return {
       image: `${origin}/api/og/compat?mine=${mine}&friend=${friend}`,
-      title: data.headline as string,
-      description: data.description as string,
+      title: `${mineName}님과 ${friendName}님의 케미 결과가 나왔어요`,
+      description: `${headline} — 우리 궁합 자세히 보기 👀`,
     };
   }
 
