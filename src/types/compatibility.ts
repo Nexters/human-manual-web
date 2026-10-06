@@ -43,3 +43,21 @@ export interface CompatibilityOutput {
   tips: CompatibilityTipOutput[];
   relationship_tip: RelationshipTipOutput;
 }
+
+export interface CompatibilityRankingItemOutput {
+  rank: number;
+  result_code: string;
+  nickname: string | null;
+  result_name: string;
+  noun: string;
+  character_id: string;
+  image_url: string;
+  score: number;
+  tested_at: string;
+}
+
+export interface CompatibilityRankingOutput {
+  result_code: string;
+  total: number;
+  rankings: CompatibilityRankingItemOutput[];
+}
