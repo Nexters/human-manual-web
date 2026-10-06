@@ -8,6 +8,7 @@ import SynergyScoreCard from "@/components/compatibility/SynergyScoreCard";
 import DetailAccordionItem from "@/components/compatibility/DetailAccordionItem";
 import { DETAIL_CONTENT, DETAIL_ORDER } from "@/components/compatibility/detailAnalysisContent";
 import LongTermTipCard from "@/components/compatibility/LongTermTipCard";
+import RelationshipGuidePurchaseCard from "@/components/compatibility/RelationshipGuidePurchaseCard";
 import NextChemiSection from "@/components/compatibility/NextChemiSection";
 import MyResultModal from "@/components/onboarding/MyResultModal";
 import CompatibilityPageSkeleton from "@/components/compatibility/skeleton";
@@ -161,6 +162,11 @@ export default function CompatibilityPage() {
     });
   };
 
+  const handleRelationshipGuidePurchase = () => {
+    trackEvent(GA_EVENTS.COMPATIBILITY.RELATIONSHIP_GUIDE_PURCHASE_CLICK);
+    openToast("결제 기능을 준비 중이에요");
+  };
+
   return (
     <div className="bg-gray-00 flex min-h-dvh flex-col">
       {topBar}
@@ -263,6 +269,12 @@ export default function CompatibilityPage() {
         <LongTermTipCard
           title={data.relationship_tip.title}
           description={data.relationship_tip.description}
+        />
+
+        <RelationshipGuidePurchaseCard
+          mineNickname={data.mine.nickname}
+          friendNickname={data.friend.nickname}
+          onPurchase={handleRelationshipGuidePurchase}
         />
       </div>
 

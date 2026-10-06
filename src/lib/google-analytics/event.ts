@@ -127,5 +127,10 @@ export const GA_EVENTS = {
       category: "compatibility",
       label: "궁합페이지_이미지저장",
     },
+    RELATIONSHIP_GUIDE_PURCHASE_CLICK: {
+      action: "relationship_guide_purchase_click",
+      category: "compatibility",
+      label: "관계설명서_결제버튼",
+    },
   },
 } as const;
