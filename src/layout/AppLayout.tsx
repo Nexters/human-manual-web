@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigationType } from "react-router-dom";
 import { trackPageView } from "@/lib/google-analytics";
+import BusinessFooter from "@/components/shared/BusinessFooter";
 
 export default function AppLayout() {
   const location = useLocation();
@@ -19,8 +20,11 @@ export default function AppLayout() {
   }, [location.pathname, location.search, navigationType]);
 
   return (
-    <div className="mx-auto min-h-dvh w-full max-w-[440px] bg-white">
-      <Outlet />
+    <div className="mx-auto flex min-h-dvh w-full max-w-[440px] flex-col bg-white">
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <BusinessFooter />
     </div>
   );
 }
