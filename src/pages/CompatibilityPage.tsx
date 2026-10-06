@@ -164,7 +164,9 @@ export default function CompatibilityPage() {
 
   const handleRelationshipGuidePurchase = () => {
     trackEvent(GA_EVENTS.COMPATIBILITY.RELATIONSHIP_GUIDE_PURCHASE_CLICK);
-    openToast("결제 기능을 준비 중이에요");
+    navigate(
+      `/compatibility/checkout?mine=${encodeURIComponent(mine)}&friend=${encodeURIComponent(friend)}`,
+    );
   };
 
   return (

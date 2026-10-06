@@ -117,7 +117,7 @@ export default function RelationshipGuidePurchaseCard({
       <div className="border-gray-02 mt-7 border-t pt-5">
         <div className="flex items-end justify-between gap-3">
           <Typography variant="me3" className="pb-1 text-gray-06">
-            우리 둘 맞춤 관계 설명서
+            맞춤 관계 설명서
           </Typography>
           <span className="shrink-0 text-[32px] leading-none font-bold tracking-[-1.28px] text-gray-09">
             990원
@@ -130,7 +130,7 @@ export default function RelationshipGuidePurchaseCard({
           className="bg-sub-4 mt-5 flex h-[58px] w-full items-center justify-center rounded-[14px] text-white shadow-[0_10px_22px_rgba(255,58,180,0.18)] transition-opacity hover:opacity-90 active:opacity-80"
         >
           <Typography variant="h2" as="span">
-            우리 둘 관계 설명서 열기
+            맞춤 관계 설명서 열기
           </Typography>
         </button>
 
