@@ -8,6 +8,7 @@ import WhatItCanDo from "@/components/result/whatItCanDo";
 import Warning from "@/components/result/warning";
 import Charging from "@/components/result/charging";
 import Compatible from "@/components/result/compatible";
+import RelationShelf from "@/components/result/relationShelf";
 import ShareResult from "@/components/result/shareResult";
 import FriendChemiTestModal from "@/components/result/FriendChemiTestModal";
 import ResultPageSkeleton from "@/components/result/skeleton";
@@ -19,7 +20,7 @@ import { useScrollPassed } from "@/hooks/useScrollPassed";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useFontsReady } from "@/hooks/useFontsReady";
 import { getCompatibility } from "@/api/compatibility";
-import { compatibilityQueryKey } from "@/hooks/useCompatibility";
+import { compatibilityQueryKey, useCompatibilityRanking } from "@/hooks/useCompatibility";
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
@@ -45,6 +46,7 @@ export default function ResultPage() {
 
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
   const { data: friendData } = useAssessmentResult(friendCode ?? "");
+  const { data: rankingData } = useCompatibilityRanking(id ?? "");
   const { open, close } = useModal();
   const { open: openToast } = useToast();
   const [checkingChemi, setCheckingChemi] = useState(false);
@@ -165,6 +167,12 @@ export default function ResultPage() {
     }
   };
 
+  const navigateToCompatibility = (mine: string, friend: string) => {
+    navigate(
+      `/compatibility?mine=${encodeURIComponent(mine)}&friend=${encodeURIComponent(friend)}`,
+    );
+  };
+
   const openChemiTestModal = () => {
     trackEvent(GA_EVENTS.RESULT.CHEMI_TEST_OPEN);
     open({
@@ -214,6 +222,16 @@ export default function ResultPage() {
 
       {/* ------- 친구 궁합 UI------ */}
       <Compatible compatibleFriends={compatible_friends} />
+
+      {/* ------- 관계 진열장(케미 랭킹) UI ------ */}
+      {/* 랭킹은 부가 정보라 조회 실패나 케미 이력이 없을 땐 섹션을 숨긴다. */}
+      {rankingData && rankingData.rankings.length > 0 && (
+        <RelationShelf
+          nickname={resultNickname}
+          friends={rankingData.rankings}
+          onSelectFriend={(friendResultCode) => navigateToCompatibility(id ?? "", friendResultCode)}
+        />
+      )}
 
       {/* ------- 결과지 공유 UI ------ */}
       <ShareResult
