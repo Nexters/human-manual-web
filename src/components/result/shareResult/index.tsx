@@ -52,8 +52,7 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle: string }
 // 궁합(Compatible) 데이터와 무관하게 결과 코드(id)만으로 동작하는 공유 UI라 별도 섹션으로 분리했다.
 //
 // 결과지를 케미 허브로 쓴다. 친구를 부르는 길은 "친구에게 케미 테스트 공유하기"(공유 모달) 하나로
-// 모았다. 모달이 보내는 링크(/?friend=<내코드>)로 친구가 들어와 테스트를 마치면 그 화면에서
-// 케미가 열리므로, 이 화면에서 친구 코드를 직접 받거나 케미 결과를 미리 보여줄 필요가 없다.
+// 모았다. 모달이 보내는 링크(/?friend=<내코드>)로 친구가 들어와 테스트를 마치면 그 화면에서 케미가 열린다.
 export default function ShareResult({
   nickname,
   imageUrl,
