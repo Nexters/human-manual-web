@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import Typography from "@/components/shared/Typography";
 import Spinner from "@/components/shared/Spinner";
@@ -28,6 +29,8 @@ interface ShareResultProps {
   onSendChemiTest: () => void;
   /** friendNickname 이 있을 때, 케미 페이지로 바로 넘긴다. */
   onViewChemi?: () => void;
+  /** 내 결과 코드 박스 바로 아래에 붙는 영역. */
+  codeFooter?: ReactNode;
 }
 
 // 이 구간의 섹션 헤딩은 결과지의 다른 섹션 헤딩(SectionTitle, 24px)과 달리 Figma에서
@@ -58,6 +61,7 @@ export default function ShareResult({
   friendImageUrl,
   isCheckingChemi = false,
   onSendChemiTest,
+  codeFooter,
   onViewChemi,
 }: ShareResultProps) {
   const { id } = useParams<{ id: string }>();
@@ -226,6 +230,8 @@ export default function ShareResult({
             </Typography>
           </button>
         </div>
+
+        {codeFooter && <div className="mt-6">{codeFooter}</div>}
       </div>
     </div>
   );

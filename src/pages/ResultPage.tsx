@@ -9,6 +9,7 @@ import Warning from "@/components/result/warning";
 import Charging from "@/components/result/charging";
 import Compatible from "@/components/result/compatible";
 import RelationShelf from "@/components/result/relationShelf";
+import FriendCodeChemiForm from "@/components/result/relationShelf/FriendCodeChemiForm";
 import ShareResult from "@/components/result/shareResult";
 import FriendChemiTestModal from "@/components/result/FriendChemiTestModal";
 import ResultPageSkeleton from "@/components/result/skeleton";
@@ -24,6 +25,7 @@ import { compatibilityQueryKey, useCompatibilityRanking } from "@/hooks/useCompa
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
+import { useMyResultStore } from "@/stores/myResultStore";
 import { buildChemiTestMessage, canUseSystemShare, share } from "@/utils/share";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
@@ -47,6 +49,8 @@ export default function ResultPage() {
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
   const { data: friendData } = useAssessmentResult(friendCode ?? "");
   const { data: rankingData } = useCompatibilityRanking(id ?? "");
+  // 친구 코드 입력은 어느 결과지에서 열든 "나 ↔ 친구" 궁합이라, 이 브라우저의 내 코드를 쓴다.
+  const myResultCode = useMyResultStore((state) => state.resultCode);
   const { open, close } = useModal();
   const { open: openToast } = useToast();
   const [checkingChemi, setCheckingChemi] = useState(false);
@@ -242,6 +246,16 @@ export default function ResultPage() {
         isCheckingChemi={checkingChemi}
         onSendChemiTest={openChemiTestModal}
         onViewChemi={() => void handleViewChemi()}
+        codeFooter={
+          myResultCode && (
+            <FriendCodeChemiForm
+              myCode={myResultCode}
+              onCheckCompatibility={(friendResultCode) =>
+                navigateToCompatibility(myResultCode, friendResultCode)
+              }
+            />
+          )
+        }
       />
 
       {/* ------- 쿠팡 파트너스 광고 ------ */}
