@@ -49,11 +49,10 @@ export default function PrivacyPage() {
             </PolicyList>
           </div>
           <div>
-            <p className="font-semibold text-gray-08">선택적 이용 분석</p>
+            <p className="font-semibold text-gray-08">서비스 이용 분석</p>
             <PolicyList>
               <li>항목: 쿠키 식별자, 접속·이용 기록, 브라우저·기기 정보</li>
               <li>목적: 서비스 이용 현황 분석 및 기능 개선</li>
-              <li>처리 근거: 이용자의 선택적 동의</li>
               <li>보유기간: 수집일로부터 최대 14개월</li>
             </PolicyList>
           </div>
@@ -71,20 +70,9 @@ export default function PrivacyPage() {
           삭제할 수 있습니다.
         </p>
         <p>
-          서비스 이용 현황을 분석하기 위한 Google Analytics는 이용자가 선택적으로 동의한 경우에만
-          로드됩니다. 분석 쿠키에 동의하지 않아도 서비스의 필수 기능을 이용할 수 있습니다. 선택을
-          변경하려면 아래 버튼을 누른 뒤 다시 선택할 수 있습니다.
+          서비스는 이용 현황 분석과 기능 개선을 위해 Google Analytics 쿠키를 사용합니다. 이용자는
+          브라우저 설정에서 쿠키를 차단하거나 삭제할 수 있습니다.
         </p>
-        <button
-          type="button"
-          onClick={() => {
-            window.localStorage.removeItem("pakit_analytics_consent");
-            window.location.reload();
-          }}
-          className="rounded-[10px] border border-gray-03 px-3 py-2 text-[13px] font-semibold text-gray-07"
-        >
-          분석 쿠키 선택 다시 하기
-        </button>
       </PolicySection>
 
       <PolicySection title="4. 개인정보의 제3자 제공">
@@ -113,13 +101,8 @@ export default function PrivacyPage() {
           <li>이전 항목: 쿠키 식별자, 접속·이용 기록, 기기 및 브라우저 정보</li>
           <li>이전 목적: Google Analytics를 통한 서비스 이용 분석</li>
           <li>이전 시점 및 방법: 서비스 이용 시 암호화된 네트워크를 통한 전송</li>
-          <li>이전 근거: 개인정보 보호법에 따른 이용자의 별도 동의</li>
           <li>보유기간: 수집일로부터 최대 14개월</li>
         </PolicyList>
-        <p>
-          이용자는 분석 쿠키 동의를 거부하여 국외 이전을 거부할 수 있으며, 거부하더라도 서비스의
-          필수 기능 이용에는 영향이 없습니다.
-        </p>
       </PolicySection>
 
       <PolicySection title="7. 개인정보의 파기">
@@ -135,8 +118,7 @@ export default function PrivacyPage() {
           이용자는 자신의 개인정보에 대해 열람, 정정, 삭제, 처리정지 및 동의 철회를 요청할 수
           있습니다. 요청은 고객센터 010-5310-3084로 접수할 수 있으며, 회사는 관련 법령에 따라 지체
           없이 처리합니다. 결과 코드가 필요한 요청의 경우 권리 보호를 위해 해당 코드 확인을 요청할
-          수 있습니다. 분석 쿠키 동의는 이 페이지의 “분석 쿠키 선택 다시 하기”에서 변경할 수
-          있습니다.
+          수 있습니다.
         </p>
       </PolicySection>
 
