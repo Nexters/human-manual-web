@@ -2,7 +2,7 @@ import axios from "axios";
 import type { ErrorResponse } from "@/types/common";
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL || "https://api.pakit.kr",
   timeout: 10_000,
 });
 

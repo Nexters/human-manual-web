@@ -11,7 +11,9 @@
     "format:check": "prettier --check .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "dev:auth-mock": "VITE_AUTH_MOCK=true vite --host 127.0.0.1",
+    "test:auth": "playwright test"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
     "@storybook/react-vite": "^10.5.7",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",

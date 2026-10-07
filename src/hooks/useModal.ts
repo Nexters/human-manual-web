@@ -7,7 +7,15 @@ export const useModal = () => {
   const setModal = useModalStore((state) => state.setModal);
 
   const open = useCallback(
-    ({ title, contents, confirmLabel, onConfirm, onClose }: Omit<ModalType, "isOpen">) => {
+    ({
+      title,
+      contents,
+      confirmLabel,
+      onConfirm,
+      onClose,
+      cardClassName,
+      ariaLabelledBy,
+    }: Omit<ModalType, "isOpen">) => {
       setModal({
         isOpen: true,
         title,
@@ -15,6 +23,8 @@ export const useModal = () => {
         confirmLabel,
         onConfirm,
         onClose,
+        cardClassName,
+        ariaLabelledBy,
       });
     },
     [setModal],

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Button from "@/components/shared/Button";
 import Typography from "@/components/shared/Typography";
@@ -45,6 +46,12 @@ export default function SplashScreen({
             이미 테스트를 했다면?
           </Typography>
         </button>
+        <Link
+          to="/my/results"
+          className="self-center px-4 py-2 text-[13px] text-gray-05 transition-colors hover:text-gray-07"
+        >
+          내 보관함
+        </Link>
       </div>
     </motion.div>
   );
