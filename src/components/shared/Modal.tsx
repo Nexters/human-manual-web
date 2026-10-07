@@ -10,7 +10,7 @@ import { cn } from "@/lib/cn";
  */
 export default function Modal() {
   const { modal, close } = useModal();
-  const { isOpen, title, contents, confirmLabel, onConfirm } = modal;
+  const { isOpen, title, contents, confirmLabel, onConfirm, cardClassName, ariaLabelledBy } = modal;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -37,7 +37,16 @@ export default function Modal() {
       />
 
       {/* ----- 모달 카드 ----- */}
-      <div className="relative flex w-full max-w-[400px] flex-col items-center rounded-[20px] bg-white px-[21px] pt-[23px] pb-[23px]">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={ariaLabelledBy}
+        aria-label={ariaLabelledBy ? undefined : typeof title === "string" ? title : "안내"}
+        className={cn(
+          "relative flex max-h-[calc(100dvh-40px)] w-full max-w-[400px] flex-col items-center overflow-y-auto rounded-[20px] bg-white px-[21px] pt-[23px] pb-[23px]",
+          cardClassName,
+        )}
+      >
         {title && (
           <Typography variant="h1" className="text-gray-09 text-center">
             {title}
@@ -45,9 +54,7 @@ export default function Modal() {
         )}
 
         {contents && (
-          <div className={cn("flex w-full flex-col items-center", title && "mt-7")}>
-            {contents}
-          </div>
+          <div className={cn("flex w-full flex-col items-center", title && "mt-7")}>{contents}</div>
         )}
 
         {confirmLabel && (

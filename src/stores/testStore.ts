@@ -12,6 +12,14 @@ const dropStaleVersions = () => {
   if (typeof localStorage === "undefined") return;
   for (const key of Object.keys(localStorage)) {
     if (key.startsWith(STORAGE_PREFIX) && key !== STORAGE_KEY) {
+      // 이전 버전의 결과 코드는 로그인 동기화에 필요하므로 보존한다.
+      try {
+        const stored = JSON.parse(localStorage.getItem(key) || "null");
+        if (typeof stored?.state?.resultCode === "string" && stored.state.resultCode.trim())
+          continue;
+      } catch {
+        /* 손상된 이전 진행 데이터만 정리한다. */
+      }
       localStorage.removeItem(key);
     }
   }

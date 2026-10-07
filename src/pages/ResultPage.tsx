@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import SaveResultPrompt from "@/components/auth/SaveResultPrompt";
 import Hero from "@/components/result/hero";
 import UnboxingKit from "@/components/result/unboxingKit";
 import KeyFeatures from "@/components/result/keyFeatures";
@@ -202,6 +203,7 @@ export default function ResultPage() {
         imageUrl={overview.image_url}
         isTopBarDark={isPastHero}
       />
+      <SaveResultPrompt resultCode={id ?? ""} />
       <div ref={unboxingKitStartRef} />
 
       {/* ------- 핵심 특징 UI ------ */}

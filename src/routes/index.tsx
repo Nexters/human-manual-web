@@ -10,10 +10,16 @@ import TermsPage from "@/pages/TermsPage";
 import PrivacyPage from "@/pages/PrivacyPage";
 import RefundPolicyPage from "@/pages/RefundPolicyPage";
 
+import AuthCompletePage from "@/pages/AuthCompletePage";
+import MyAccountPage from "@/pages/MyAccountPage";
+
 export const router = createBrowserRouter([
   {
     element: <AppLayout />,
     children: [
+      { path: "/auth/complete", element: <AuthCompletePage /> },
+      { path: "/my/results", element: <MyAccountPage kind="results" /> },
+      { path: "/my/compatibilities", element: <MyAccountPage kind="compatibilities" /> },
       { path: "/", element: <OnboardingPage /> },
       { path: "/test/:number", element: <QuestionPage /> },
       { path: "/unboxing", element: <UnboxingPage /> },

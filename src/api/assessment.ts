@@ -1,5 +1,6 @@
 import axios from "axios";
 import { apiClient } from "./client";
+import { queryClient } from "@/lib/queryClient";
 import type {
   AssessmentSubmissionInput,
   AssessmentSubmissionOutput,
@@ -10,7 +11,9 @@ export async function submitAssessment(input: AssessmentSubmissionInput) {
   const { data } = await apiClient.post<AssessmentSubmissionOutput>(
     "/api/tests/submissions",
     input,
+    { withCredentials: true },
   );
+  void queryClient.invalidateQueries({ queryKey: ["account"] });
   return data;
 }
 
