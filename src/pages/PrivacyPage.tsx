@@ -17,6 +17,7 @@ export default function PrivacyPage() {
             <PolicyList>
               <li>항목: 닉네임, MBTI, 질문별 답변, 결과 코드</li>
               <li>목적: 진단 결과 생성·저장·재열람 및 친구와의 케미 분석</li>
+              <li>처리 근거: 서비스 제공을 위한 계약의 이행 및 이용자의 요청에 따른 조치</li>
               <li>보유기간: 삭제 요청 시 또는 서비스 종료 시까지</li>
             </PolicyList>
           </div>
@@ -25,7 +26,8 @@ export default function PrivacyPage() {
             <PolicyList>
               <li>항목: 주문번호, 결과 코드, 결제승인번호, 결제수단, 금액, 결제일시·상태</li>
               <li>목적: 결제 처리, 구매내역 확인, 환불 및 분쟁 대응</li>
-              <li>보유기간: 대금결제 및 공급 기록 5년</li>
+              <li>처리 근거: 계약의 이행 및 전자상거래 관련 법령상 의무 준수</li>
+              <li>보유기간: 계약 또는 청약철회 기록 5년, 대금결제 및 재화 등의 공급 기록 5년</li>
             </PolicyList>
           </div>
           <div>
@@ -33,15 +35,26 @@ export default function PrivacyPage() {
             <PolicyList>
               <li>항목: 전화번호 등 이용자가 제공한 연락처, 문의 및 답변 내용</li>
               <li>목적: 문의 확인, 본인 확인, 민원 및 분쟁 처리</li>
+              <li>처리 근거: 계약의 이행, 이용자의 요청에 따른 조치 및 관련 법령 준수</li>
               <li>보유기간: 소비자 불만 또는 분쟁처리 기록 3년</li>
             </PolicyList>
           </div>
           <div>
-            <p className="font-semibold text-gray-08">서비스 이용 과정에서 생성되는 정보</p>
+            <p className="font-semibold text-gray-08">서비스 보안 및 오류 대응 정보</p>
             <PolicyList>
-              <li>항목: 접속 로그, IP 주소, 쿠키, 브라우저·기기 정보, 이용 기록</li>
-              <li>목적: 서비스 안정성 확보, 오류 분석, 이용 현황 통계</li>
-              <li>보유기간: 수집 목적 달성 시까지 또는 관계 법령에서 정한 기간</li>
+              <li>항목: 접속 로그, IP 주소, 브라우저·기기 정보, 오류 기록</li>
+              <li>목적: 부정 이용 방지, 서비스 안정성 확보 및 오류 분석</li>
+              <li>처리 근거: 안전한 서비스 운영을 위한 회사의 정당한 이익</li>
+              <li>보유기간: 수집일로부터 3개월</li>
+            </PolicyList>
+          </div>
+          <div>
+            <p className="font-semibold text-gray-08">선택적 이용 분석</p>
+            <PolicyList>
+              <li>항목: 쿠키 식별자, 접속·이용 기록, 브라우저·기기 정보</li>
+              <li>목적: 서비스 이용 현황 분석 및 기능 개선</li>
+              <li>처리 근거: 이용자의 선택적 동의</li>
+              <li>보유기간: 수집일로부터 최대 14개월</li>
             </PolicyList>
           </div>
         </div>
@@ -58,10 +71,20 @@ export default function PrivacyPage() {
           삭제할 수 있습니다.
         </p>
         <p>
-          또한 서비스 이용 현황을 분석하기 위해 Google Analytics 쿠키를 사용할 수 있습니다. 이용자는
-          브라우저의 쿠키 차단 또는 삭제 기능을 이용할 수 있으나, 일부 기능이 원활하게 작동하지 않을
-          수 있습니다.
+          서비스 이용 현황을 분석하기 위한 Google Analytics는 이용자가 선택적으로 동의한 경우에만
+          로드됩니다. 분석 쿠키에 동의하지 않아도 서비스의 필수 기능을 이용할 수 있습니다. 선택을
+          변경하려면 아래 버튼을 누른 뒤 다시 선택할 수 있습니다.
         </p>
+        <button
+          type="button"
+          onClick={() => {
+            window.localStorage.removeItem("pakit_analytics_consent");
+            window.location.reload();
+          }}
+          className="rounded-[10px] border border-gray-03 px-3 py-2 text-[13px] font-semibold text-gray-07"
+        >
+          분석 쿠키 선택 다시 하기
+        </button>
       </PolicySection>
 
       <PolicySection title="4. 개인정보의 제3자 제공">
@@ -73,24 +96,30 @@ export default function PrivacyPage() {
 
       <PolicySection title="5. 개인정보 처리업무의 위탁">
         <PolicyList>
-          <li>카카오페이: 결제 승인·취소·환불 및 결제 관련 고객 대응</li>
+          <li>카카오페이: 결제 승인·취소·환불 및 결제 관련 처리</li>
           <li>Google LLC: 서비스 이용 현황 분석 및 통계</li>
         </PolicyList>
         <p>
           회사는 위탁계약 또는 각 서비스의 이용조건에 따라 개인정보가 안전하게 처리되도록 필요한
-          사항을 관리합니다.
+          사항을 관리합니다. 실제 결제 계약에서 카카오페이의 법적 지위가 제3자 제공에 해당하는 경우,
+          회사는 결제 도입 전에 제공 항목·목적·보유기간을 별도로 공개하고 필요한 동의를 받습니다.
         </p>
       </PolicySection>
 
       <PolicySection title="6. 개인정보의 국외 이전">
         <PolicyList>
           <li>이전받는 자: Google LLC</li>
-          <li>이전 국가: 미국 등 Google이 데이터 처리 시설을 운영하는 국가</li>
+          <li>이전 국가: 미국</li>
           <li>이전 항목: 쿠키 식별자, 접속·이용 기록, 기기 및 브라우저 정보</li>
           <li>이전 목적: Google Analytics를 통한 서비스 이용 분석</li>
           <li>이전 시점 및 방법: 서비스 이용 시 암호화된 네트워크를 통한 전송</li>
-          <li>보유기간: Google Analytics 설정 및 Google의 정책에 따른 기간</li>
+          <li>이전 근거: 개인정보 보호법에 따른 이용자의 별도 동의</li>
+          <li>보유기간: 수집일로부터 최대 14개월</li>
         </PolicyList>
+        <p>
+          이용자는 분석 쿠키 동의를 거부하여 국외 이전을 거부할 수 있으며, 거부하더라도 서비스의
+          필수 기능 이용에는 영향이 없습니다.
+        </p>
       </PolicySection>
 
       <PolicySection title="7. 개인정보의 파기">
@@ -106,7 +135,8 @@ export default function PrivacyPage() {
           이용자는 자신의 개인정보에 대해 열람, 정정, 삭제, 처리정지 및 동의 철회를 요청할 수
           있습니다. 요청은 고객센터 010-5310-3084로 접수할 수 있으며, 회사는 관련 법령에 따라 지체
           없이 처리합니다. 결과 코드가 필요한 요청의 경우 권리 보호를 위해 해당 코드 확인을 요청할
-          수 있습니다.
+          수 있습니다. 분석 쿠키 동의는 이 페이지의 “분석 쿠키 선택 다시 하기”에서 변경할 수
+          있습니다.
         </p>
       </PolicySection>
 

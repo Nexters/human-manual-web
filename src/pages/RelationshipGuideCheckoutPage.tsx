@@ -23,7 +23,9 @@ export default function RelationshipGuideCheckoutPage() {
   const friend = takeResultCode(searchParams.get("friend")) ?? "";
   const { data, isLoading, isError } = useCompatibility(mine, friend);
   const { open: openToast } = useToast();
-  const [isPurchaseAgreed, setIsPurchaseAgreed] = useState(false);
+  const [isTermsAgreed, setIsTermsAgreed] = useState(false);
+  const [isImmediateProvisionAgreed, setIsImmediateProvisionAgreed] = useState(false);
+  const canPay = isTermsAgreed && isImmediateProvisionAgreed;
 
   const handleBack = () => {
     if (window.history.state?.idx > 0) {
@@ -147,21 +149,41 @@ export default function RelationshipGuideCheckoutPage() {
             주문 확인
           </Typography>
 
-          <div className="border-gray-02 mt-4 flex items-start gap-3 rounded-[16px] border bg-gray-00 px-4 py-4">
-            <input
-              id="purchase-agreement"
-              type="checkbox"
-              checked={isPurchaseAgreed}
-              onChange={(event) => setIsPurchaseAgreed(event.target.checked)}
-              className="accent-sub-4 mt-0.5 size-5 shrink-0"
-            />
-            <div className="min-w-0 flex-1">
-              <label htmlFor="purchase-agreement" className="block cursor-pointer">
+          <div className="border-gray-02 mt-4 rounded-[16px] border bg-gray-00 px-4 py-4">
+            <div className="flex items-start gap-3">
+              <input
+                id="terms-agreement"
+                type="checkbox"
+                checked={isTermsAgreed}
+                onChange={(event) => setIsTermsAgreed(event.target.checked)}
+                className="accent-sub-4 mt-0.5 size-5 shrink-0"
+              />
+              <label htmlFor="terms-agreement" className="block cursor-pointer">
                 <Typography variant="me3" as="span" className="text-gray-07 break-keep">
-                  <span className="text-sub-4 mr-1">[필수]</span>위 주문 내용을 확인했으며, 이용약관
-                  및 개인정보처리방침, 취소·환불 정책에 동의합니다.
+                  <span className="text-sub-4 mr-1">[필수]</span>위 주문 내용을 확인했으며,
+                  이용약관과 취소·환불 정책에 동의합니다.
                 </Typography>
               </label>
+            </div>
+
+            <div className="border-gray-02 mt-4 flex items-start gap-3 border-t pt-4">
+              <input
+                id="immediate-provision-agreement"
+                type="checkbox"
+                checked={isImmediateProvisionAgreed}
+                onChange={(event) => setIsImmediateProvisionAgreed(event.target.checked)}
+                className="accent-sub-4 mt-0.5 size-5 shrink-0"
+              />
+              <label htmlFor="immediate-provision-agreement" className="block cursor-pointer">
+                <Typography variant="me3" as="span" className="text-gray-07 break-keep">
+                  <span className="text-sub-4 mr-1">[필수]</span>결제 완료 즉시 설명서 제공이
+                  시작되며, 제공이 시작된 뒤에는 단순 변심에 따른 청약철회가 제한될 수 있음을
+                  확인했습니다.
+                </Typography>
+              </label>
+            </div>
+
+            <div className="mt-4 border-t border-gray-02 pt-4">
               <nav aria-label="결제 정책" className="mt-3 flex flex-col gap-2">
                 {[
                   ["/terms", "이용약관"],
@@ -185,7 +207,7 @@ export default function RelationshipGuideCheckoutPage() {
         <div className="mt-auto pt-1">
           <button
             type="button"
-            disabled={!isPurchaseAgreed}
+            disabled={!canPay}
             onClick={handlePayment}
             className="flex h-[58px] w-full items-center justify-center rounded-[14px] bg-[#FEE500] text-[#191919] transition-opacity hover:opacity-90 active:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-02 disabled:text-gray-04"
           >

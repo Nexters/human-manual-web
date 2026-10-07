@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useLocation, useNavigationType } from "react-router-dom";
 import { trackPageView } from "@/lib/google-analytics";
 import BusinessFooter from "@/components/shared/BusinessFooter";
+import AnalyticsConsent from "@/components/shared/AnalyticsConsent";
 
 export default function AppLayout() {
   const location = useLocation();
@@ -25,6 +26,7 @@ export default function AppLayout() {
         <Outlet />
       </main>
       <BusinessFooter />
+      <AnalyticsConsent currentPath={location.pathname + location.search} />
     </div>
   );
 }
