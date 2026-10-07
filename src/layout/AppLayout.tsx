@@ -24,7 +24,7 @@ export default function AppLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      <BusinessFooter />
+      {location.pathname === "/" && <BusinessFooter />}
     </div>
   );
 }
