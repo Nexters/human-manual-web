@@ -3,11 +3,15 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import TopBar from "@/components/shared/TopBar";
 import Typography from "@/components/shared/Typography";
 import { useCompatibility } from "@/hooks/useCompatibility";
+import { useKakaoPayCheckout } from "@/hooks/useKakaoPayCheckout";
 import { useToast } from "@/hooks/useToast";
 import { useModal } from "@/hooks/useModal";
 import { takeResultCode } from "@/lib/resultCode";
 import AdminCodeModal from "@/components/relationshipReport/AdminCodeModal";
 import { reportPaths, type GenderStepState } from "@/components/relationshipReport/reportFlow";
+
+const DEV_MINE_GENDER = "여자";
+const DEV_PARTNER_GENDER = "남자";
 
 function LoadingView() {
   return (
@@ -29,7 +33,13 @@ export default function RelationshipGuideCheckoutPage() {
   const { open: openModal, close: closeModal } = useModal();
   const [isTermsAgreed, setIsTermsAgreed] = useState(false);
   const [isImmediateProvisionAgreed, setIsImmediateProvisionAgreed] = useState(false);
-  const canPay = isTermsAgreed && isImmediateProvisionAgreed;
+  const { pay, isPaying } = useKakaoPayCheckout({
+    mine,
+    friend,
+    mineGender: DEV_MINE_GENDER,
+    partnerGender: DEV_PARTNER_GENDER,
+  });
+  const canPay = isTermsAgreed && isImmediateProvisionAgreed && !isPaying;
 
   const handleBack = () => {
     if (window.history.state?.idx > 0) {
@@ -42,7 +52,9 @@ export default function RelationshipGuideCheckoutPage() {
   };
 
   const handlePayment = () => {
-    openToast("카카오페이 결제 연동을 준비 중이에요");
+    void pay().catch(() => {
+      openToast("결제를 시작하지 못했어요. 잠시 후 다시 시도해주세요");
+    });
   };
 
   // 결제 연동 전 관리자용 우회 입구. 안내 문구를 누르면 열린다.
@@ -232,7 +244,7 @@ export default function RelationshipGuideCheckoutPage() {
             className="flex h-[58px] w-full items-center justify-center rounded-[14px] bg-[#FEE500] text-[#191919] transition-opacity hover:opacity-90 active:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-02 disabled:text-gray-04"
           >
             <Typography variant="h3" as="span">
-              990원 카카오페이로 결제하기
+              {isPaying ? "결제창을 여는 중이에요" : "990원 카카오페이로 결제하기"}
             </Typography>
           </button>
           <Typography

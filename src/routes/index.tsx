@@ -11,6 +11,7 @@ import RelationshipGuideReportPage from "@/pages/RelationshipGuideReportPage";
 import TermsPage from "@/pages/TermsPage";
 import PrivacyPage from "@/pages/PrivacyPage";
 import RefundPolicyPage from "@/pages/RefundPolicyPage";
+import KakaoPayCompletePage from "@/pages/KakaoPayCompletePage";
 
 import AuthCompletePage from "@/pages/AuthCompletePage";
 import MyAccountPage from "@/pages/MyAccountPage";
@@ -30,6 +31,7 @@ export const router = createBrowserRouter([
       { path: "/compatibility/checkout", element: <RelationshipGuideCheckoutPage /> },
       { path: "/compatibility/report/gender", element: <RelationshipGuideGenderPage /> },
       { path: "/compatibility/report", element: <RelationshipGuideReportPage /> },
+      { path: "/payments/kakaopay/complete", element: <KakaoPayCompletePage /> },
       { path: "/terms", element: <TermsPage /> },
       { path: "/privacy", element: <PrivacyPage /> },
       { path: "/refund-policy", element: <RefundPolicyPage /> },
