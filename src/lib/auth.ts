@@ -1,4 +1,5 @@
 import { authMockEnabled, MOCK_SESSION_KEY } from "./authMockMode";
+import { apiBaseURL } from "@/api/client";
 
 const RETURN_KEY = "auth_return_to";
 
@@ -16,8 +17,7 @@ export function startKakaoLogin() {
     window.location.assign("/auth/complete");
     return;
   }
-  const base = import.meta.env.VITE_API_BASE_URL || "https://api.pakit.kr";
-  window.location.assign(`${base.replace(/\/$/, "")}/api/auth/kakao/login`);
+  window.location.assign(`${apiBaseURL.replace(/\/$/, "")}/api/auth/kakao/login`);
 }
 
 export function consumeReturnTo() {

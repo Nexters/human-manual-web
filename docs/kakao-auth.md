@@ -2,7 +2,8 @@
 
 기존 테스트 제출, 결과 조회, 공유, 코드로 궁합 조회 흐름은 유지한다.
 Axios의 `withCredentials: true`는 fetch의 `credentials: "include"`에 해당한다.
-API 기본 주소는 `https://api.pakit.kr`이며 기존 `VITE_API_BASE_URL` 설정으로 변경할 수 있다.
+API 기본 주소는 개발 빌드에서 `http://localhost:8001`, 운영 빌드에서
+`https://api.pakit.kr`이다. `VITE_API_BASE_URL`을 지정하면 환경별 기본값을 덮어쓴다.
 
 | 명세                                             | 연결 위치                                            |
 | ------------------------------------------------ | ---------------------------------------------------- |
