@@ -25,6 +25,7 @@ import { appendFriendParam } from "@/lib/friendParam";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
 import { PRETENDARD_FONT_SPEC } from "@/constants/fonts";
+import { savePaymentFlowContext } from "@/lib/paymentFlow";
 import type { CompatibilityDetailOutput } from "@/types/compatibility";
 
 type DetailKey = CompatibilityDetailOutput["key"];
@@ -162,8 +163,20 @@ export default function CompatibilityPage() {
     });
   };
 
-  const handleRelationshipGuidePurchase = () => {
+  const hasPurchasedRelationshipReport =
+    data.relationship_report?.status === "READY" ||
+    data.relationship_report?.status === "PAID_PENDING_REPORT";
+
+  const handleRelationshipGuideAction = () => {
     trackEvent(GA_EVENTS.COMPATIBILITY.RELATIONSHIP_GUIDE_PURCHASE_CLICK);
+    const paidOrderId = data.relationship_report?.order_id;
+    if (hasPurchasedRelationshipReport && paidOrderId) {
+      savePaymentFlowContext(paidOrderId, { mine, friend });
+      navigate(
+        `/payments/kakaopay/complete?order_id=${encodeURIComponent(paidOrderId)}&status=approved`,
+      );
+      return;
+    }
     navigate(
       `/compatibility/report/gender?mine=${encodeURIComponent(mine)}&friend=${encodeURIComponent(friend)}`,
     );
@@ -276,7 +289,8 @@ export default function CompatibilityPage() {
         <RelationshipGuidePurchaseCard
           mineNickname={data.mine.nickname}
           friendNickname={data.friend.nickname}
-          onPurchase={handleRelationshipGuidePurchase}
+          hasPurchased={hasPurchasedRelationshipReport}
+          onPurchase={handleRelationshipGuideAction}
         />
       </div>
 

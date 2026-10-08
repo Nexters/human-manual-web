@@ -3,6 +3,7 @@ import Typography from "@/components/shared/Typography";
 type RelationshipGuidePurchaseCardProps = {
   mineNickname: string;
   friendNickname: string;
+  hasPurchased?: boolean;
   onPurchase: () => void;
 };
 
@@ -81,8 +82,38 @@ function IncludedContent({ title, description }: (typeof includedContents)[numbe
 export default function RelationshipGuidePurchaseCard({
   mineNickname,
   friendNickname,
+  hasPurchased = false,
   onPurchase,
 }: RelationshipGuidePurchaseCardProps) {
+  if (hasPurchased) {
+    return (
+      <section className="border-point rounded-[24px] border bg-gradient-to-b from-white to-[#fff9fc] px-5 py-7 text-center">
+        <div className="bg-sub-5 text-sub-4 inline-flex max-w-full rounded-full px-3 py-2 text-[12px] leading-none font-semibold tracking-[-0.48px]">
+          <span className="truncate">
+            ✦ {mineNickname}님과 {friendNickname}님의 관계 사용법
+          </span>
+        </div>
+
+        <Typography variant="h1" className="mt-5 text-gray-09 break-keep">
+          결제한 맞춤 관계 설명서가 있어요
+        </Typography>
+        <Typography variant="me3" className="mt-2 text-gray-06 break-keep">
+          두 사람만의 관계 흐름과 더 편해지는 방법을 다시 확인해보세요.
+        </Typography>
+
+        <button
+          type="button"
+          onClick={onPurchase}
+          className="bg-sub-4 mt-6 flex h-[58px] w-full items-center justify-center rounded-[14px] text-white shadow-[0_10px_22px_rgba(255,58,180,0.18)] transition-opacity hover:opacity-90 active:opacity-80"
+        >
+          <Typography variant="h2" as="span">
+            맞춤 관계 설명서 바로 보기
+          </Typography>
+        </button>
+      </section>
+    );
+  }
+
   return (
     <section className="border-point overflow-hidden rounded-[24px] border bg-gradient-to-b from-white to-[#fff9fc] px-5 py-7">
       <div className="bg-sub-5 text-sub-4 inline-flex max-w-full rounded-full px-3 py-2 text-[12px] leading-none font-semibold tracking-[-0.48px]">

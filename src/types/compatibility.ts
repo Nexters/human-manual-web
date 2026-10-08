@@ -33,6 +33,15 @@ export interface RelationshipTipOutput {
   description: string;
 }
 
+export type RelationshipReportAccessStatus =
+  "LOGIN_REQUIRED" | "NOT_PURCHASED" | "PAID_PENDING_REPORT" | "READY";
+
+export interface RelationshipReportAccessOutput {
+  status: RelationshipReportAccessStatus;
+  order_id: string | null;
+  report_code: string | null;
+}
+
 export interface CompatibilityOutput {
   mine: CompatibilityPersonOutput;
   friend: CompatibilityPersonOutput;
@@ -42,6 +51,7 @@ export interface CompatibilityOutput {
   details: CompatibilityDetailOutput[];
   tips: CompatibilityTipOutput[];
   relationship_tip: RelationshipTipOutput;
+  relationship_report?: RelationshipReportAccessOutput;
 }
 
 export interface CompatibilityRankingItemOutput {
