@@ -1,21 +1,24 @@
 import { useState, type ReactNode } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import TopBar from "@/components/shared/TopBar";
 import Typography from "@/components/shared/Typography";
 import { useCompatibility } from "@/hooks/useCompatibility";
 import { useModal } from "@/hooks/useModal";
+import { useToast } from "@/hooks/useToast";
+import { startKakaoLogin, syncMyResult } from "@/api/payment";
 import { takeResultCode } from "@/lib/resultCode";
+import { getPendingGenderSelection, savePendingGenderSelection } from "@/lib/paymentFlow";
 import { cn } from "@/lib/cn";
 import QuestionCtaButton from "@/components/question/QuestionCtaButton";
 import tokkiThinkingImage from "@/assets/img/relationshipReport/tokki-thinking.png";
-import {
-  reportPaths,
-  type GenderStepState,
-  type ReportStepState,
-} from "@/components/relationshipReport/reportFlow";
+import { reportPaths } from "@/components/relationshipReport/reportFlow";
 
 const GENDERS = ["여자", "남자"] as const;
 type Gender = (typeof GENDERS)[number];
+
+const isGender = (value: string | undefined): value is Gender =>
+  GENDERS.some((gender) => gender === value);
 
 const GENDER_STYLE: Record<Gender, { button: string; card: string; toy: string }> = {
   여자: {
@@ -42,24 +45,37 @@ function CenterMessage({ children }: { children: ReactNode }) {
 
 export default function RelationshipGuideGenderPage() {
   const navigate = useNavigate();
-  const { state } = useLocation() as { state: GenderStepState | null };
   const [searchParams] = useSearchParams();
   const mine = takeResultCode(searchParams.get("mine")) ?? "";
   const friend = takeResultCode(searchParams.get("friend")) ?? "";
   const { data, isLoading, isError } = useCompatibility(mine, friend);
   const { open, close } = useModal();
-  const [mineGender, setMineGender] = useState<Gender | null>(null);
-  const [partnerGender, setPartnerGender] = useState<Gender | null>(null);
-
-  const topBar = (
-    <TopBar title="설명서 준비" onBack={() => navigate(reportPaths.checkout(mine, friend))} />
+  const { open: openToast } = useToast();
+  const [isContinuing, setIsContinuing] = useState(false);
+  const [savedSelection] = useState(() => getPendingGenderSelection(mine, friend));
+  const [mineGender, setMineGender] = useState<Gender | null>(() =>
+    isGender(savedSelection?.mineGender) ? savedSelection.mineGender : null,
+  );
+  const [partnerGender, setPartnerGender] = useState<Gender | null>(() =>
+    isGender(savedSelection?.partnerGender) ? savedSelection.partnerGender : null,
   );
 
-  if (!mine || !friend || !state?.betaCode) {
+  const topBar = (
+    <TopBar
+      title="설명서 준비"
+      onBack={() =>
+        navigate(
+          `/compatibility?mine=${encodeURIComponent(mine)}&friend=${encodeURIComponent(friend)}`,
+        )
+      }
+    />
+  );
+
+  if (!mine || !friend) {
     return (
       <div className="flex min-h-dvh flex-col bg-white">
         {topBar}
-        <CenterMessage>결제 정보가 없어요. 결제 페이지에서 다시 시작해주세요.</CenterMessage>
+        <CenterMessage>궁합 정보를 찾을 수 없어요. 궁합 결과에서 다시 시작해주세요.</CenterMessage>
       </div>
     );
   }
@@ -87,10 +103,9 @@ export default function RelationshipGuideGenderPage() {
 
   const handleCreate = () => {
     if (!mineGender || !partnerGender) return;
-    const next: ReportStepState = { betaCode: state.betaCode, mineGender, partnerGender };
 
     open({
-      title: "이대로 만들까요?",
+      title: "이대로 진행할까요?",
       contents: (
         <div className="flex w-full flex-col gap-4">
           <div className="bg-gray-01 flex flex-col gap-2 rounded-[10px] px-4 py-3">
@@ -117,10 +132,22 @@ export default function RelationshipGuideGenderPage() {
           </Typography>
         </div>
       ),
-      confirmLabel: "설명서 만들기",
+      confirmLabel: "결제 페이지로",
       onConfirm: () => {
         close();
-        navigate(reportPaths.report(mine, friend), { state: next, replace: true });
+        savePendingGenderSelection(mine, friend, { mineGender, partnerGender });
+        setIsContinuing(true);
+        void syncMyResult(mine)
+          .then(() => navigate(reportPaths.checkout(mine, friend)))
+          .catch((error) => {
+            if (axios.isAxiosError(error) && error.response?.status === 401) {
+              const returnTo = new URL(reportPaths.checkout(mine, friend), window.location.origin);
+              startKakaoLogin(returnTo.href);
+              return;
+            }
+            setIsContinuing(false);
+            openToast("로그인을 확인하지 못했어요. 잠시 후 다시 시도해주세요");
+          });
       },
     });
   };
@@ -225,10 +252,10 @@ export default function RelationshipGuideGenderPage() {
           <QuestionCtaButton
             type="button"
             tone="point"
-            disabled={!mineGender || !partnerGender}
+            disabled={!mineGender || !partnerGender || isContinuing}
             onClick={handleCreate}
           >
-            설명서 만들기
+            {isContinuing ? "로그인 확인 중이에요" : "다음"}
           </QuestionCtaButton>
         </div>
       </div>

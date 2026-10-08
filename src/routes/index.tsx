@@ -7,7 +7,6 @@ import ResultPage from "@/pages/ResultPage";
 import CompatibilityPage from "@/pages/CompatibilityPage";
 import RelationshipGuideCheckoutPage from "@/pages/RelationshipGuideCheckoutPage";
 import RelationshipGuideGenderPage from "@/pages/RelationshipGuideGenderPage";
-import RelationshipGuideReportPage from "@/pages/RelationshipGuideReportPage";
 import TermsPage from "@/pages/TermsPage";
 import PrivacyPage from "@/pages/PrivacyPage";
 import RefundPolicyPage from "@/pages/RefundPolicyPage";
@@ -30,7 +29,6 @@ export const router = createBrowserRouter([
       { path: "/compatibility", element: <CompatibilityPage /> },
       { path: "/compatibility/checkout", element: <RelationshipGuideCheckoutPage /> },
       { path: "/compatibility/report/gender", element: <RelationshipGuideGenderPage /> },
-      { path: "/compatibility/report", element: <RelationshipGuideReportPage /> },
       { path: "/payments/kakaopay/complete", element: <KakaoPayCompletePage /> },
       { path: "/terms", element: <TermsPage /> },
       { path: "/privacy", element: <PrivacyPage /> },

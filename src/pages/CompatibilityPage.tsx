@@ -165,7 +165,7 @@ export default function CompatibilityPage() {
   const handleRelationshipGuidePurchase = () => {
     trackEvent(GA_EVENTS.COMPATIBILITY.RELATIONSHIP_GUIDE_PURCHASE_CLICK);
     navigate(
-      `/compatibility/checkout?mine=${encodeURIComponent(mine)}&friend=${encodeURIComponent(friend)}`,
+      `/compatibility/report/gender?mine=${encodeURIComponent(mine)}&friend=${encodeURIComponent(friend)}`,
     );
   };
 

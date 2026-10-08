@@ -1,5 +1,5 @@
 import axios from "axios";
-import { apiClient } from "./client";
+import { apiClient, clearLocalDevSession } from "./client";
 
 export type AuthUser = { user_id: number; created_at: string };
 export type AccountResult = {
@@ -29,7 +29,11 @@ export async function getMe(): Promise<AuthUser | null> {
   }
 }
 export async function logout() {
-  await apiClient.post("/api/auth/logout", undefined, { withCredentials: true });
+  try {
+    await apiClient.post("/api/auth/logout", undefined, { withCredentials: true });
+  } finally {
+    clearLocalDevSession();
+  }
 }
 export async function syncResults(resultCodes: string[]) {
   return (

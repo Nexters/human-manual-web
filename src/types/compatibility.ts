@@ -61,17 +61,3 @@ export interface CompatibilityRankingOutput {
   total: number;
   rankings: CompatibilityRankingItemOutput[];
 }
-
-export interface RomanticReportCreateInput {
-  mine_result_code: string;
-  partner_result_code: string;
-  mine_gender: string;
-  partner_gender: string;
-}
-
-export interface RomanticReportOutput {
-  report_code: string;
-  /** Markdown. "## N. 제목" 10개 섹션으로 온다. */
-  content: string;
-  created_at: string;
-}

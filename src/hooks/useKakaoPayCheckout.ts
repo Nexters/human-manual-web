@@ -6,6 +6,7 @@ import {
   startKakaoLogin,
   syncMyResult,
 } from "@/api/payment";
+import { savePaymentFlowContext } from "@/lib/paymentFlow";
 
 interface KakaoPayCheckoutInput {
   mine: string;
@@ -33,10 +34,11 @@ export function useKakaoPayCheckout({
         mine_gender: mineGender,
         partner_gender: partnerGender,
       });
+      savePaymentFlowContext(payment.order_id, { mine, friend });
       window.location.assign(selectKakaoPayRedirectUrl(payment));
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        startKakaoLogin(`${window.location.pathname}${window.location.search}`);
+        startKakaoLogin(window.location.href);
         return;
       }
       setIsPaying(false);

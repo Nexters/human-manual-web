@@ -5,13 +5,9 @@ import Typography from "@/components/shared/Typography";
 import { useCompatibility } from "@/hooks/useCompatibility";
 import { useKakaoPayCheckout } from "@/hooks/useKakaoPayCheckout";
 import { useToast } from "@/hooks/useToast";
-import { useModal } from "@/hooks/useModal";
 import { takeResultCode } from "@/lib/resultCode";
-import AdminCodeModal from "@/components/relationshipReport/AdminCodeModal";
-import { reportPaths, type GenderStepState } from "@/components/relationshipReport/reportFlow";
-
-const DEV_MINE_GENDER = "여자";
-const DEV_PARTNER_GENDER = "남자";
+import { getPendingGenderSelection } from "@/lib/paymentFlow";
+import { reportPaths } from "@/components/relationshipReport/reportFlow";
 
 function LoadingView() {
   return (
@@ -30,46 +26,24 @@ export default function RelationshipGuideCheckoutPage() {
   const friend = takeResultCode(searchParams.get("friend")) ?? "";
   const { data, isLoading, isError } = useCompatibility(mine, friend);
   const { open: openToast } = useToast();
-  const { open: openModal, close: closeModal } = useModal();
+  const [genderSelection] = useState(() => getPendingGenderSelection(mine, friend));
   const [isTermsAgreed, setIsTermsAgreed] = useState(false);
   const [isImmediateProvisionAgreed, setIsImmediateProvisionAgreed] = useState(false);
   const { pay, isPaying } = useKakaoPayCheckout({
     mine,
     friend,
-    mineGender: DEV_MINE_GENDER,
-    partnerGender: DEV_PARTNER_GENDER,
+    mineGender: genderSelection?.mineGender ?? "",
+    partnerGender: genderSelection?.partnerGender ?? "",
   });
   const canPay = isTermsAgreed && isImmediateProvisionAgreed && !isPaying;
 
   const handleBack = () => {
-    if (window.history.state?.idx > 0) {
-      navigate(-1);
-      return;
-    }
-    navigate(
-      `/compatibility?mine=${encodeURIComponent(mine)}&friend=${encodeURIComponent(friend)}`,
-    );
+    navigate(reportPaths.gender(mine, friend));
   };
 
   const handlePayment = () => {
     void pay().catch(() => {
       openToast("결제를 시작하지 못했어요. 잠시 후 다시 시도해주세요");
-    });
-  };
-
-  // 결제 연동 전 관리자용 우회 입구. 안내 문구를 누르면 열린다.
-  const handleAdminTap = () => {
-    openModal({
-      title: "관리자 확인",
-      contents: (
-        <AdminCodeModal
-          onSubmit={(betaCode) => {
-            closeModal();
-            const state: GenderStepState = { betaCode };
-            navigate(reportPaths.gender(mine, friend), { state });
-          }}
-        />
-      ),
     });
   };
 
@@ -83,6 +57,25 @@ export default function RelationshipGuideCheckoutPage() {
           <Typography variant="me2" className="text-gray-07">
             주문 정보를 찾을 수 없어요. 궁합 결과에서 다시 시도해주세요.
           </Typography>
+        </div>
+      </div>
+    );
+  }
+
+  if (!genderSelection) {
+    return (
+      <div className="flex min-h-dvh flex-col bg-white">
+        {topBar}
+        <div className="flex flex-1 flex-col items-center justify-center gap-5 px-5 text-center">
+          <Typography variant="me2" className="text-gray-07">
+            두 사람의 성별을 먼저 선택해주세요.
+          </Typography>
+          <Link
+            to={reportPaths.gender(mine, friend)}
+            className="rounded-[12px] bg-gray-09 px-5 py-3 text-white"
+          >
+            성별 선택하기
+          </Link>
         </div>
       </div>
     );
@@ -247,11 +240,7 @@ export default function RelationshipGuideCheckoutPage() {
               {isPaying ? "결제창을 여는 중이에요" : "990원 카카오페이로 결제하기"}
             </Typography>
           </button>
-          <Typography
-            variant="me4"
-            onClick={handleAdminTap}
-            className="mt-3 text-center leading-[1.5] text-gray-04"
-          >
+          <Typography variant="me4" className="mt-3 text-center leading-[1.5] text-gray-04">
             결제 버튼을 누르면 카카오페이 결제 화면으로 이동해요
           </Typography>
         </div>
