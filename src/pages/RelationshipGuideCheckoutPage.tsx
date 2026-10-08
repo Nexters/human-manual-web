@@ -4,7 +4,10 @@ import TopBar from "@/components/shared/TopBar";
 import Typography from "@/components/shared/Typography";
 import { useCompatibility } from "@/hooks/useCompatibility";
 import { useToast } from "@/hooks/useToast";
+import { useModal } from "@/hooks/useModal";
 import { takeResultCode } from "@/lib/resultCode";
+import AdminCodeModal from "@/components/relationshipReport/AdminCodeModal";
+import { reportPaths, type GenderStepState } from "@/components/relationshipReport/reportFlow";
 
 function LoadingView() {
   return (
@@ -23,6 +26,7 @@ export default function RelationshipGuideCheckoutPage() {
   const friend = takeResultCode(searchParams.get("friend")) ?? "";
   const { data, isLoading, isError } = useCompatibility(mine, friend);
   const { open: openToast } = useToast();
+  const { open: openModal, close: closeModal } = useModal();
   const [isTermsAgreed, setIsTermsAgreed] = useState(false);
   const [isImmediateProvisionAgreed, setIsImmediateProvisionAgreed] = useState(false);
   const canPay = isTermsAgreed && isImmediateProvisionAgreed;
@@ -39,6 +43,22 @@ export default function RelationshipGuideCheckoutPage() {
 
   const handlePayment = () => {
     openToast("카카오페이 결제 연동을 준비 중이에요");
+  };
+
+  // 결제 연동 전 관리자용 우회 입구. 안내 문구를 누르면 열린다.
+  const handleAdminTap = () => {
+    openModal({
+      title: "관리자 확인",
+      contents: (
+        <AdminCodeModal
+          onSubmit={(betaCode) => {
+            closeModal();
+            const state: GenderStepState = { betaCode };
+            navigate(reportPaths.gender(mine, friend), { state });
+          }}
+        />
+      ),
+    });
   };
 
   const topBar = <TopBar title="결제하기" onBack={handleBack} />;
@@ -215,7 +235,11 @@ export default function RelationshipGuideCheckoutPage() {
               990원 카카오페이로 결제하기
             </Typography>
           </button>
-          <Typography variant="me4" className="mt-3 text-center leading-[1.5] text-gray-04">
+          <Typography
+            variant="me4"
+            onClick={handleAdminTap}
+            className="mt-3 text-center leading-[1.5] text-gray-04"
+          >
             결제 버튼을 누르면 카카오페이 결제 화면으로 이동해요
           </Typography>
         </div>
