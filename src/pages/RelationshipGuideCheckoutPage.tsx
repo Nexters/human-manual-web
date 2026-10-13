@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/useToast";
 import { takeResultCode } from "@/lib/resultCode";
 import { getPendingGenderSelection } from "@/lib/paymentFlow";
 import { reportPaths } from "@/components/relationshipReport/reportFlow";
+import { getPaymentResultErrorMessage } from "@/api/payment";
 
 function LoadingView() {
   return (
@@ -42,8 +43,11 @@ export default function RelationshipGuideCheckoutPage() {
   };
 
   const handlePayment = () => {
-    void pay().catch(() => {
-      openToast("결제를 시작하지 못했어요. 잠시 후 다시 시도해주세요");
+    void pay().catch((error: unknown) => {
+      openToast(
+        getPaymentResultErrorMessage(error) ??
+          "결제를 시작하지 못했어요. 잠시 후 다시 시도해주세요",
+      );
     });
   };
 

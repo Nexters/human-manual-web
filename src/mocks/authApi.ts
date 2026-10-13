@@ -60,7 +60,8 @@ const adapter: AxiosAdapter = async (config) => {
   const scenario = sessionStorage.getItem(SCENARIO_KEY);
   const body = typeof config.data === "string" ? JSON.parse(config.data) : config.data;
   const ok = (data: unknown, status = 200) => respond(config, status, data);
-  const fail = (status: number) => respond(config, status, { error: { code: `MOCK_${status}` } });
+  const fail = (status: number, data?: unknown) =>
+    respond(config, status, data ?? { error: { code: `MOCK_${status}` } });
 
   if (path.startsWith("/api/auth/")) {
     if (!config.withCredentials) return fail(401);
@@ -141,6 +142,18 @@ const adapter: AxiosAdapter = async (config) => {
     const mine = findResult(config.params?.mine ?? url.searchParams.get("mine") ?? "");
     const friend = findResult(config.params?.friend ?? url.searchParams.get("friend") ?? "");
     return mine && friend ? ok({ ...mockCompatibility, mine, friend }) : fail(404);
+  }
+  if (path === "/api/payments/kakaopay/ready" && method === "POST") {
+    if (scenario === "payment-mine-retest") {
+      return fail(409, {
+        error: {
+          code: "PAYMENT_MINE_RESULT_RETEST_REQUIRED",
+          message:
+            "내 결과는 이전 버전이라 유료 분석에 사용할 수 없습니다. 새 테스트를 진행해주세요.",
+        },
+      });
+    }
+    return fail(500);
   }
   return fail(404);
 };

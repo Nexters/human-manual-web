@@ -153,6 +153,31 @@ test("로그아웃 실패는 인증 및 결과 목록을 유지하고 오류를 
   await expect(page.getByRole("link", { name: /지은/ })).toBeVisible();
 });
 
+test("결제할 수 없는 이전 결과는 서버 안내를 표시하고 결제 화면에 머문다", async ({ page }) => {
+  await seed(page, {
+    codes: ["STORYMIN"],
+    scenario: "payment-mine-retest",
+    loggedIn: true,
+  });
+  await page.addInitScript(() => {
+    sessionStorage.setItem(
+      "pakit:gender-selection:STORYMIN:STORYFRI",
+      JSON.stringify({ mineGender: "여자", partnerGender: "남자" }),
+    );
+  });
+  await page.goto("/compatibility/checkout?mine=STORYMIN&friend=STORYFRI");
+  await page.locator("#terms-agreement").check();
+  await page.locator("#immediate-provision-agreement").check();
+  await page.getByRole("button", { name: "990원 카카오페이로 결제하기" }).click();
+
+  await expect(
+    page.getByText(
+      "내 결과는 이전 버전이라 유료 분석에 사용할 수 없습니다. 새 테스트를 진행해주세요.",
+    ),
+  ).toBeVisible();
+  await expect(page).toHaveURL(/\/compatibility\/checkout/);
+});
+
 test("로그인한 새 테스트 제출은 계정에 연결되며 비로그인 제출도 가능하다", async ({ page }) => {
   await seed(page, { loggedIn: true });
   await page.goto("/my/results");

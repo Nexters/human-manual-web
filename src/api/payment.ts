@@ -1,4 +1,6 @@
+import axios from "axios";
 import { apiClient } from "@/api/client";
+import type { ErrorResponse } from "@/types/common";
 import type {
   KakaoPayReadyInput,
   KakaoPayReadyOutput,
@@ -10,6 +12,19 @@ interface ResultSyncOutput {
   synced: string[];
   already_synced: string[];
   rejected: string[];
+}
+
+const PAYMENT_RESULT_ERROR_CODES = new Set([
+  "PAYMENT_MINE_RESULT_NOT_FOUND",
+  "PAYMENT_PARTNER_RESULT_NOT_FOUND",
+  "PAYMENT_MINE_RESULT_RETEST_REQUIRED",
+  "PAYMENT_PARTNER_RESULT_RETEST_REQUIRED",
+]);
+
+export function getPaymentResultErrorMessage(error: unknown): string | null {
+  if (!axios.isAxiosError(error)) return null;
+  const detail = (error.response?.data as ErrorResponse | undefined)?.error;
+  return detail && PAYMENT_RESULT_ERROR_CODES.has(detail.code) ? detail.message : null;
 }
 
 export async function syncMyResult(resultCode: string): Promise<ResultSyncOutput> {
