@@ -17,10 +17,6 @@ export default function BusinessFooter() {
             <dd>{value}</dd>
           </div>
         ))}
-        <div className="flex w-full gap-1">
-          <dt className="shrink-0 font-medium">사업장 주소</dt>
-          <dd>서울특별시 영등포구 선유로11길 12, 101동 201호 (문래동6가, 문래파라곤)</dd>
-        </div>
       </dl>
       <nav
         aria-label="서비스 정책"

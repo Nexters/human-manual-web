@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useLocation, useNavigationType } from "react-router-dom";
 import BusinessFooter from "@/components/shared/BusinessFooter";
 import { authMockEnabled } from "@/lib/authMockMode";
-import AccountHeader from "@/components/auth/AccountHeader";
+import SiteHeader from "@/components/home/SiteHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { trackPageView } from "@/lib/google-analytics";
 
@@ -30,7 +30,7 @@ export default function AppLayout() {
           로컬 API 모킹 · 실제 카카오 인증 없이 테스트 중
         </div>
       )}
-      {location.pathname.startsWith("/my/") && <AccountHeader />}
+      {location.pathname.startsWith("/my/") && <SiteHeader account />}
       <main className="flex-1">
         <Outlet />
       </main>

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import SplashScreen from "@/components/onboarding/SplashScreen";
+import HomeScreen from "@/components/home/HomeScreen";
 import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
 import IntroStep from "@/components/onboarding/IntroStep";
@@ -60,7 +60,9 @@ export default function OnboardingPage() {
   // 케미 페이지의 "테스트 시작하기" 처럼, 다른 화면에서 곧바로 테스트를 시작시키는 신호.
   // 인트로는 라우트가 아니라 이 페이지 내부 step 이라 URL 로는 가리킬 수 없다.
   const location = useLocation();
-  const startTestRequested = (location.state as { startTest?: boolean } | null)?.startTest === true;
+  const startTestRequested =
+    (location.state as { startTest?: boolean } | null)?.startTest === true ||
+    new URLSearchParams(location.search).get("start") === "1";
   // 링크로 받은 친구 코드. 형식이 깨진 값은 없는 것으로 취급한다.
   const friendCode = useFriendCode();
   const {
@@ -268,7 +270,7 @@ export default function OnboardingPage() {
 
   if (step === "splash-cta") {
     return (
-      <SplashScreen
+      <HomeScreen
         participantCount={participantCount}
         onStart={() => handleStartTest("일반")}
         onCheckCompatibility={openTestStartModal}
