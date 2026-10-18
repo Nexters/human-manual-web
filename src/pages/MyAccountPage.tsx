@@ -37,13 +37,11 @@ export default function MyAccountPage({ kind }: { kind: "results" | "compatibili
   const loginRequired =
     (!auth.isPending && !auth.isError && !auth.data) || isUnauthorized(query.error);
   return (
-    <section className="px-5 py-7 text-gray-09">
-      <Link className="text-sm text-gray-06" to="/">
-        홈으로
-      </Link>
-      <h1 className="my-6 text-2xl font-bold">{kind === "results" ? "내 결과" : "내 궁합"}</h1>
+    <section className="pakit-account">
+      <p className="pakit-kicker">내 보관함</p>
+      <h1>{kind === "results" ? "내 결과" : "내 궁합"}</h1>
       {loginRequired ? (
-        <div className="flex flex-col gap-5">
+        <div className="pakit-account-gate">
           <p>로그인하면 계정에 연결된 {kind === "results" ? "결과를" : "궁합을"} 볼 수 있어요.</p>
           <Button onClick={startKakaoLogin}>카카오로 로그인</Button>
           <p className="text-sm text-gray-06">로그인 없이도 홈에서 결과 코드로 조회할 수 있어요.</p>
@@ -58,7 +56,12 @@ export default function MyAccountPage({ kind }: { kind: "results" | "compatibili
       ) : auth.isPending || query.isPending ? (
         <p role="status">불러오는 중이에요.</p>
       ) : query.data?.items.length === 0 ? (
-        <p>아직 계정에 연결된 {kind === "results" ? "결과가" : "궁합이"} 없어요.</p>
+        <div className="pakit-account-empty">
+          <p>아직 계정에 연결된 {kind === "results" ? "결과가" : "궁합이"} 없어요.</p>
+          <Link to="/?start=1" className="pakit-start-link">
+            테스트 시작하기
+          </Link>
+        </div>
       ) : (
         <ul className="flex flex-col gap-4">
           {kind === "results"

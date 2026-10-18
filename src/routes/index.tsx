@@ -11,12 +11,14 @@ import PrivacyPage from "@/pages/PrivacyPage";
 import RefundPolicyPage from "@/pages/RefundPolicyPage";
 
 import AuthCompletePage from "@/pages/AuthCompletePage";
+import SupportPage from "@/pages/SupportPage";
 import MyAccountPage from "@/pages/MyAccountPage";
 
 export const router = createBrowserRouter([
   {
     element: <AppLayout />,
     children: [
+      { path: "/support", element: <SupportPage /> },
       { path: "/auth/complete", element: <AuthCompletePage /> },
       { path: "/my/results", element: <MyAccountPage kind="results" /> },
       { path: "/my/compatibilities", element: <MyAccountPage kind="compatibilities" /> },
