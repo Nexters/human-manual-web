@@ -27,6 +27,16 @@ export interface KakaoPayReadyOutput extends PaymentOrder {
   };
 }
 
+export interface MyPaymentOrder extends PaymentOrder {
+  mine_result_code: string;
+  partner_result_code: string;
+}
+
+export interface MyPaymentOrdersOutput {
+  total: number;
+  items: MyPaymentOrder[];
+}
+
 export interface RomanticReportOutput {
   report_code: string;
   content: string;

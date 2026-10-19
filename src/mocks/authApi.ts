@@ -143,6 +143,43 @@ const adapter: AxiosAdapter = async (config) => {
     const friend = findResult(config.params?.friend ?? url.searchParams.get("friend") ?? "");
     return mine && friend ? ok({ ...mockCompatibility, mine, friend }) : fail(404);
   }
+  if (path === "/api/payments/kakaopay" && method === "GET") {
+    if (!isLoggedIn() || !config.withCredentials || scenario === "payments-expired")
+      return fail(401);
+    if (scenario === "payments-failure") return fail(500);
+    const items =
+      scenario === "payments-empty"
+        ? []
+        : [
+            {
+              order_id: "PKT-1019-87MS",
+              product_code: "ROMANTIC_REPORT",
+              product_name: "연인 관계 설명서",
+              status: "APPROVED",
+              amount: 990,
+              currency: "KRW",
+              fulfillment_reference: "REPORT01",
+              created_at: "2026-10-18T15:29:00Z",
+              approved_at: "2026-10-18T15:30:00Z",
+              mine_result_code: "STORYMIN",
+              partner_result_code: "STORYFRI",
+            },
+            {
+              order_id: "PKT-1012-42AB",
+              product_code: "ROMANTIC_REPORT",
+              product_name: "연인 관계 설명서",
+              status: "APPROVED",
+              amount: 990,
+              currency: "KRW",
+              fulfillment_reference: null,
+              created_at: "2026-10-12T03:00:00Z",
+              approved_at: "2026-10-12T03:01:00Z",
+              mine_result_code: "STORYMIN",
+              partner_result_code: "STORYFRI",
+            },
+          ];
+    return ok({ total: items.length, items });
+  }
   if (path === "/api/payments/kakaopay/ready" && method === "POST") {
     if (scenario === "payment-mine-retest") {
       return fail(409, {

@@ -5,6 +5,7 @@ import type {
   KakaoPayReadyInput,
   KakaoPayReadyOutput,
   PaymentOrder,
+  MyPaymentOrdersOutput,
   RomanticReportOutput,
 } from "@/types/payment";
 
@@ -45,6 +46,11 @@ export async function getPaymentOrder(orderId: string): Promise<PaymentOrder> {
   const response = await apiClient.get<PaymentOrder>(
     `/api/payments/kakaopay/${encodeURIComponent(orderId)}`,
   );
+  return response.data;
+}
+
+export async function getMyPayments(): Promise<MyPaymentOrdersOutput> {
+  const response = await apiClient.get<MyPaymentOrdersOutput>("/api/payments/kakaopay");
   return response.data;
 }
 

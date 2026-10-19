@@ -59,7 +59,9 @@ export default function SupportPage() {
         {selected !== null && (
           <div className="pakit-support-guide">
             <strong>{topics[selected].title}</strong>
-            <p>이메일 추가 예정</p>
+            <p>
+              <a href="mailto:pakit2027@gmail.com">pakit2027@gmail.com</a>
+            </p>
             {selected === 0 && <Link to="/refund-policy">취소·환불 정책 확인하기</Link>}
           </div>
         )}
