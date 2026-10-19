@@ -30,6 +30,8 @@ export interface KakaoPayReadyOutput extends PaymentOrder {
 export interface MyPaymentOrder extends PaymentOrder {
   mine_result_code: string;
   partner_result_code: string;
+  mine_gender?: string;
+  partner_gender?: string;
 }
 
 export interface MyPaymentOrdersOutput {

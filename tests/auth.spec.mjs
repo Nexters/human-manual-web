@@ -166,6 +166,60 @@ test("결제 내역의 빈 상태, 오류 재시도, 세션 만료를 처리한�
   await expect(page.getByRole("list", { name: "결제 완료 주문" })).toHaveCount(0);
 });
 
+test("프리미엄 결과는 로그인 후 구매 목록과 빈 상태를 보여준다", async ({ page }) => {
+  await page.goto("/my/premium");
+  await expect(page.getByText("로그인하면 구매한 프리미엄 결과를 확인할 수 있어요.")).toBeVisible();
+  await page.getByRole("button", { name: "카카오로 로그인", exact: true }).click();
+  await expect(page).toHaveURL(/\/my\/premium$/);
+  await expect(
+    page.getByRole("list", { name: "구매한 프리미엄 결과" }).getByRole("listitem"),
+  ).toHaveCount(2);
+  await expect(page.getByRole("link", { name: "리포트 다시 보기" })).toHaveAttribute(
+    "href",
+    "/my/premium/PKT-1019-87MS",
+  );
+  await expect(page.getByRole("link", { name: "설명서 만들기" })).toHaveAttribute(
+    "href",
+    "/my/premium/PKT-1012-42AB",
+  );
+  const firstPurchase = page
+    .getByRole("list", { name: "구매한 프리미엄 결과" })
+    .getByRole("listitem")
+    .first();
+  await expect(firstPurchase.getByText("지은", { exact: true })).toBeVisible();
+  await expect(firstPurchase.getByText("선우", { exact: true })).toBeVisible();
+  await expect(firstPurchase.getByText("여자", { exact: true })).toBeVisible();
+  await expect(firstPurchase.getByText("남자", { exact: true })).toBeVisible();
+  await page.screenshot({ path: "test-results/premium-results.png", animations: "disabled" });
+  await page.evaluate(() => sessionStorage.setItem("pakit-auth-mock-scenario", "payments-empty"));
+  await page.reload();
+  await expect(page.getByText("아직 구매한 결과가 없어요.")).toBeVisible();
+});
+
+test("프리미엄 결과는 결제 세션 없이 직접 열고 새로고침해도 복원한다", async ({ page }) => {
+  await seed(page, { loggedIn: true });
+  await page.goto("/my/premium/PKT-1019-87MS");
+  await expect(page.getByText("함께 맞춰가는 우리만의 리듬", { exact: true })).toBeVisible();
+  await expect(page.getByText("서로 다른 속도를 이해하는 두 사람이에요.")).toBeVisible();
+  await page.reload();
+  await expect(page.getByText("함께 맞춰가는 우리만의 리듬", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "뒤로가기" }).click();
+  await expect(page).toHaveURL(/\/my\/premium$/);
+  await page.getByRole("link", { name: "설명서 만들기" }).click();
+  await expect(page.getByText("함께 맞춰가는 우리만의 리듬", { exact: true })).toBeVisible();
+});
+
+test("프리미엄 결과 불러오기 실패와 잘못된 주문을 처리한다", async ({ page }) => {
+  await seed(page, { loggedIn: true, scenario: "premium-failure" });
+  await page.goto("/my/premium/PKT-1019-87MS");
+  await expect(page.getByRole("alert")).toContainText("구매한 결과를 불러오지 못했어요.");
+  await page.evaluate(() => sessionStorage.removeItem("pakit-auth-mock-scenario"));
+  await page.getByRole("button", { name: "다시 시도" }).click();
+  await expect(page.getByText("함께 맞춰가는 우리만의 리듬", { exact: true })).toBeVisible();
+  await page.goto("/my/premium/unknown-order");
+  await expect(page.getByRole("alert")).toContainText("구매한 결과를 불러오지 못했어요.");
+});
+
 test("결과 동기화 서버 오류도 로그인 성공과 화면 복귀를 막지 않는다", async ({ page }) => {
   await seed(page, { codes: ["STORYMIN"], scenario: "sync-failure" });
   await page.goto("/my/results?source=failure");

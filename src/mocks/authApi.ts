@@ -163,6 +163,8 @@ const adapter: AxiosAdapter = async (config) => {
               approved_at: "2026-10-18T15:30:00Z",
               mine_result_code: "STORYMIN",
               partner_result_code: "STORYFRI",
+              mine_gender: "여자",
+              partner_gender: "남자",
             },
             {
               order_id: "PKT-1012-42AB",
@@ -176,6 +178,8 @@ const adapter: AxiosAdapter = async (config) => {
               approved_at: "2026-10-12T03:01:00Z",
               mine_result_code: "STORYMIN",
               partner_result_code: "STORYFRI",
+              mine_gender: "여자",
+              partner_gender: "남자",
             },
           ];
     return ok({ total: items.length, items });
@@ -191,6 +195,16 @@ const adapter: AxiosAdapter = async (config) => {
       });
     }
     return fail(500);
+  }
+  if (path.startsWith("/api/relationship-reports/romantic/orders/") && method === "POST") {
+    if (!isLoggedIn() || !config.withCredentials) return fail(401);
+    if (scenario === "premium-failure") return fail(502);
+    return ok({
+      report_code: "REPORT01",
+      content:
+        "## 1. 두 사람의 관계\n서로 다른 속도를 이해하는 두 사람이에요.\n\n## 10. 한 줄 요약\n함께 맞춰가는 우리만의 리듬",
+      created_at: CREATED_AT,
+    });
   }
   return fail(404);
 };

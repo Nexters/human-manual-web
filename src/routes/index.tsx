@@ -16,6 +16,7 @@ import AuthCompletePage from "@/pages/AuthCompletePage";
 import SupportPage from "@/pages/SupportPage";
 import MyAccountPage from "@/pages/MyAccountPage";
 import PaymentHistoryPage from "@/pages/PaymentHistoryPage";
+import PremiumReportPage from "@/pages/PremiumReportPage";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,8 @@ export const router = createBrowserRouter([
       { path: "/my/results", element: <MyAccountPage kind="results" /> },
       { path: "/my/compatibilities", element: <MyAccountPage kind="compatibilities" /> },
       { path: "/my/payments", element: <PaymentHistoryPage /> },
+      { path: "/my/premium", element: <PaymentHistoryPage kind="premium" /> },
+      { path: "/my/premium/:orderId", element: <PremiumReportPage /> },
       { path: "/", element: <OnboardingPage /> },
       { path: "/test/:number", element: <QuestionPage /> },
       { path: "/unboxing", element: <UnboxingPage /> },

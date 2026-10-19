@@ -38,6 +38,9 @@ export default function AccountHeader({
           <NavLink className="py-3" to="/my/compatibilities">
             내 궁합
           </NavLink>
+          <NavLink className="py-3" to="/my/premium">
+            프리미엄 결과
+          </NavLink>
           <NavLink className="py-3" to="/my/payments">
             결제 내역
           </NavLink>

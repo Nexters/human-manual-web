@@ -279,7 +279,9 @@
 }
 .pakit-account-tabs {
   display: flex;
-  gap: 24px;
+  gap: 16px;
+  min-width: 0;
+  overflow-x: auto;
   align-self: stretch;
 }
 .pakit-account-tabs a {
@@ -287,6 +289,7 @@
   align-items: center;
   position: relative;
   font-size: 15px;
+  flex-shrink: 0;
   font-weight: 650;
   color: #6b7684;
 }
@@ -381,6 +384,119 @@
   padding: 12px;
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+.pakit-premium {
+  background: #f8f9fc;
+  min-height: calc(100dvh - 52px);
+  padding-top: 32px;
+}
+.pakit-premium .pakit-kicker {
+  font-size: 12px;
+  color: #8b95a1;
+}
+.pakit-premium .pakit-support-description {
+  margin-top: 10px;
+  font-size: 13px;
+}
+.pakit-premium-card {
+  background: #fff;
+  border-color: #eaedf3;
+  border-radius: 22px;
+  padding: 20px 20px 16px;
+  box-shadow: 0 4px 16px #25386404;
+}
+.pakit-premium-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #6b7684;
+  font-size: 11px;
+  font-weight: 500;
+}
+.pakit-premium-card time {
+  font-size: 11px;
+  color: #8b95a1;
+}
+.pakit-premium-product {
+  margin-top: 14px;
+  font-size: 17px;
+  line-height: 1.5;
+  font-weight: 750;
+  letter-spacing: -0.5px;
+}
+.pakit-premium-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr);
+  position: relative;
+  padding: 22px 0 18px;
+}
+.pakit-premium-person {
+  min-width: 0;
+  text-align: center;
+}
+.pakit-premium-person:nth-child(2) {
+  grid-column: 3;
+}
+.pakit-premium-avatar {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background: #f0f3ff;
+  color: #b0b8c1;
+}
+.pakit-premium-person:nth-child(2) .pakit-premium-avatar {
+  background: #fff2f8;
+}
+.pakit-premium-avatar img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+}
+.pakit-premium-person-label {
+  color: #8b95a1;
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.pakit-premium-name {
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 750;
+  letter-spacing: -0.5px;
+  overflow-wrap: anywhere;
+}
+.pakit-premium-connection {
+  position: absolute;
+  top: 48px;
+  left: calc(50% - 10px);
+  color: #ffc6e5;
+}
+.pakit-premium-codes {
+  margin-top: 7px;
+  color: #8b95a1;
+  font-size: 10px;
+  line-height: 1.6;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.pakit-premium-open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  margin-top: 18px;
+  border-radius: 12px;
+  background: #f0f3ff;
+  color: #0131ff;
+  font-size: 13px;
+  font-weight: 650;
+  transition: background 150ms;
+}
+.pakit-premium-open:hover {
+  background: #e6ebff;
 }
 .pakit-start-link {
   display: flex;

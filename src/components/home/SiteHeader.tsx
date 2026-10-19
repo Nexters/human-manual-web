@@ -44,6 +44,7 @@ export default function SiteHeader({ account = false }: { account?: boolean }) {
     ["/?start=1", "테스트 시작하기"],
     ["/my/results", "내 보관함"],
     ["/my/compatibilities", "친구와의 케미"],
+    ["/my/premium", "프리미엄 결과"],
     ["/my/payments", "결제 내역"],
     ["/support", "문의하기"],
   ];
