@@ -9,7 +9,6 @@ import PartIntroStep from "@/components/onboarding/PartIntroStep";
 import TestStartModal from "@/components/onboarding/TestStartModal";
 import InvitePreviewStep from "@/components/onboarding/InvitePreviewStep";
 import FriendCodeCheckModal from "@/components/onboarding/FriendCodeCheckModal";
-import MyResultModal from "@/components/onboarding/MyResultModal";
 import CompatibilityPageSkeleton from "@/components/compatibility/skeleton";
 import { introOrder, introPreloadImages, type IntroKey } from "@/components/onboarding/introSteps";
 import {
@@ -75,7 +74,6 @@ export default function OnboardingPage() {
   const queryClient = useQueryClient();
   // 이 브라우저에서 테스트를 마쳤는지. 친구 링크 자동 케미와 코드 자동 채우기의 근거다.
   const savedResultCode = useMyResultStore((state) => state.resultCode);
-  const rememberResultCode = useMyResultStore((state) => state.setResultCode);
 
   const nickname = useTestStore((state) => state.nickname);
   const answers = useTestStore((state) => state.answers);
@@ -212,25 +210,10 @@ export default function OnboardingPage() {
   }, [open, close, friendCode, navigateToCompatibility]);
 
   // 결과 코드가 결과지에 닿는 유일한 열쇠라, 코드를 들고 온 사람에게 입구를 열어둔다.
-  // friend 문맥이 있으면 그대로 이어붙어, 결과지에서 바로 그 친구와의 케미로 갈 수 있다.
   const openMyResultModal = useCallback(() => {
     trackEvent(GA_EVENTS.ONBOARDING.MY_RESULT_OPEN);
-    open({
-      title: "결과지 보기",
-      contents: (
-        <MyResultModal
-          onSubmit={(resultCode) => {
-            close();
-            // 다른 기기·스토리지 유실로 코드를 직접 넣은 사람도 이 브라우저에서
-            // 테스트를 마친 것으로 취급한다 — 이후 케미 화면의 "나" 자리가 채워진다.
-            rememberResultCode(resultCode);
-            trackEvent(GA_EVENTS.ONBOARDING.MY_RESULT_CODE_VERIFIED);
-            navigate(`/result/${resultCode}`);
-          }}
-        />
-      ),
-    });
-  }, [open, close, navigate, rememberResultCode]);
+    navigate("/load");
+  }, [navigate]);
 
   useImagePreload(firstScreenPreloadImages);
   // 뒤에서 쓰는 커스텀 폰트(Waguri, ThePosterFont 등)도 첫 화면에서 미리 받아둬서,

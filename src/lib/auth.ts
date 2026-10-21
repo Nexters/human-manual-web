@@ -3,11 +3,17 @@ import { apiBaseURL } from "@/api/client";
 
 const RETURN_KEY = "auth_return_to";
 
-export function startKakaoLogin() {
+/**
+ * returnTo 를 주면 로그인 뒤 지금 화면 대신 그 경로로 돌아온다.
+ * onClick 에 그대로 넘기는 곳이 많아 클릭 이벤트가 들어올 수 있으니 문자열일 때만 쓴다.
+ */
+export function startKakaoLogin(returnTo?: unknown) {
   try {
     sessionStorage.setItem(
       RETURN_KEY,
-      window.location.pathname + window.location.search + window.location.hash,
+      typeof returnTo === "string"
+        ? returnTo
+        : window.location.pathname + window.location.search + window.location.hash,
     );
   } catch {
     /* 저장소가 차단되어도 로그인은 가능하다. */

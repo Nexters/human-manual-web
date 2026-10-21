@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AccountHeader from "@/components/auth/AccountHeader";
-import MyResultModal from "@/components/onboarding/MyResultModal";
-import { useModal } from "@/hooks/useModal";
-import { useMyResultStore } from "@/stores/myResultStore";
 import logo from "@/assets/img/logo.png";
 import "./home.css";
 
@@ -12,8 +9,6 @@ export default function SiteHeader({ account = false }: { account?: boolean }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { open, close } = useModal();
-  const remember = useMyResultStore((s) => s.setResultCode);
   useEffect(() => {
     if (visible) dialog.current?.showModal();
     else dialog.current?.close();
@@ -26,18 +21,7 @@ export default function SiteHeader({ account = false }: { account?: boolean }) {
   }, [visible]);
   const load = () => {
     setVisible(false);
-    open({
-      title: "기존 결과 불러오기",
-      contents: (
-        <MyResultModal
-          onSubmit={(code) => {
-            remember(code);
-            close();
-            navigate(`/result/${encodeURIComponent(code)}`);
-          }}
-        />
-      ),
-    });
+    navigate("/load");
   };
   const links = [
     ["/", "홈"],
