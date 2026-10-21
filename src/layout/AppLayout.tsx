@@ -6,6 +6,9 @@ import SiteHeader from "@/components/home/SiteHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { trackPageView } from "@/lib/google-analytics";
 
+// 내 보관함은 화면 안에 내 결과·내 궁합 탭이 있어 계정 탭 없이 로고와 메뉴만 둔다.
+const ARCHIVE_PATHS = ["/my/results", "/my/compatibilities"];
+
 export default function AppLayout() {
   useAuth();
   const location = useLocation();
@@ -30,7 +33,11 @@ export default function AppLayout() {
           로컬 API 모킹 · 실제 카카오 인증 없이 테스트 중
         </div>
       )}
-      {location.pathname.startsWith("/my/") && <SiteHeader account />}
+      {ARCHIVE_PATHS.includes(location.pathname) ? (
+        <SiteHeader />
+      ) : (
+        location.pathname.startsWith("/my/") && <SiteHeader account />
+      )}
       <main className="flex-1">
         <Outlet />
       </main>

@@ -14,7 +14,7 @@ import KakaoPayCompletePage from "@/pages/KakaoPayCompletePage";
 
 import AuthCompletePage from "@/pages/AuthCompletePage";
 import SupportPage from "@/pages/SupportPage";
-import MyAccountPage from "@/pages/MyAccountPage";
+import MyArchivePage from "@/pages/MyArchivePage";
 import ResultLoadPage from "@/pages/ResultLoadPage";
 import PaymentHistoryPage from "@/pages/PaymentHistoryPage";
 import PremiumReportPage from "@/pages/PremiumReportPage";
@@ -26,8 +26,8 @@ export const router = createBrowserRouter([
       { path: "/support", element: <SupportPage /> },
       { path: "/auth/complete", element: <AuthCompletePage /> },
       { path: "/load", element: <ResultLoadPage /> },
-      { path: "/my/results", element: <MyAccountPage kind="results" /> },
-      { path: "/my/compatibilities", element: <MyAccountPage kind="compatibilities" /> },
+      { path: "/my/results", element: <MyArchivePage tab="results" /> },
+      { path: "/my/compatibilities", element: <MyArchivePage tab="compatibilities" /> },
       { path: "/my/payments", element: <PaymentHistoryPage /> },
       { path: "/my/premium", element: <PaymentHistoryPage kind="premium" /> },
       { path: "/my/premium/:orderId", element: <PremiumReportPage /> },
