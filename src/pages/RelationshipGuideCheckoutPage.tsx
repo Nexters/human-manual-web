@@ -9,6 +9,7 @@ import { takeResultCode } from "@/lib/resultCode";
 import { getPendingGenderSelection } from "@/lib/paymentFlow";
 import { reportPaths } from "@/components/relationshipReport/reportFlow";
 import { getPaymentResultErrorMessage } from "@/api/payment";
+import kakaoPayLogo from "@/assets/img/payment/kakaopay-payment.png";
 
 function LoadingView() {
   return (
@@ -155,11 +156,15 @@ export default function RelationshipGuideCheckoutPage() {
             결제 수단
           </Typography>
 
-          <div className="mt-4 flex items-center justify-between rounded-[18px] border border-[#F2D900] bg-[#FFF9C4] px-5 py-5">
-            <div className="flex items-center gap-3">
-              <span className="flex h-7 items-center rounded-full bg-[#FEE500] px-2.5 text-[14px] font-extrabold tracking-[-0.56px] text-[#191919]">
-                pay
-              </span>
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-[18px] border border-[#FFEB00] bg-[#FFEB00] px-5 py-5">
+            <div className="flex min-w-0 items-center gap-3">
+              <img
+                src={kakaoPayLogo}
+                alt=""
+                width={241}
+                height={100}
+                className="h-10 w-auto shrink-0"
+              />
               <Typography variant="sb4" className="text-gray-09">
                 카카오페이
               </Typography>
@@ -238,7 +243,7 @@ export default function RelationshipGuideCheckoutPage() {
             type="button"
             disabled={!canPay}
             onClick={handlePayment}
-            className="flex h-[58px] w-full items-center justify-center rounded-[14px] bg-[#FEE500] text-[#191919] transition-opacity hover:opacity-90 active:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-02 disabled:text-gray-04"
+            className="flex h-[58px] w-full items-center justify-center rounded-[14px] bg-[#FFEB00] text-[#191919] transition-opacity hover:opacity-90 active:opacity-80 disabled:cursor-not-allowed disabled:bg-gray-02 disabled:text-gray-04"
           >
             <Typography variant="h3" as="span">
               {isPaying ? "결제창을 여는 중이에요" : "990원 카카오페이로 결제하기"}
