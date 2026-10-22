@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { useAssessmentResult } from "@/hooks/useAssessment";
 
 export type ToyResult = {
   code: string;
@@ -154,15 +155,14 @@ export function ArchiveTabs({
 /** 결과 카드. 가장 최근 결과는 크게, 이전 결과는 compact 로 보여준다. */
 export function ArchiveCard({
   result,
-  recent,
   compact,
   onClick,
 }: {
   result: ToyResult;
-  recent?: boolean;
   compact?: boolean;
   onClick: () => void;
 }) {
+  const detail = useAssessmentResult(result.code);
   return (
     <button
       type="button"
@@ -184,25 +184,25 @@ export function ArchiveCard({
           className={cn("object-contain", compact ? "h-[60px] w-[54px]" : "h-[84px] w-[74px]")}
         />
       </span>
-      <span className="flex min-w-0 flex-col gap-2">
-        {recent && (
-          <span className="self-start rounded-full bg-[#b7f660] px-[11px] py-[5px] text-[11px] font-bold text-[#253914]">
-            가장 최근 결과
+      <span className="flex min-w-0 flex-1 flex-col gap-1">
+        {detail.data?.overview.adjective && (
+          <span className="text-gray-06 text-[12px] leading-[1.6] break-keep [overflow-wrap:anywhere]">
+            {detail.data.overview.adjective}
           </span>
         )}
         <strong
           className={cn(
-            "text-gray-09 leading-[1.4] tracking-[-0.5px] break-keep",
+            "text-gray-09 leading-[1.4] font-bold tracking-[-0.5px] break-keep [overflow-wrap:anywhere]",
             compact ? "text-[16px]" : "text-[18px]",
           )}
         >
-          {result.name}
+          {[result.noun, result.nickname].filter(Boolean).join(" ")}
         </strong>
-        <span className="text-gray-06 text-[12px] leading-[1.8]">
-          {result.nickname}님{result.date && ` · ${result.date}`}
-        </span>
+        {result.date && (
+          <span className="text-gray-05 mt-1 text-[11px] leading-[1.8]">{result.date}</span>
+        )}
       </span>
-      <Arrow className="text-gray-06 text-[27px]" />
+      <Arrow className="text-gray-06 shrink-0 text-[27px]" />
     </button>
   );
 }

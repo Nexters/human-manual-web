@@ -23,7 +23,6 @@ export default function HomeScreen({
   const navigate = useNavigate();
   const auth = useAuth();
   const code = useMyResultStore((s) => s.resultCode);
-  const local = useAssessmentResult(code ?? "");
   const account = useQuery({
     queryKey: [...accountQueryKey, auth.data?.user_id, "results"],
     queryFn: getMyResults,
@@ -31,13 +30,20 @@ export default function HomeScreen({
     retry: false,
   });
   const latest = account.data?.items[0];
+  const detail = useAssessmentResult(latest?.result_code ?? code ?? "");
   const result = latest
-    ? { code: latest.result_code, name: latest.result_name || latest.noun, image: latest.image_url }
-    : code && local.data
+    ? {
+        code: latest.result_code,
+        adjective: detail.data?.overview.adjective,
+        noun: latest.noun,
+        nickname: latest.nickname,
+      }
+    : code && detail.data
       ? {
           code,
-          name: local.data.overview.result_name || local.data.overview.noun,
-          image: local.data.overview.image_url,
+          adjective: detail.data.overview.adjective,
+          noun: detail.data.overview.noun,
+          nickname: detail.data.participant.nickname,
         }
       : null;
   return (
@@ -53,17 +59,11 @@ export default function HomeScreen({
             {participantCount.toLocaleString("ko-KR")}명이 함께했어요
           </div>
         )}
-        <img
-          src={blocks}
-          alt=""
-          className={
-            participantCount === undefined ? "mx-auto mt-10 w-[272px]" : "mx-auto mt-6 w-[272px]"
-          }
-        />
+        <img src={blocks} alt="" className="pakit-hero-character" />
         {result ? (
           <div className="pakit-result-heading">
-            <p>{auth.data ? "가장 최근 장난감" : "이 브라우저에 보관된 장난감"}</p>
-            <h2>{result.name}</h2>
+            {result.adjective && <p>{result.adjective}</p>}
+            <h2>{[result.noun, result.nickname].filter(Boolean).join(" ")}</h2>
           </div>
         ) : null}
         <div className="pakit-home-actions">
@@ -72,24 +72,24 @@ export default function HomeScreen({
               result ? () => navigate(`/result/${encodeURIComponent(result.code)}`) : onStart
             }
           >
-            {result ? "내 결과 다시 보기" : "테스트 시작하기"}
+            {result ? "내 결과 보기" : "테스트 시작하기"}
           </Button>
           <Button variant="outline" onClick={onCheckCompatibility}>
-            친구와의 케미 보기
+            친구와 케미 보기
           </Button>
-          {result && (
-            <button onClick={onStart} className="pakit-text-button">
-              새 테스트 시작하기
+          <div className="pakit-home-links">
+            {result && (
+              <button onClick={onStart} className="pakit-text-button">
+                다시 테스트하기
+              </button>
+            )}
+            <button
+              onClick={result && !auth.data ? startKakaoLogin : onOpenMyResult}
+              className="pakit-text-button"
+            >
+              {result && !auth.data ? "결과 보관하기" : "결과 불러오기"}
             </button>
-          )}
-          <button
-            onClick={result && !auth.data ? startKakaoLogin : onOpenMyResult}
-            className="pakit-text-button"
-          >
-            {result && !auth.data
-              ? "로그인하고 결과 보관하기"
-              : "기존 결과가 있나요? 결과 불러오기"}
-          </button>
+          </div>
         </div>
       </section>
     </div>

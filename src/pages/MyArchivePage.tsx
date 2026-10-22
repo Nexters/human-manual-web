@@ -181,7 +181,7 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
   return (
     <>
       <p className="text-gray-06 mt-0.5 mb-3.5 text-[13px]">가장 최근 결과</p>
-      <ArchiveCard result={latest} recent onClick={() => openResult(latest.code)} />
+      <ArchiveCard result={latest} onClick={() => openResult(latest.code)} />
       {older.length > 0 && (
         <History
           summary={
@@ -313,6 +313,7 @@ function CompatibilitiesTab({
   const [basisCode, setBasisCode] = useState<string | null>(null);
   const [picking, setPicking] = useState(false);
   const basis = myResults.find((r) => r.code === basisCode) ?? myResults[0];
+  const basisDetail = useAssessmentResult(basis?.code ?? "");
   const shareChemi = useShareChemi(basis);
 
   if (!basis) {
@@ -342,26 +343,33 @@ function CompatibilitiesTab({
 
   return (
     <>
-      <div className="flex items-center gap-3.5 pb-[25px]">
-        <span className="grid size-[62px] shrink-0 place-items-center rounded-[18px] bg-[#e9ecff]">
-          <img src={basis.image} alt={basis.noun} className="size-[52px] object-contain" />
-        </span>
-        <span className="min-w-0">
-          <span className="text-gray-06 block text-[11px]">현재 내 결과</span>
-          <strong className="text-gray-09 block text-[15px] leading-[1.4] break-keep">
-            {basis.name} {basis.nickname}
-          </strong>
-        </span>
+      <div className="mb-3 flex min-h-[32px] items-center justify-between gap-3">
+        <span className="text-gray-05 text-[11px] font-medium">현재 내 결과</span>
         {myResults.length > 1 && (
           <button
             type="button"
             aria-expanded={picking}
             onClick={() => setPicking((v) => !v)}
-            className="text-gray-06 ml-auto shrink-0 cursor-pointer text-[12px] whitespace-nowrap underline underline-offset-4"
+            className="text-gray-06 min-h-[32px] shrink-0 cursor-pointer text-[12px] whitespace-nowrap underline underline-offset-4"
           >
             결과 바꾸기
           </button>
         )}
+      </div>
+      <div className="flex items-center gap-3.5 pb-[25px]">
+        <span className="grid size-[62px] shrink-0 place-items-center rounded-[18px] bg-[#e9ecff]">
+          <img src={basis.image} alt={basis.noun} className="size-[52px] object-contain" />
+        </span>
+        <span className="min-w-0 flex-1">
+          {basisDetail.data?.overview.adjective && (
+            <span className="text-gray-06 block text-[12px] leading-[1.6] break-keep [overflow-wrap:anywhere]">
+              {basisDetail.data.overview.adjective}
+            </span>
+          )}
+          <strong className="text-gray-09 mt-1 block text-[18px] leading-[1.4] font-bold break-keep [overflow-wrap:anywhere]">
+            {[basis.noun, basis.nickname].filter(Boolean).join(" ")}
+          </strong>
+        </span>
       </div>
       {picking && (
         <div className="mb-6">
@@ -379,7 +387,7 @@ function CompatibilitiesTab({
           >
             {myResults.map((r) => (
               <option key={r.code} value={r.code}>
-                {r.name} {r.nickname}
+                {r.name}
               </option>
             ))}
           </select>
