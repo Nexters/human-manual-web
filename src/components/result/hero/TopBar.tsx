@@ -15,7 +15,7 @@ export default function HeroTopBar({ title, onBack, isDark = false }: HeroTopBar
   return (
     <div
       className={cn(
-        "fixed top-0 left-1/2 z-50 w-full max-w-[440px] -translate-x-1/2 transition-colors duration-300",
+        "fixed top-[64px] left-1/2 z-30 w-full max-w-[440px] -translate-x-1/2 transition-colors duration-300",
         isDark ? "bg-gray-00" : hasScrolled ? "bg-white/10" : "bg-transparent",
       )}
     >

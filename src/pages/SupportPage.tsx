@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import SiteHeader from "@/components/home/SiteHeader";
 
 const topics = [
   {
@@ -21,7 +20,6 @@ export default function SupportPage() {
   const [selected, setSelected] = useState<number | null>(null);
   return (
     <div className="pakit-support">
-      <SiteHeader />
       <section className="pakit-support-body">
         <p className="pakit-kicker">고객지원</p>
         <h1>무엇을 도와드릴까요?</h1>

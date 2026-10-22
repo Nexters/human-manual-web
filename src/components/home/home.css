@@ -27,18 +27,6 @@
   background: #fff;
   min-height: 720px;
 }
-.pakit-home > .pakit-header {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  padding: 0;
-  min-height: 44px;
-  border: 0;
-  background: transparent;
-}
-.pakit-home > .pakit-header > a {
-  display: none;
-}
 .pakit-hero {
   min-height: 720px;
   display: flex;

@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import SiteHeader from "./SiteHeader";
 import { useAuth, accountQueryKey } from "@/hooks/useAuth";
 import { getMyResults } from "@/api/auth";
 import { useAssessmentResult } from "@/hooks/useAssessment";
@@ -43,7 +42,6 @@ export default function HomeScreen({
       : null;
   return (
     <div className="pakit-home">
-      <SiteHeader />
       <section className="pakit-hero">
         <h1>
           <img src={logo} alt="Pakit" />

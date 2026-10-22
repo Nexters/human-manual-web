@@ -33,11 +33,13 @@ export default function AppLayout() {
           로컬 API 모킹 · 실제 카카오 인증 없이 테스트 중
         </div>
       )}
-      {ARCHIVE_PATHS.includes(location.pathname) ? (
-        <SiteHeader />
-      ) : (
-        location.pathname.startsWith("/my/") && <SiteHeader account />
-      )}
+      <div className="sticky top-0 z-40">
+        <SiteHeader
+          account={
+            location.pathname.startsWith("/my/") && !ARCHIVE_PATHS.includes(location.pathname)
+          }
+        />
+      </div>
       <main className="flex-1">
         <Outlet />
       </main>

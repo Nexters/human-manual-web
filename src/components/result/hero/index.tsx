@@ -17,9 +17,9 @@ interface HeroProps {
   isTopBarDark?: boolean;
 }
 
-// HeroTopBar 가 fixed h-[60px] 로 화면 위를 덮는다. 스크롤 목적지에서 그만큼 빼야
+// 공통 헤더(64px)와 HeroTopBar(60px)가 화면 위를 덮는다. 스크롤 목적지에서 그만큼 빼야
 // 다음 섹션 제목이 상단바에 가리지 않는다.
-const TOP_BAR_HEIGHT = 60;
+const TOP_BAR_HEIGHT = 124;
 
 const TAG_POSITIONS = [
   "absolute top-[2%] right-[2%]",
