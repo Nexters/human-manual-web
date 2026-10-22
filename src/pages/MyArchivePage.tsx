@@ -349,7 +349,7 @@ function CompatibilitiesTab({
         <span className="min-w-0">
           <span className="text-gray-06 block text-[11px]">현재 내 결과</span>
           <strong className="text-gray-09 block text-[15px] leading-[1.4] break-keep">
-            {basis.name}
+            {basis.name} {basis.nickname}
           </strong>
         </span>
         {myResults.length > 1 && (
@@ -379,7 +379,7 @@ function CompatibilitiesTab({
           >
             {myResults.map((r) => (
               <option key={r.code} value={r.code}>
-                {r.name}
+                {r.name} {r.nickname}
               </option>
             ))}
           </select>
