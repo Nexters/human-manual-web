@@ -1,6 +1,6 @@
 import { useChemiShareModal } from "@/hooks/useChemiShareModal";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth, accountQueryKey } from "@/hooks/useAuth";
 import { getMyResults } from "@/api/auth";
 import { useAssessmentResult } from "@/hooks/useAssessment";
@@ -9,6 +9,7 @@ import { startKakaoLogin } from "@/lib/auth";
 import blocks from "@/assets/img/splash-blocks.png";
 import logo from "@/assets/img/logo.png";
 import Button from "@/components/shared/Button";
+import ShareNodesIcon from "@/components/shared/icons/ShareNodesIcon";
 
 export default function HomeScreen({
   participantCount,
@@ -21,7 +22,6 @@ export default function HomeScreen({
   onCheckCompatibility: () => void;
   onOpenMyResult: () => void;
 }) {
-  const navigate = useNavigate();
   const auth = useAuth();
   const code = useMyResultStore((s) => s.resultCode);
   const account = useQuery({
@@ -76,31 +76,48 @@ export default function HomeScreen({
             <p>내 성향을 알아보고, 친구와의 케미도 확인해요.</p>
           </div>
         )}
-        <img
-          src={result ? result.image : blocks}
-          alt={result ? `${result.noun} 캐릭터` : ""}
-          className="pakit-hero-character"
-        />
         {result ? (
-          <div className="pakit-result-heading">
-            {result.adjective && <p>{result.adjective}</p>}
-            <h2>{[result.noun, result.nickname].filter(Boolean).join(" ")}</h2>
-          </div>
-        ) : null}
-        <div className="pakit-home-actions">
-          <Button
-            onClick={
-              result ? () => navigate(`/result/${encodeURIComponent(result.code)}`) : onStart
-            }
+          <Link
+            to={`/result/${encodeURIComponent(result.code)}`}
+            className="pakit-character-display"
+            aria-label={`${result.noun} ${result.nickname} 내 결과 자세히 보기`}
           >
-            {result ? "내 결과 보기" : "테스트 시작하기"}
-          </Button>
-          <Button variant="outline" onClick={result ? openChemiTest : onCheckCompatibility}>
-            {result ? "친구와 케미 테스트" : "친구와 케미 보기"}
-          </Button>
+            <img
+              src={result.image}
+              alt={`${result.noun} 캐릭터`}
+              className="pakit-hero-character"
+            />
+            <div className="pakit-result-heading">
+              {result.adjective && <p>{result.adjective}</p>}
+              <h2>{[result.noun, result.nickname].filter(Boolean).join(" ")}</h2>
+            </div>
+            <span className="pakit-result-link">
+              내 결과 자세히 보기 <span aria-hidden="true">→</span>
+            </span>
+          </Link>
+        ) : (
+          <img src={blocks} alt="" className="pakit-hero-character" />
+        )}
+        <div className="pakit-home-actions">
+          {result ? (
+            <div className="pakit-chemi-invite">
+              <Button className="w-full" onClick={openChemiTest}>
+                <span className="inline-flex items-center gap-2">
+                  <ShareNodesIcon aria-hidden="true" className="size-5 shrink-0" />
+                  친구와 케미 테스트
+                </span>
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Button onClick={onStart}>테스트 시작하기</Button>
+              <Button variant="outline" onClick={onCheckCompatibility}>
+                친구와 케미 보기
+              </Button>
+            </>
+          )}
           {isGuest && (
             <div className="pakit-save-prompt">
-              <p className="pakit-save-notice">내 결과와 친구 케미를 한곳에 모아보세요.</p>
               <button
                 type="button"
                 className="pakit-kakao-save"
@@ -115,8 +132,9 @@ export default function HomeScreen({
                 >
                   <path d="M12 3C6.48 3 2 6.58 2 11c0 2.81 1.82 5.28 4.57 6.7L5.4 22l5.02-3.1c.52.07 1.05.1 1.58.1 5.52 0 10-3.58 10-8s-4.48-8-10-8Z" />
                 </svg>
-                카카오로 로그인
+                카카오 로그인하고 보관하기
               </button>
+              <p className="pakit-save-notice">로그인하지 않으면 결과가 사라질 수 있어요!</p>
             </div>
           )}
           <div className="pakit-home-links">
