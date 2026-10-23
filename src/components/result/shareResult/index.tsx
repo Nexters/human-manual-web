@@ -12,6 +12,8 @@ import questionMark from "@/assets/img/result/share/question.png";
 interface ShareResultProps {
   /** 이 결과지 주인의 닉네임. 프로필 대결 왼쪽 라벨에 쓴다. */
   nickname: string;
+  /** 초대받은 사람이 초대한 친구의 결과지를 구경 중인 경우. */
+  invitation?: { hasMyResult: boolean; onStart: () => void };
   /** 이 결과지 주인의 장난감 이미지. 프로필 대결 왼쪽 자리에 들어간다. */
   imageUrl: string;
   /**
@@ -52,6 +54,7 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle: string }
 // 모았다. 모달이 보내는 링크(/?friend=<내코드>)로 친구가 들어와 테스트를 마치면 그 화면에서 케미가 열린다.
 export default function ShareResult({
   nickname,
+  invitation,
   imageUrl,
   friendNickname,
   friendImageUrl,
@@ -93,8 +96,18 @@ export default function ShareResult({
     <div className="flex flex-col items-center px-5 pt-6 pb-8">
       {/* ------- 1. 케미 초대 ------ */}
       <SectionHeading
-        title="친구와의 진짜 케미를 알아볼까요?"
-        subtitle="친구를 초대해 둘의 케미를 확인해보세요."
+        title={
+          invitation
+            ? `${ownerLabel}과 나의 케미를 알아볼까요?`
+            : "친구와의 진짜 케미를 알아볼까요?"
+        }
+        subtitle={
+          invitation
+            ? invitation.hasMyResult
+              ? "내 결과로 둘의 케미를 바로 확인해보세요."
+              : "새로 테스트하거나 보관된 결과로 케미를 확인해보세요."
+            : "친구를 초대해 둘의 케미를 확인해보세요."
+        }
       />
 
       {/* 프로필 대결 — 왼쪽은 이 결과지 주인, 오른쪽은 아직 모르는 친구 자리 */}
@@ -127,7 +140,7 @@ export default function ShareResult({
             )}
           </div>
           <Typography variant="sb4" className="text-gray-07">
-            {hasFriend && friendNickname ? `${friendNickname}님` : "친구"}
+            {hasFriend && friendNickname ? `${friendNickname}님` : invitation ? "나" : "친구"}
           </Typography>
         </div>
       </div>
@@ -136,7 +149,22 @@ export default function ShareResult({
       <div className="mt-14 flex w-full flex-col gap-3">
         {/* 친구 링크로 들어와 테스트를 마친 경우(hasFriend)엔 첫 버튼이 케미 페이지로
             바로 넘기는 버튼이 된다. 나머지 레이아웃은 그대로다. */}
-        {hasFriend ? (
+        {invitation ? (
+          <button
+            type="button"
+            onClick={invitation.hasMyResult ? onViewChemi : invitation.onStart}
+            disabled={isCheckingChemi}
+            className="bg-main flex min-h-[54px] w-full items-center justify-center rounded-[10px] px-4 py-3 text-white transition-opacity hover:opacity-90 active:opacity-80 disabled:opacity-60"
+          >
+            {isCheckingChemi ? (
+              <Spinner className="size-6" />
+            ) : (
+              <Typography variant="h2" as="span">
+                {ownerLabel}과 케미 보기
+              </Typography>
+            )}
+          </button>
+        ) : hasFriend ? (
           <button
             type="button"
             onClick={onViewChemi}
@@ -164,26 +192,28 @@ export default function ShareResult({
         )}
 
         {/* Figma 폭 비율 129:210 ≈ 37:63 */}
-        <div className="flex w-full gap-3">
-          <button
-            type="button"
-            onClick={handleRetry}
-            className="border-gray-04 text-gray-06 flex h-[54px] flex-[37] items-center justify-center rounded-[10px] border-[1.5px] bg-white transition-opacity hover:opacity-90 active:opacity-80"
-          >
-            <Typography variant="h2" as="span">
-              테스트 하기
-            </Typography>
-          </button>
-          <button
-            type="button"
-            onClick={handleCopyLink}
-            className="border-main-light text-main flex h-[54px] flex-[63] items-center justify-center rounded-[10px] border-[1.5px] bg-white transition-opacity hover:opacity-90 active:opacity-80"
-          >
-            <Typography variant="h2" as="span">
-              ↗ 내 결과지 공유
-            </Typography>
-          </button>
-        </div>
+        {!invitation && (
+          <div className="flex w-full gap-3">
+            <button
+              type="button"
+              onClick={handleRetry}
+              className="border-gray-04 text-gray-06 flex h-[54px] flex-[37] items-center justify-center rounded-[10px] border-[1.5px] bg-white transition-opacity hover:opacity-90 active:opacity-80"
+            >
+              <Typography variant="h2" as="span">
+                테스트 하기
+              </Typography>
+            </button>
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              className="border-main-light text-main flex h-[54px] flex-[63] items-center justify-center rounded-[10px] border-[1.5px] bg-white transition-opacity hover:opacity-90 active:opacity-80"
+            >
+              <Typography variant="h2" as="span">
+                ↗ 내 결과지 공유
+              </Typography>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import HomeScreen from "@/components/home/HomeScreen";
 import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
@@ -24,6 +24,9 @@ import { useCompletedTestCount } from "@/hooks/useCompletedTestCount";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { getCompatibility } from "@/api/compatibility";
+import { getMyResults } from "@/api/auth";
+import { accountQueryKey, useAuth } from "@/hooks/useAuth";
+import { startKakaoLogin } from "@/lib/auth";
 import { compatibilityQueryKey } from "@/hooks/useCompatibility";
 import { useMyResultStore } from "@/stores/myResultStore";
 import { findFirstIncompleteOrder, useTestStore } from "@/stores/testStore";
@@ -68,8 +71,18 @@ export default function OnboardingPage() {
   } = useAssessmentResult(friendCode ?? "");
   const participantCount = useCompletedTestCount();
   const queryClient = useQueryClient();
-  // 이 브라우저에서 테스트를 마쳤는지. 친구 링크 자동 케미의 근거다.
-  const savedResultCode = useMyResultStore((state) => state.resultCode);
+  const auth = useAuth();
+  const accountResults = useQuery({
+    queryKey: [...accountQueryKey, auth.data?.user_id, "results"],
+    queryFn: getMyResults,
+    enabled: Boolean(friendCode && auth.data),
+    retry: false,
+  });
+  const localResultCode = useMyResultStore((state) => state.resultCode);
+  const rememberResultCode = useMyResultStore((state) => state.setResultCode);
+  // 다른 기기에서 로그인해도 계정에 보관된 결과로 초대에 응답한다.
+  const savedResultCode = accountResults.data?.items[0]?.result_code ?? localResultCode;
+  const [restoreHint, setRestoreHint] = useState("");
 
   const nickname = useTestStore((state) => state.nickname);
   const answers = useTestStore((state) => state.answers);
@@ -84,11 +97,12 @@ export default function OnboardingPage() {
   // 둘의 케미를 바로 연다. 자기 자신과의 케미는 성립하지 않으므로 같은 코드는 제외한다.
   const canAutoChemi = Boolean(friendCode && savedResultCode && savedResultCode !== friendCode);
   const [autoChemiFailed, setAutoChemiFailed] = useState(false);
-  const autoChemiTried = useRef(false);
+  const autoChemiTried = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!canAutoChemi || autoChemiTried.current) return;
-    autoChemiTried.current = true;
+    const pair = `${savedResultCode}:${friendCode}`;
+    if (!canAutoChemi || autoChemiTried.current === pair) return;
+    autoChemiTried.current = pair;
 
     const mine = savedResultCode as string;
     const friend = friendCode as string;
@@ -100,6 +114,7 @@ export default function OnboardingPage() {
           queryKey: compatibilityQueryKey(mine, friend),
           queryFn: () => getCompatibility(mine, friend),
         });
+        rememberResultCode(mine);
         trackEvent({
           ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
           label: "친구링크_자동케미",
@@ -113,7 +128,34 @@ export default function OnboardingPage() {
         setAutoChemiFailed(true);
       }
     })();
-  }, [canAutoChemi, savedResultCode, friendCode, queryClient, navigateToCompatibility]);
+  }, [
+    canAutoChemi,
+    savedResultCode,
+    friendCode,
+    queryClient,
+    navigateToCompatibility,
+    rememberResultCode,
+    autoChemiFailed,
+  ]);
+
+  const handleRestoreResult = () => {
+    if (!friendCode) return;
+    if (!auth.data) {
+      startKakaoLogin(`/?friend=${encodeURIComponent(friendCode)}&restore=1`);
+      return;
+    }
+    if (accountResults.isError) {
+      void accountResults.refetch();
+      setRestoreHint("결과를 다시 불러오고 있어요. 잠시만 기다려주세요.");
+    } else if (savedResultCode === friendCode) {
+      setRestoreHint("내 결과와 같은 초대 링크예요. 다른 친구의 링크로 케미를 확인해주세요.");
+    } else if (canAutoChemi) {
+      autoChemiTried.current = null;
+      setAutoChemiFailed(false);
+    } else {
+      setRestoreHint("계정에 보관된 결과가 없어요. 테스트를 완료하면 친구와 케미를 볼 수 있어요.");
+    }
+  };
 
   // 스플래시 자체 이미지가 다 로드될 때까지는 깨진 이미지가 보이지 않도록 렌더링을 미룬다.
   const splashReady = useImagesReady(splashImages);
@@ -166,7 +208,10 @@ export default function OnboardingPage() {
   if (step === "splash-cta" && friendCode) {
     // 자동 케미로 넘어가는 중이면 초대 화면이 잠깐 보였다 사라지는 걸 막는다.
     // 도착지가 케미 페이지이므로 그 스켈레톤을 그대로 보여준다.
-    if (canAutoChemi && !autoChemiFailed) {
+    if (
+      (canAutoChemi && !autoChemiFailed) ||
+      (!localResultCode && (auth.isPending || accountResults.isLoading))
+    ) {
       return <CompatibilityPageSkeleton />;
     }
     if (friendPreviewPending) {
@@ -179,6 +224,20 @@ export default function OnboardingPage() {
           friendNoun={friendPreview.overview.noun}
           friendImageUrl={friendPreview.overview.image_url}
           onStart={() => handleStartTest("친구초대유입")}
+          onRestoreResult={handleRestoreResult}
+          restorePending={auth.isPending || accountResults.isLoading}
+          restoreHint={
+            restoreHint ||
+            (accountResults.isError
+              ? "보관된 결과를 불러오지 못했어요. 다시 시도해주세요."
+              : auth.data && new URLSearchParams(location.search).get("restore") === "1"
+                ? savedResultCode === friendCode
+                  ? "내 결과와 같은 초대 링크예요. 다른 친구의 링크로 케미를 확인해주세요."
+                  : !savedResultCode
+                    ? "계정에 보관된 결과가 없어요. 테스트를 완료하면 친구와 케미를 볼 수 있어요."
+                    : undefined
+                : undefined)
+          }
           onViewFriendResult={() => navigate(`/result/${friendCode}`)}
         />
       );

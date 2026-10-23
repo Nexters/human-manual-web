@@ -25,6 +25,9 @@ import { compatibilityQueryKey, useCompatibilityRanking } from "@/hooks/useCompa
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
+import { useMyResultStore } from "@/stores/myResultStore";
+import { useAuth } from "@/hooks/useAuth";
+import { startKakaoLogin } from "@/lib/auth";
 import { buildChemiTestMessage, canUseSystemShare, share } from "@/utils/share";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
@@ -41,9 +44,15 @@ export default function ResultPage() {
   // 케미 페이지 URL 은 두 코드를 직접 담아 완성하므로, friend 를 덧붙이는 useFriendNavigate 를 쓰지 않는다.
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  // 친구 문맥의 출처는 URL 쿼리 하나다. 자기 자신과의 케미는 성립하지 않으므로 걸러낸다.
+  const auth = useAuth();
+  // 결과지 주인과 초대한 사람이 같으면 친구 결과지를 구경하는 초대 유입이다.
   const urlFriendCode = useFriendCode();
   const friendCode = urlFriendCode === id ? null : urlFriendCode;
+  const myResultCode = useMyResultStore((state) => state.resultCode);
+  const viewingInviter = Boolean(urlFriendCode === id && myResultCode !== id);
+  const { data: viewerResult, isLoading: viewerLoading } = useAssessmentResult(
+    viewingInviter ? (myResultCode ?? "") : "",
+  );
 
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
   const { data: friendData } = useAssessmentResult(friendCode ?? "");
@@ -94,8 +103,18 @@ export default function ResultPage() {
   // 남의 캐릭터에 내 이름이 붙는다.
   const resultNickname = data.participant.nickname;
   const heroTitle = resultNickname ? `${overview.noun} ${resultNickname}` : overview.noun;
-  const friendNickname = friendCode ? friendData?.participant.nickname : undefined;
-  const friendImageUrl = friendCode ? friendData?.overview.image_url : undefined;
+  const friendNickname = viewingInviter
+    ? viewerResult?.participant.nickname
+    : friendCode
+      ? friendData?.participant.nickname
+      : undefined;
+  const friendImageUrl = viewingInviter
+    ? viewerResult?.overview.image_url
+    : friendCode
+      ? friendData?.overview.image_url
+      : undefined;
+  const chemiMine = viewingInviter ? myResultCode : id;
+  const chemiFriend = viewingInviter ? id : friendCode;
 
   // 링크에 내 결과 코드를 담아 보내면, 받은 친구는 코드를 입력하지 않아도 케미를 볼 수 있다.
   const chemiTestUrl = (() => {
@@ -145,27 +164,62 @@ export default function ResultPage() {
 
   // 친구 링크로 들어와 테스트를 마친 경우, 두 결과 코드로 케미를 바로 볼 수 있다.
   const handleViewChemi = async () => {
-    if (!id || !friendCode || checkingChemi) return;
+    if (!chemiMine || !chemiFriend || chemiMine === chemiFriend || checkingChemi) return;
 
     setCheckingChemi(true);
     try {
       // 케미 조회가 성공한 뒤에만 이동한다. 캐시에 담아두면 이동 직후 바로 렌더된다.
       await queryClient.fetchQuery({
-        queryKey: compatibilityQueryKey(id, friendCode),
-        queryFn: () => getCompatibility(id, friendCode),
+        queryKey: compatibilityQueryKey(chemiMine, chemiFriend),
+        queryFn: () => getCompatibility(chemiMine, chemiFriend),
       });
       trackEvent({
         ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
         label: "결과지_케미보러가기버튼",
       });
       navigate(
-        `/compatibility?mine=${encodeURIComponent(id)}&friend=${encodeURIComponent(friendCode)}`,
+        `/compatibility?mine=${encodeURIComponent(chemiMine)}&friend=${encodeURIComponent(chemiFriend)}`,
       );
     } catch {
       openToast("케미 결과를 불러오지 못했어요. 잠시 후 다시 시도해주세요");
     } finally {
       setCheckingChemi(false);
     }
+  };
+
+  const openInvitedChemiOptions = () => {
+    if (!id) return;
+    const restorePath = `/?friend=${encodeURIComponent(id)}&restore=1`;
+    open({
+      title: `${resultNickname}님과 케미 보기`,
+      contents: (
+        <div className="flex w-full flex-col gap-3">
+          <Typography variant="me2" className="text-gray-06 mb-2 text-center break-keep">
+            새로 테스트하거나 보관된 결과로 케미를 확인해보세요.
+          </Typography>
+          <Button
+            onClick={() => {
+              close();
+              navigate(`/?friend=${encodeURIComponent(id)}&start=1`);
+            }}
+          >
+            새로 테스트하기
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              close();
+              if (auth.data) navigate(restorePath);
+              else startKakaoLogin(restorePath);
+            }}
+          >
+            {auth.data
+              ? "이미 테스트했다면? 기존 결과로 바로 보기"
+              : "이미 테스트했다면? 로그인하고 바로 보기"}
+          </Button>
+        </div>
+      ),
+    });
   };
 
   const navigateToCompatibility = (mine: string, friend: string) => {
@@ -241,7 +295,15 @@ export default function ResultPage() {
         imageUrl={overview.image_url}
         friendNickname={friendNickname}
         friendImageUrl={friendImageUrl}
-        isCheckingChemi={checkingChemi}
+        isCheckingChemi={checkingChemi || viewerLoading}
+        invitation={
+          viewingInviter
+            ? {
+                hasMyResult: Boolean(viewerResult),
+                onStart: openInvitedChemiOptions,
+              }
+            : undefined
+        }
         onSendChemiTest={openChemiTestModal}
         onViewChemi={() => void handleViewChemi()}
       />

@@ -10,6 +10,9 @@ type InvitePreviewStepProps = {
   friendNoun: string;
   friendImageUrl: string;
   onStart: () => void;
+  onRestoreResult: () => void;
+  restorePending?: boolean;
+  restoreHint?: string;
   onViewFriendResult: () => void;
 };
 
@@ -18,6 +21,9 @@ export default function InvitePreviewStep({
   friendNoun,
   friendImageUrl,
   onStart,
+  onRestoreResult,
+  restorePending = false,
+  restoreHint,
   onViewFriendResult,
 }: InvitePreviewStepProps) {
   const previewItems = [
@@ -103,7 +109,11 @@ export default function InvitePreviewStep({
           {previewItems.map((text) => (
             <div key={text} className="flex items-center gap-2">
               <CheckIcon className="text-sub-4 size-6 shrink-0" />
-              <Typography variant="sb4" as="span" className="text-gray-08 flex-1 text-center break-keep">
+              <Typography
+                variant="sb4"
+                as="span"
+                className="text-gray-08 flex-1 text-center break-keep"
+              >
                 {text}
               </Typography>
             </div>
@@ -115,6 +125,24 @@ export default function InvitePreviewStep({
         <QuestionCtaButton tone="point" onClick={onStart}>
           테스트하고 케미 보기
         </QuestionCtaButton>
+        <button
+          type="button"
+          onClick={onRestoreResult}
+          disabled={restorePending}
+          className="border-point text-sub-4 flex min-h-[54px] w-full items-center justify-center rounded-[10px] border bg-white px-4 py-3 transition-opacity active:opacity-90 disabled:opacity-50"
+        >
+          <Typography variant="h2" as="span">
+            {restorePending ? "결과를 확인하고 있어요…" : "이미 테스트 했다면?"}
+          </Typography>
+        </button>
+        <Typography variant="me3" className="text-gray-06 text-center break-keep">
+          로그인하면 계정에 보관한 결과로 케미를 볼 수 있어요.
+        </Typography>
+        {restoreHint && (
+          <p role="status" className="text-gray-07 text-center text-sm break-keep">
+            {restoreHint}
+          </p>
+        )}
       </div>
     </div>
   );
