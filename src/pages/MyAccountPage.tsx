@@ -1,3 +1,4 @@
+import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMyCompatibilities, getMyResults, isUnauthorized } from "@/api/auth";
@@ -43,7 +44,7 @@ export default function MyAccountPage({ kind }: { kind: "results" | "compatibili
       {loginRequired ? (
         <div className="pakit-account-gate">
           <p>로그인하면 계정에 연결된 {kind === "results" ? "결과를" : "케미를"} 볼 수 있어요.</p>
-          <Button onClick={startKakaoLogin}>카카오로 로그인</Button>
+          <KakaoLoginButton onClick={startKakaoLogin} />
           <p className="text-sm text-gray-06">공유받은 결과지는 링크로 바로 볼 수 있어요.</p>
         </div>
       ) : auth.isError || query.isError ? (

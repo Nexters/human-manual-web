@@ -81,7 +81,7 @@ test("보관 모달의 나중에 선택은 비로그인을 유지하고 카카�
   await page.getByRole("button", { name: "나중에 할게요" }).click();
   expect(await linked(page)).toEqual([]);
   await save.click();
-  await page.getByRole("button", { name: "카카오로 로그인하고 보관하기" }).click();
+  await page.getByRole("button", { name: "카카오 로그인" }).click();
   await expect(page).toHaveURL(/\/result\/STORYMIN\?source=modal#save$/);
   await expect(save).toHaveCount(0);
   expect(await linked(page)).toEqual(["STORYMIN"]);
@@ -125,7 +125,7 @@ test("결제 내역은 로그인 후 복귀하고 최신 결제와 한국 날짜
   await page.goto("/my/payments");
   await expect(page.getByText("로그인하면 결제 내역을 확인할 수 있어요.")).toBeVisible();
   await expect(page.getByRole("list", { name: "결제 완료 주문" })).toHaveCount(0);
-  await page.getByRole("button", { name: "카카오로 로그인", exact: true }).click();
+  await page.getByRole("button", { name: "카카오 로그인", exact: true }).click();
   await expect(page).toHaveURL(/\/my\/payments$/);
   const orders = page.getByRole("list", { name: "결제 완료 주문" }).getByRole("listitem");
   await expect(orders).toHaveCount(2);
@@ -169,7 +169,7 @@ test("결제 내역의 빈 상태, 오류 재시도, 세션 만료를 처리한�
 test("프리미엄 결과는 로그인 후 구매 목록과 빈 상태를 보여준다", async ({ page }) => {
   await page.goto("/my/premium");
   await expect(page.getByText("로그인하면 구매한 프리미엄 결과를 확인할 수 있어요.")).toBeVisible();
-  await page.getByRole("button", { name: "카카오로 로그인", exact: true }).click();
+  await page.getByRole("button", { name: "카카오 로그인", exact: true }).click();
   await expect(page).toHaveURL(/\/my\/premium$/);
   await expect(
     page.getByRole("list", { name: "구매한 프리미엄 결과" }).getByRole("listitem"),
@@ -238,7 +238,7 @@ test("로그인 확인 실패는 결과 동기화 없이 재로그인 화면을 
   await page.goto("/my/results");
   await page.getByRole("button", { name: "카카오 로그인", exact: true }).click();
   await expect(page).toHaveURL(/\/auth\/complete$/);
-  await expect(page.getByRole("button", { name: "카카오로 다시 로그인" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "카카오 로그인" })).toBeVisible();
   expect(await linked(page)).toEqual([]);
 });
 

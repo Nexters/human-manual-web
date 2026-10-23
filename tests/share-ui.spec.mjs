@@ -86,7 +86,7 @@ test("보관함과 구매 결과에는 코드가 노출되지 않는다", async 
 test("예전 코드 조회 주소는 보관함으로 연결한다", async ({ page }) => {
   await page.goto("/load?step=code");
   await expect(page).toHaveURL("/my/results");
-  await expect(page.getByRole("button", { name: "카카오로 로그인", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "카카오 로그인", exact: true })).toBeVisible();
   await expect(page.getByRole("textbox")).toHaveCount(0);
 });
 
@@ -103,9 +103,7 @@ test("초대 미리보기에서 친구 결과지를 구경한 뒤 테스트해�
   ).toHaveCount(0);
   await expect(page.getByRole("button", { name: /결과지 공유/ })).toHaveCount(0);
   await start.click();
-  await expect(
-    page.getByRole("button", { name: "이미 테스트했다면? 로그인하고 바로 보기", exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "카카오 로그인", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "새로 테스트하기", exact: true }).click();
   await expect(page).toHaveURL("/?friend=STORYFRI&start=1");
   await expect(page.getByText("선우님이 함께 케미를 보고 싶어 해요")).toHaveCount(0);
@@ -180,9 +178,7 @@ test("친구 결과지의 케미 보기 팝업에서 로그인해 보관한 결�
   });
   await page.goto("/result/STORYFRI?friend=STORYFRI");
   await page.getByRole("button", { name: "선우님과 케미 보기", exact: true }).click();
-  await page
-    .getByRole("button", { name: "이미 테스트했다면? 로그인하고 바로 보기", exact: true })
-    .click();
+  await page.getByRole("button", { name: "카카오 로그인", exact: true }).click();
   await expect(page).toHaveURL("/compatibility?mine=STORYMIN&friend=STORYFRI");
 });
 
@@ -203,7 +199,5 @@ test("초대한 친구의 빈 진열장에서는 그 친구와 케미를 보는 
   await page.goto("/result/STORYFRI?friend=STORYFRI");
   await page.getByRole("button", { name: "선우님과 케미 보기", exact: true }).click();
   await expect(page.getByRole("button", { name: "새로 테스트하기", exact: true })).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "이미 테스트했다면? 로그인하고 바로 보기", exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "카카오 로그인", exact: true })).toBeVisible();
 });

@@ -1,3 +1,4 @@
+import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { isUnauthorized } from "@/api/auth";
@@ -43,7 +44,7 @@ export default function PremiumReportPage() {
         <div className="pakit-account">
           <div className="pakit-account-gate">
             <p>로그인하면 구매한 프리미엄 결과를 확인할 수 있어요.</p>
-            <Button onClick={startKakaoLogin}>카카오로 로그인</Button>
+            <KakaoLoginButton onClick={startKakaoLogin} />
           </div>
         </div>
       ) : auth.isError || result.isError ? (

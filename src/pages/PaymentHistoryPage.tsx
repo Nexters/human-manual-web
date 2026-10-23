@@ -1,3 +1,4 @@
+import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { isUnauthorized } from "@/api/auth";
@@ -107,7 +108,7 @@ export default function PaymentHistoryPage({
               ? "로그인하면 구매한 프리미엄 결과를 확인할 수 있어요."
               : "로그인하면 결제 내역을 확인할 수 있어요."}
           </p>
-          <Button onClick={startKakaoLogin}>카카오로 로그인</Button>
+          <KakaoLoginButton onClick={startKakaoLogin} />
         </div>
       ) : auth.isError || payments.isError ? (
         <div className="pakit-account-gate" role="alert">

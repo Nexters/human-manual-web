@@ -7,6 +7,10 @@ import { mockAssessmentResult } from "./assessmentResult";
 import { mockCompatibility } from "./compatibility";
 
 const LINKED_KEY = "pakit-auth-mock-linked";
+const PRIMARY_KEY = "pakit-auth-mock-primary";
+const DELETED_KEY = "pakit-auth-mock-deleted";
+const visibleCodes = () =>
+  linkedCodes().filter((code) => !readStored<string[]>(DELETED_KEY, []).includes(code));
 const SUBMISSIONS_KEY = "pakit-auth-mock-submissions";
 const SCENARIO_KEY = "pakit-auth-mock-scenario";
 const CREATED_AT = "2026-09-01T09:30:00Z";
@@ -98,14 +102,30 @@ const adapter: AxiosAdapter = async (config) => {
       localStorage.setItem(LINKED_KEY, JSON.stringify([...linked]));
       return ok(result);
     }
+    const resultAction = path.match(/^\/api\/auth\/me\/results\/([^/]+)(\/primary)?$/);
+    if (resultAction && (method === "PUT" || method === "DELETE")) {
+      const code = decodeURIComponent(resultAction[1]);
+      if (!visibleCodes().includes(code)) return fail(404);
+      if (method === "PUT" && resultAction[2]) localStorage.setItem(PRIMARY_KEY, code);
+      else if (method === "DELETE" && !resultAction[2]) {
+        localStorage.setItem(
+          DELETED_KEY,
+          JSON.stringify([...readStored<string[]>(DELETED_KEY, []), code]),
+        );
+        if (localStorage.getItem(PRIMARY_KEY) === code) localStorage.removeItem(PRIMARY_KEY);
+      } else return fail(404);
+      return ok(undefined, 204);
+    }
     if (path === "/api/auth/me/results") {
-      const items = linkedCodes()
+      const primary = localStorage.getItem(PRIMARY_KEY);
+      const items = visibleCodes()
+        .sort((a, b) => Number(b === primary) - Number(a === primary))
         .map(findResult)
         .filter((item) => item !== null);
       return ok({ total: items.length, items });
     }
     if (path === "/api/auth/me/compatibilities") {
-      const mine = linkedCodes().includes("STORYMIN") ? findResult("STORYMIN") : null;
+      const mine = visibleCodes().includes("STORYMIN") ? findResult("STORYMIN") : null;
       const items = mine
         ? [{ mine, friend: findResult("STORYFRI"), score: 82, tested_at: CREATED_AT }]
         : [];

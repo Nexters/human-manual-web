@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/useToast";
 import { useFontsReady } from "@/hooks/useFontsReady";
 import { share } from "@/utils/share";
 import { takeResultCode } from "@/lib/resultCode";
-import { useMyResultStore } from "@/stores/myResultStore";
+import { usePrimaryResult } from "@/hooks/usePrimaryResult";
 import { appendFriendParam } from "@/lib/friendParam";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
@@ -41,8 +41,8 @@ export default function CompatibilityPage() {
 
   const { data, isLoading, isError } = useCompatibility(mine, friend);
   const { open: openToast } = useToast();
-  // 열람자가 누구인지는 URL 로 알 수 없다. 이 브라우저에 저장된 코드 하나로만 판단한다.
-  const savedResultCode = useMyResultStore((state) => state.resultCode);
+  // 기존 케미 URL은 그대로 열람하고, 다음 친구 초대는 대표 결과로 시작한다.
+  const { code: savedResultCode } = usePrimaryResult();
   // 저장된 코드가 삭제·만료됐으면 조회가 실패한다. 그때만 코드 없음으로 되돌린다 —
   // 하단 "새 친구와 케미 보기" 가 죽은 코드로 링크를 만들면 안 된다.
   const { data: myResult, isError: myResultError } = useAssessmentResult(savedResultCode ?? "");

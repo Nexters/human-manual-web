@@ -152,7 +152,7 @@ export function ArchiveTabs({
   );
 }
 
-/** 결과 카드. 가장 최근 결과는 크게, 이전 결과는 compact 로 보여준다. */
+/** 결과 카드. 대표 결과는 크게, 다른 결과는 compact 로 보여준다. */
 export function ArchiveCard({
   result,
   compact,

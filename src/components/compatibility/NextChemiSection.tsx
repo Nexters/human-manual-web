@@ -3,12 +3,12 @@ import friendBear from "@/assets/img/result/share/bear.png";
 import questionMark from "@/assets/img/result/share/question.png";
 
 type NextChemiSectionProps = {
-  /** 이 브라우저에 저장된 코드로 식별한 "나". 프로필 대결 왼쪽 라벨. */
+  /** 계정 대표 결과(비회원은 브라우저 결과)로 식별한 "나". 프로필 대결 왼쪽 라벨. */
   myNickname: string;
   /** 그 사람의 장난감 이미지. hasMyCode 가 false 면 undefined 로 넘어온다. */
   myImageUrl?: string;
   /**
-   * 이 브라우저에서 테스트를 마친 사람인지. 저장된 결과 코드로 판단한다.
+   * 대표 결과가 있는지. 비회원은 브라우저에 저장된 결과로 판단한다.
    * true 면 링크 공유로 다음 케미, false 면 테스트부터 시작한다.
    */
   hasMyCode: boolean;
@@ -22,7 +22,7 @@ type NextChemiSectionProps = {
 
 // ------- 케미 페이지 하단, 다음 케미로 가는 섹션 ------
 // 케미 페이지 URL 에는 코드 두 개가 실려 있어서, 이 화면은 루프의 분기점이다. 그런데
-// 열람자가 누구인지는 URL 로 알 수 없다 — 이 브라우저에 저장된 결과 코드 하나로만 판단한다.
+// 열람자의 대표 결과는 URL과 별도로 조회한다. 비회원은 브라우저 결과로 판단한다.
 //
 // hasMyCode 면(내가 테스트를 마쳤으면) 링크만 공유하면 되니 새 디자인을 그대로 쓴다.
 // 아니면(제3자) 테스트부터 시작할 수 있게 안내한다.

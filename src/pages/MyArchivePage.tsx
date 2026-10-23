@@ -1,11 +1,19 @@
+import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getMyCompatibilities, getMyResults, type AccountCompatibility } from "@/api/auth";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getMyCompatibilities,
+  getMyResults,
+  selectPrimaryResult,
+  deleteAccountResult,
+  type AccountCompatibility,
+} from "@/api/auth";
 import { accountQueryKey, useAuth } from "@/hooks/useAuth";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useCompatibilityRanking } from "@/hooks/useCompatibility";
 import { useChemiShareModal as useShareChemi } from "@/hooks/useChemiShareModal";
+import { useModal } from "@/hooks/useModal";
 import { startKakaoLogin } from "@/lib/auth";
 import { useMyResultStore } from "@/stores/myResultStore";
 import Spinner from "@/components/shared/Spinner";
@@ -99,11 +107,79 @@ function useArchive(tab: Tab) {
 
 function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: ToyResult[] }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const auth = useAuth();
+  const { open, close } = useModal();
+  const [actionError, setActionError] = useState("");
+  const manage = useMutation({
+    mutationFn: async ({ code, action }: { code: string; action: "primary" | "delete" }) => {
+      if (action === "primary") await selectPrimaryResult(code);
+      else await deleteAccountResult(code);
+      return await getMyResults();
+    },
+    onMutate: () => setActionError(""),
+    onSuccess: (data) => {
+      queryClient.setQueryData([...accountQueryKey, auth.data?.user_id, "results"], data);
+      void queryClient.invalidateQueries({
+        queryKey: [...accountQueryKey, auth.data?.user_id, "compatibilities"],
+      });
+      const nextCode = data.items[0]?.result_code;
+      if (nextCode) useMyResultStore.getState().setResultCode(nextCode);
+      else useMyResultStore.getState().clearResultCode();
+    },
+    onError: () => setActionError("변경하지 못했어요. 다시 시도해주세요."),
+  });
+  const requestDelete = (result: ToyResult) =>
+    open({
+      title: "이 결과를 보관함에서 삭제할까요?",
+      contents: (
+        <div className="space-y-4 text-center">
+          <p className="text-gray-06 text-sm leading-relaxed">
+            {result.noun} {result.nickname} 결과가 보관함에서 사라져요. 기존 공유 링크와 구매 내역은
+            유지돼요.
+          </p>
+          <button type="button" className="text-gray-06 min-h-11 px-4" onClick={close}>
+            취소
+          </button>
+        </div>
+      ),
+      confirmLabel: "삭제하기",
+      onConfirm: () => {
+        close();
+        manage.mutate({ code: result.code, action: "delete" });
+      },
+    });
+  const actions = (result: ToyResult, primary = false) => (
+    <div className="mb-5 flex min-h-11 items-center justify-end gap-4 px-2 text-[13px]">
+      {primary ? (
+        <span className="text-main mr-auto font-bold">홈에 표시 중</span>
+      ) : (
+        <button
+          type="button"
+          className="text-main min-h-11 cursor-pointer font-bold disabled:opacity-40"
+          disabled={manage.isPending}
+          onClick={() => manage.mutate({ code: result.code, action: "primary" })}
+          aria-label={`${result.noun} ${result.nickname} 대표로 설정`}
+        >
+          대표로 설정
+        </button>
+      )}
+      <button
+        type="button"
+        className="text-gray-06 min-h-11 cursor-pointer disabled:opacity-40"
+        disabled={manage.isPending}
+        onClick={() => requestDelete(result)}
+        aria-label={`${result.noun} ${result.nickname} 삭제`}
+      >
+        삭제
+      </button>
+    </div>
+  );
   const shareChemi = useShareChemi(myResults[0]);
   const openResult = (code: string) => navigate(`/result/${encodeURIComponent(code)}`);
-  const [latest, ...older] = myResults;
+  const [primaryResult, ...older] = myResults;
 
-  if (!latest && isMember) {
+  if (!primaryResult && isMember) {
     return (
       <>
         <EmptyState image={tokkiBox} title="보관된 결과가 없어요">
@@ -116,7 +192,7 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
     );
   }
 
-  if (!latest) {
+  if (!primaryResult) {
     return (
       <>
         <EmptyState image={tokkiBox} title="보관된 결과가 없어요">
@@ -125,7 +201,7 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
           다른 기기에서도 다시 볼 수 있어요.
         </EmptyState>
         <div className="flex flex-col gap-3">
-          <PillButton onClick={startKakaoLogin}>카카오로 로그인</PillButton>
+          <KakaoLoginButton onClick={startKakaoLogin} />
         </div>
       </>
     );
@@ -134,13 +210,13 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
   if (!isMember) {
     return (
       <>
-        <ArchiveCard result={latest} onClick={() => openResult(latest.code)} />
+        <ArchiveCard result={primaryResult} onClick={() => openResult(primaryResult.code)} />
         <section className="pt-[26px]">
           <strong className="text-gray-09 text-[15px]">이 결과를 잃어버리지 마세요</strong>
           <Desc className="mt-2 mb-[18px]">
             로그인하지 않으면 브라우저 기록과 함께 결과가 사라질 수 있어요.
           </Desc>
-          <PillButton onClick={startKakaoLogin}>로그인하고 결과 보관하기</PillButton>
+          <KakaoLoginButton onClick={startKakaoLogin} />
         </section>
       </>
     );
@@ -148,8 +224,17 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
 
   return (
     <>
-      <p className="text-gray-06 mt-0.5 mb-3.5 text-[13px]">가장 최근 결과</p>
-      <ArchiveCard result={latest} onClick={() => openResult(latest.code)} />
+      <p className="text-gray-06 mt-0.5 mb-3.5 text-[13px]">대표 결과</p>
+      <p className="text-gray-06 mb-4 text-[12px]">
+        홈과 친구 케미 테스트에서 사용할 결과를 골라주세요.
+      </p>
+      {actionError && (
+        <p role="alert" className="mb-3 text-sm text-red-600">
+          {actionError}
+        </p>
+      )}
+      <ArchiveCard result={primaryResult} onClick={() => openResult(primaryResult.code)} />
+      {actions(primaryResult, true)}
       {older.length > 0 && (
         <History
           summary={
@@ -160,7 +245,10 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
           }
         >
           {older.map((r) => (
-            <ArchiveCard key={r.code} result={r} compact onClick={() => openResult(r.code)} />
+            <div key={r.code}>
+              <ArchiveCard result={r} compact onClick={() => openResult(r.code)} />
+              {actions(r)}
+            </div>
           ))}
         </History>
       )}
@@ -215,9 +303,7 @@ function CompatibilitiesTab({
   compatibilities: AccountCompatibility[];
 }) {
   const navigate = useNavigate();
-  const [basisCode, setBasisCode] = useState<string | null>(null);
-  const [picking, setPicking] = useState(false);
-  const basis = myResults.find((r) => r.code === basisCode) ?? myResults[0];
+  const basis = myResults[0];
   const basisDetail = useAssessmentResult(basis?.code ?? "");
   const shareChemi = useShareChemi(basis);
   const localRanking = useCompatibilityRanking(!isMember ? (basis?.code ?? "") : "");
@@ -231,16 +317,19 @@ function CompatibilitiesTab({
           친구와의 케미를 확인할 수 있어요.
         </EmptyState>
         <PillButton onClick={() => navigate("/?start=1")}>테스트 시작</PillButton>
-        {!isMember && (
-          <PillButton tone="line" className="mt-3" onClick={startKakaoLogin}>
-            로그인해서 불러오기
-          </PillButton>
-        )}
+        {!isMember && <KakaoLoginButton className="mt-3" onClick={startKakaoLogin} />}
       </>
     );
   }
 
-  const sorted = [...compatibilities].sort((a, b) => b.tested_at.localeCompare(a.tested_at));
+  // 두 결과가 모두 내 계정에 있어도, 대표 결과가 어느 쪽이었든 같은 케미로 묶는다.
+  const sorted = compatibilities
+    .map((item) =>
+      item.friend.result_code === basis.code
+        ? { ...item, mine: item.friend, friend: item.mine }
+        : item,
+    )
+    .sort((a, b) => b.tested_at.localeCompare(a.tested_at));
   const withBasis = sorted.filter((c) => c.mine.result_code === basis.code);
   const others = sorted.filter((c) => c.mine.result_code !== basis.code);
   const openPair = (c: AccountCompatibility) =>
@@ -249,17 +338,9 @@ function CompatibilitiesTab({
   return (
     <>
       <div className="mb-3 flex min-h-[32px] items-center justify-between gap-3">
-        <span className="text-gray-05 text-[11px] font-medium">현재 내 결과</span>
-        {myResults.length > 1 && (
-          <button
-            type="button"
-            aria-expanded={picking}
-            onClick={() => setPicking((v) => !v)}
-            className="text-gray-06 min-h-[32px] shrink-0 cursor-pointer text-[12px] whitespace-nowrap underline underline-offset-4"
-          >
-            결과 바꾸기
-          </button>
-        )}
+        <span className="text-gray-05 text-[11px] font-medium">
+          {isMember ? "대표 결과" : "현재 내 결과"}
+        </span>
       </div>
       <div className="flex items-center gap-3.5 pb-[25px]">
         <span className="grid size-[62px] shrink-0 place-items-center rounded-[18px] bg-[#e9ecff]">
@@ -276,28 +357,6 @@ function CompatibilitiesTab({
           </strong>
         </span>
       </div>
-      {picking && (
-        <div className="mb-6">
-          <label htmlFor="basis" className="text-gray-09 mb-2.5 block text-[13px] font-bold">
-            케미의 기준이 될 결과
-          </label>
-          <select
-            id="basis"
-            value={basis.code}
-            onChange={(e) => {
-              setBasisCode(e.target.value);
-              setPicking(false);
-            }}
-            className="text-gray-09 w-full rounded-[14px] border border-[#d8dbe8] bg-white p-4 text-[14px]"
-          >
-            {myResults.map((r) => (
-              <option key={r.code} value={r.code}>
-                {r.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
 
       {isMember ? (
         <>
@@ -392,9 +451,7 @@ function CompatibilitiesTab({
             <br />
             로그인하면 다른 기기에서도 결과와 케미 기록을 다시 볼 수 있어요.
           </div>
-          <PillButton tone="line" onClick={startKakaoLogin}>
-            로그인해서 불러오기
-          </PillButton>
+          <KakaoLoginButton onClick={startKakaoLogin} />
         </>
       )}
     </>

@@ -1,3 +1,4 @@
+import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -25,7 +26,7 @@ import { compatibilityQueryKey, useCompatibilityRanking } from "@/hooks/useCompa
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
-import { useMyResultStore } from "@/stores/myResultStore";
+import { usePrimaryResult } from "@/hooks/usePrimaryResult";
 import { useAuth } from "@/hooks/useAuth";
 import { startKakaoLogin } from "@/lib/auth";
 import { buildChemiTestMessage, canUseSystemShare, share } from "@/utils/share";
@@ -48,11 +49,9 @@ export default function ResultPage() {
   // 결과지 주인과 초대한 사람이 같으면 친구 결과지를 구경하는 초대 유입이다.
   const urlFriendCode = useFriendCode();
   const friendCode = urlFriendCode === id ? null : urlFriendCode;
-  const myResultCode = useMyResultStore((state) => state.resultCode);
+  const { code: myResultCode, isPending: primaryPending } = usePrimaryResult();
   const viewingInviter = Boolean(urlFriendCode === id && myResultCode !== id);
-  const { data: viewerResult, isLoading: viewerLoading } = useAssessmentResult(
-    viewingInviter ? (myResultCode ?? "") : "",
-  );
+  const { data: viewerResult, isLoading: viewerLoading } = useAssessmentResult(myResultCode ?? "");
 
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
   const { data: friendData } = useAssessmentResult(friendCode ?? "");
@@ -113,17 +112,22 @@ export default function ResultPage() {
     : friendCode
       ? friendData?.overview.image_url
       : undefined;
-  const chemiMine = viewingInviter ? myResultCode : id;
+  const chemiMine = viewingInviter || (friendCode && myResultCode) ? myResultCode : id;
   const chemiFriend = viewingInviter ? id : friendCode;
+
+  const inviteResult = auth.data ? viewerResult : undefined;
+  const inviteResultName = inviteResult?.overview.result_name ?? overview.result_name;
+  // 새 케미 초대는 계정의 대표 결과를 사용한다. 결과지 자체의 공유는 현재 결과를 유지한다.
+  const inviteCode = auth.data ? (myResultCode ?? id) : id;
 
   // 링크에 내 결과 코드를 담아 보내면, 받은 친구는 코드를 입력하지 않아도 케미를 볼 수 있다.
   const chemiTestUrl = (() => {
     const url = new URL("/", window.location.origin);
-    url.searchParams.set("friend", id ?? "");
+    url.searchParams.set("friend", inviteCode ?? "");
     return url.toString();
   })();
   const chemiTestMessage = buildChemiTestMessage({
-    resultName: overview.result_name,
+    resultName: inviteResultName,
     url: chemiTestUrl,
   });
 
@@ -142,7 +146,7 @@ export default function ResultPage() {
     if (canUseSystemShare()) {
       // 호환성 페이지 공유와 동일하게 title/text/url을 분리해서 넘긴다.
       await share({
-        title: `나 '${overview.result_name}' 나왔어.`,
+        title: `나 '${inviteResultName}' 나왔어.`,
         text: "우리 케미는 몇 점일까? 여기서 확인해줘!",
         url: chemiTestUrl,
       });
@@ -205,18 +209,29 @@ export default function ResultPage() {
           >
             새로 테스트하기
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              close();
-              if (auth.data) navigate(restorePath);
-              else startKakaoLogin(restorePath);
-            }}
-          >
-            {auth.data
-              ? "이미 테스트했다면? 기존 결과로 바로 보기"
-              : "이미 테스트했다면? 로그인하고 바로 보기"}
-          </Button>
+          {auth.data ? (
+            <Button
+              variant="outline"
+              onClick={() => {
+                close();
+                navigate(restorePath);
+              }}
+            >
+              이미 테스트했다면? 기존 결과로 바로 보기
+            </Button>
+          ) : (
+            <div className="mt-2 flex flex-col gap-2">
+              <Typography variant="me3" className="text-gray-06 text-center">
+                이미 테스트했다면? 로그인하고 바로 보세요.
+              </Typography>
+              <KakaoLoginButton
+                onClick={() => {
+                  close();
+                  startKakaoLogin(restorePath);
+                }}
+              />
+            </div>
+          )}
         </div>
       ),
     });
@@ -229,6 +244,7 @@ export default function ResultPage() {
   };
 
   const openChemiTestModal = () => {
+    if (primaryPending) return;
     trackEvent(GA_EVENTS.RESULT.CHEMI_TEST_OPEN);
     open({
       title: "친구 케미 테스트",
@@ -291,11 +307,17 @@ export default function ResultPage() {
 
       {/* ------- 결과지 공유 UI ------ */}
       <ShareResult
-        nickname={resultNickname}
-        imageUrl={overview.image_url}
+        nickname={
+          viewingInviter ? resultNickname : (inviteResult?.participant.nickname ?? resultNickname)
+        }
+        imageUrl={
+          viewingInviter
+            ? overview.image_url
+            : (inviteResult?.overview.image_url ?? overview.image_url)
+        }
         friendNickname={friendNickname}
         friendImageUrl={friendImageUrl}
-        isCheckingChemi={checkingChemi || viewerLoading}
+        isCheckingChemi={checkingChemi || viewerLoading || primaryPending}
         invitation={
           viewingInviter
             ? {

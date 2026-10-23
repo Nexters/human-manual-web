@@ -1,0 +1,30 @@
+.pakit-kakao-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 54px;
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: #fee500;
+  color: rgb(0 0 0 / 85%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.pakit-kakao-login-inline {
+  width: auto;
+}
+.pakit-kakao-login:focus-visible {
+  outline: 2px solid #191919;
+  outline-offset: 3px;
+}
+.pakit-kakao-login:disabled {
+  cursor: wait;
+}
+.pakit-kakao-login img {
+  flex-shrink: 0;
+}

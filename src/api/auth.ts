@@ -40,6 +40,7 @@ export async function syncResults(resultCodes: string[]) {
     )
   ).data;
 }
+/** 대표 결과가 첫 번째이며, 나머지는 생성일 최신순이다. 삭제한 결과는 제외된다. */
 export async function getMyResults() {
   return (
     await apiClient.get<{ total: number; items: AccountResult[] }>("/api/auth/me/results", {
@@ -54,4 +55,15 @@ export async function getMyCompatibilities() {
       { withCredentials: true },
     )
   ).data;
+}
+
+export async function selectPrimaryResult(code: string) {
+  await apiClient.put(`/api/auth/me/results/${encodeURIComponent(code)}/primary`, undefined, {
+    withCredentials: true,
+  });
+}
+export async function deleteAccountResult(code: string) {
+  await apiClient.delete(`/api/auth/me/results/${encodeURIComponent(code)}`, {
+    withCredentials: true,
+  });
 }

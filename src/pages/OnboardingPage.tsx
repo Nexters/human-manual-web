@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import HomeScreen from "@/components/home/HomeScreen";
 import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
@@ -24,8 +24,8 @@ import { useCompletedTestCount } from "@/hooks/useCompletedTestCount";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useFriendCode } from "@/hooks/useFriendCode";
 import { getCompatibility } from "@/api/compatibility";
-import { getMyResults } from "@/api/auth";
-import { accountQueryKey, useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
+import { usePrimaryResult } from "@/hooks/usePrimaryResult";
 import { startKakaoLogin } from "@/lib/auth";
 import { compatibilityQueryKey } from "@/hooks/useCompatibility";
 import { useMyResultStore } from "@/stores/myResultStore";
@@ -72,16 +72,8 @@ export default function OnboardingPage() {
   const participantCount = useCompletedTestCount();
   const queryClient = useQueryClient();
   const auth = useAuth();
-  const accountResults = useQuery({
-    queryKey: [...accountQueryKey, auth.data?.user_id, "results"],
-    queryFn: getMyResults,
-    enabled: Boolean(friendCode && auth.data),
-    retry: false,
-  });
-  const localResultCode = useMyResultStore((state) => state.resultCode);
+  const { code: savedResultCode, account: accountResults } = usePrimaryResult();
   const rememberResultCode = useMyResultStore((state) => state.setResultCode);
-  // 다른 기기에서 로그인해도 계정에 보관된 결과로 초대에 응답한다.
-  const savedResultCode = accountResults.data?.items[0]?.result_code ?? localResultCode;
   const [restoreHint, setRestoreHint] = useState("");
 
   const nickname = useTestStore((state) => state.nickname);
@@ -210,7 +202,7 @@ export default function OnboardingPage() {
     // 도착지가 케미 페이지이므로 그 스켈레톤을 그대로 보여준다.
     if (
       (canAutoChemi && !autoChemiFailed) ||
-      (!localResultCode && (auth.isPending || accountResults.isLoading))
+      (!savedResultCode && (auth.isPending || accountResults.isLoading))
     ) {
       return <CompatibilityPageSkeleton />;
     }

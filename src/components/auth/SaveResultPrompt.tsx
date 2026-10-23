@@ -1,3 +1,4 @@
+import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import { useCallback, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -46,16 +47,13 @@ export default function SaveResultPrompt({ resultCode }: { resultCode: string })
           <p className="mt-6 w-full rounded-[18px] bg-[#f4f3ef] px-4 py-[18px] text-[14px] leading-[1.6] tracking-[-0.3px] break-keep text-[#8a887f]">
             이 결과는 현재 브라우저에 저장되어 있어요.
           </p>
-          <button
-            type="button"
-            className="mt-6 flex min-h-[54px] w-full items-center justify-center rounded-[12px] bg-[#252a4b] px-3 text-[16px] font-semibold tracking-[-0.4px] text-white transition-colors hover:bg-[#33395f] active:bg-[#1c203b]"
+          <KakaoLoginButton
+            className="mt-6"
             onClick={() => {
               rememberDismissal();
               startKakaoLogin();
             }}
-          >
-            카카오로 로그인하고 보관하기
-          </button>
+          />
           <button
             type="button"
             className="mt-3 min-h-[48px] px-6 text-[15px] font-medium text-[#a09c90] transition-colors hover:text-[#666359]"

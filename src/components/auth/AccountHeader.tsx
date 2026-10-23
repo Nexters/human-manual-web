@@ -1,3 +1,4 @@
+import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -63,12 +64,7 @@ export default function AccountHeader({
               로그인 상태 재확인
             </button>
           ) : (
-            <button
-              className="rounded-full bg-[#FEE500] px-3 py-2 text-[#191919]"
-              onClick={startKakaoLogin}
-            >
-              카카오 로그인
-            </button>
+            <KakaoLoginButton inline onClick={startKakaoLogin} />
           ))}
         {menu}
       </div>

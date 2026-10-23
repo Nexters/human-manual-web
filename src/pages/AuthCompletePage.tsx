@@ -1,9 +1,9 @@
+import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import { useEffect, useState } from "react";
 import { getMe, syncResults } from "@/api/auth";
 import { collectLocalResultCodes, consumeReturnTo, startKakaoLogin } from "@/lib/auth";
 import { queryClient } from "@/lib/queryClient";
 import { accountQueryKey, authQueryKey } from "@/hooks/useAuth";
-import Button from "@/components/shared/Button";
 
 // StrictMode의 effect 재실행에서도 동기화와 복귀를 한 번만 수행한다.
 let completion: Promise<void> | null = null;
@@ -49,7 +49,7 @@ export default function AuthCompletePage() {
       </p>
       {failed && (
         <>
-          <Button onClick={startKakaoLogin}>카카오로 다시 로그인</Button>
+          <KakaoLoginButton onClick={startKakaoLogin} />
           <a href="/">홈으로</a>
         </>
       )}

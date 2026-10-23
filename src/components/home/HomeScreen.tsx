@@ -1,3 +1,4 @@
+import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import { useChemiShareModal } from "@/hooks/useChemiShareModal";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -8,7 +9,6 @@ import { useMyResultStore } from "@/stores/myResultStore";
 import { startKakaoLogin } from "@/lib/auth";
 import blocks from "@/assets/img/splash-blocks.png";
 import logo from "@/assets/img/logo.png";
-import kakaoSymbol from "@/assets/svgs/auth/kakao-symbol.svg";
 import Button from "@/components/shared/Button";
 import ShareNodesIcon from "@/components/shared/icons/ShareNodesIcon";
 
@@ -32,18 +32,18 @@ export default function HomeScreen({
     retry: false,
   });
   const isGuest = !auth.isPending && !auth.isError && !auth.data;
-  const latest = account.data?.items[0];
-  const detail = useAssessmentResult(latest?.result_code ?? code ?? "");
-  const result = latest
+  const primary = account.data?.items[0];
+  const detail = useAssessmentResult(primary?.result_code ?? (isGuest ? code : "") ?? "");
+  const result = primary
     ? {
-        code: latest.result_code,
+        code: primary.result_code,
         adjective: detail.data?.overview.adjective,
-        noun: latest.noun,
-        nickname: latest.nickname,
-        image: latest.image_url,
-        name: latest.result_name || latest.noun,
+        noun: primary.noun,
+        nickname: primary.nickname,
+        image: primary.image_url,
+        name: primary.result_name || primary.noun,
       }
-    : code && detail.data
+    : isGuest && code && detail.data
       ? {
           code,
           adjective: detail.data.overview.adjective,
@@ -119,14 +119,7 @@ export default function HomeScreen({
           )}
           {isGuest && (
             <div className="pakit-save-prompt">
-              <button
-                type="button"
-                className="pakit-kakao-save"
-                onClick={() => startKakaoLogin("/my/results")}
-              >
-                <img src={kakaoSymbol} alt="" width="20" height="20" />
-                카카오 로그인
-              </button>
+              <KakaoLoginButton onClick={() => startKakaoLogin("/my/results")} />
               <p className="pakit-save-notice">
                 로그인하지 않으면 결과가 사라질 수 있어요. 로그인하면 자동으로 보관돼요.
               </p>
