@@ -98,10 +98,14 @@ export default function HomeScreen({
           <Button variant="outline" onClick={result ? openChemiTest : onCheckCompatibility}>
             {result ? "친구와 케미 테스트" : "친구와 케미 보기"}
           </Button>
-          {isGuest && result && (
+          {isGuest && (
             <div className="pakit-save-prompt">
-              <p className="pakit-save-notice">로그인하지 않으면 결과가 사라질 수 있어요!</p>
-              <button type="button" className="pakit-kakao-save" onClick={() => startKakaoLogin()}>
+              <p className="pakit-save-notice">내 결과와 친구 케미를 한곳에 모아보세요.</p>
+              <button
+                type="button"
+                className="pakit-kakao-save"
+                onClick={() => startKakaoLogin("/my/results")}
+              >
                 <svg
                   aria-hidden="true"
                   width="20"
@@ -111,7 +115,7 @@ export default function HomeScreen({
                 >
                   <path d="M12 3C6.48 3 2 6.58 2 11c0 2.81 1.82 5.28 4.57 6.7L5.4 22l5.02-3.1c.52.07 1.05.1 1.58.1 5.52 0 10-3.58 10-8s-4.48-8-10-8Z" />
                 </svg>
-                카카오로 로그인하고 보관하기
+                카카오로 로그인
               </button>
             </div>
           )}
@@ -121,19 +125,11 @@ export default function HomeScreen({
                 다시 테스트하기
               </button>
             )}
-            {isGuest && !result ? (
-              <button
-                type="button"
-                onClick={() => startKakaoLogin("/my/results")}
-                className="pakit-text-button"
-              >
-                이미 테스트했다면? 로그인하고 내 보관함 보기
-              </button>
-            ) : !isGuest ? (
+            {auth.data && (
               <button type="button" onClick={onOpenMyResult} className="pakit-text-button">
                 내 보관함
               </button>
-            ) : null}
+            )}
           </div>
         </div>
       </section>
