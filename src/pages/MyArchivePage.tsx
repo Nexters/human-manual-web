@@ -1,5 +1,6 @@
 import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import { useState } from "react";
+import { isAxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -127,7 +128,12 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
       if (nextCode) useMyResultStore.getState().setResultCode(nextCode);
       else useMyResultStore.getState().clearResultCode();
     },
-    onError: () => setActionError("변경하지 못했어요. 다시 시도해주세요."),
+    onError: (error) =>
+      setActionError(
+        isAxiosError(error) && error.response?.status === 409
+          ? "대표 결과는 삭제할 수 없어요. 먼저 다른 결과를 대표로 설정해주세요."
+          : "변경하지 못했어요. 다시 시도해주세요.",
+      ),
   });
   const requestDelete = (result: ToyResult) =>
     open({
@@ -149,31 +155,27 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
         manage.mutate({ code: result.code, action: "delete" });
       },
     });
-  const actions = (result: ToyResult, primary = false) => (
-    <div className="mb-5 flex min-h-11 items-center justify-end gap-4 px-2 text-[13px]">
-      {primary ? (
-        <span className="text-main mr-auto font-bold">홈에 표시 중</span>
-      ) : (
-        <button
-          type="button"
-          className="text-main min-h-11 cursor-pointer font-bold disabled:opacity-40"
-          disabled={manage.isPending}
-          onClick={() => manage.mutate({ code: result.code, action: "primary" })}
-          aria-label={`${result.noun} ${result.nickname} 대표로 설정`}
-        >
-          대표로 설정
-        </button>
-      )}
+  const actions = (result: ToyResult) => (
+    <>
       <button
         type="button"
-        className="text-gray-06 min-h-11 cursor-pointer disabled:opacity-40"
+        className="text-main min-h-10 cursor-pointer rounded-full border border-[#e3e6ff] px-3 text-[12px] font-bold disabled:opacity-40"
+        disabled={manage.isPending}
+        onClick={() => manage.mutate({ code: result.code, action: "primary" })}
+        aria-label={`${result.noun} ${result.nickname} 대표로 설정`}
+      >
+        대표로 설정
+      </button>
+      <button
+        type="button"
+        className="text-gray-06 min-h-10 cursor-pointer rounded-full px-3 text-[12px] disabled:opacity-40"
         disabled={manage.isPending}
         onClick={() => requestDelete(result)}
         aria-label={`${result.noun} ${result.nickname} 삭제`}
       >
         삭제
       </button>
-    </div>
+    </>
   );
   const shareChemi = useShareChemi(myResults[0]);
   const openResult = (code: string) => navigate(`/result/${encodeURIComponent(code)}`);
@@ -234,7 +236,6 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
         </p>
       )}
       <ArchiveCard result={primaryResult} onClick={() => openResult(primaryResult.code)} />
-      {actions(primaryResult, true)}
       {older.length > 0 && (
         <History
           summary={
@@ -245,10 +246,13 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
           }
         >
           {older.map((r) => (
-            <div key={r.code}>
-              <ArchiveCard result={r} compact onClick={() => openResult(r.code)} />
-              {actions(r)}
-            </div>
+            <ArchiveCard
+              key={r.code}
+              result={r}
+              compact
+              onClick={() => openResult(r.code)}
+              actions={actions(r)}
+            />
           ))}
         </History>
       )}

@@ -157,53 +157,64 @@ export function ArchiveCard({
   result,
   compact,
   onClick,
+  actions,
 }: {
   result: ToyResult;
   compact?: boolean;
   onClick: () => void;
+  actions?: ReactNode;
 }) {
   const detail = useAssessmentResult(result.code);
   return (
-    <button
-      type="button"
-      onClick={onClick}
+    <article
+      aria-label={`${result.noun} ${result.nickname}`}
       className={cn(
-        "border-gray-02 flex w-full cursor-pointer items-center gap-4 rounded-[24px] border bg-white text-left",
-        compact ? "mt-3.5 px-3 py-4" : "px-[18px] py-6",
+        "border-gray-02 overflow-hidden rounded-[24px] border bg-white",
+        compact && "mt-3.5",
       )}
     >
-      <span
+      <button
+        type="button"
+        onClick={onClick}
         className={cn(
-          "grid shrink-0 place-items-center rounded-full bg-[#f4f4f8]",
-          compact ? "h-[65px] w-[60px]" : "h-[88px] w-[82px]",
+          "flex w-full cursor-pointer items-center gap-4 text-left focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-main",
+          compact ? "px-4 py-4" : "px-[18px] py-6",
         )}
       >
-        <img
-          src={result.image}
-          alt={result.noun}
-          className={cn("object-contain", compact ? "h-[60px] w-[54px]" : "h-[84px] w-[74px]")}
-        />
-      </span>
-      <span className="flex min-w-0 flex-1 flex-col gap-1">
-        {detail.data?.overview.adjective && (
-          <span className="text-gray-06 text-[12px] leading-[1.6] break-keep [overflow-wrap:anywhere]">
-            {detail.data.overview.adjective}
-          </span>
-        )}
-        <strong
+        <span
           className={cn(
-            "text-gray-09 leading-[1.4] font-bold tracking-[-0.5px] break-keep [overflow-wrap:anywhere]",
-            compact ? "text-[16px]" : "text-[18px]",
+            "grid shrink-0 place-items-center rounded-full bg-[#f4f4f8]",
+            compact ? "h-[65px] w-[60px]" : "h-[88px] w-[82px]",
           )}
         >
-          {[result.noun, result.nickname].filter(Boolean).join(" ")}
-        </strong>
-        {result.date && (
-          <span className="text-gray-05 mt-1 text-[11px] leading-[1.8]">{result.date}</span>
-        )}
-      </span>
-      <Arrow className="text-gray-06 shrink-0 text-[27px]" />
-    </button>
+          <img
+            src={result.image}
+            alt={result.noun}
+            className={cn("object-contain", compact ? "h-[60px] w-[54px]" : "h-[84px] w-[74px]")}
+          />
+        </span>
+        <span className="flex min-w-0 flex-1 flex-col gap-1">
+          {detail.data?.overview.adjective && (
+            <span className="text-gray-06 text-[12px] leading-[1.6] break-keep [overflow-wrap:anywhere]">
+              {detail.data.overview.adjective}
+            </span>
+          )}
+          <strong
+            className={cn(
+              "text-gray-09 leading-[1.4] font-bold tracking-[-0.5px] break-keep [overflow-wrap:anywhere]",
+              compact ? "text-[16px]" : "text-[18px]",
+            )}
+          >
+            {[result.noun, result.nickname].filter(Boolean).join(" ")}
+          </strong>
+          {result.date && (
+            <span className="text-gray-05 mt-1 text-[11px] leading-[1.8]">{result.date}</span>
+          )}
+        </span>
+        <Arrow className="text-gray-06 shrink-0 text-[27px]" />
+      </button>
+      {actions && <div className="flex items-center justify-end gap-2 px-4 pb-3">{actions}</div>}
+    </article>
   );
 }
 

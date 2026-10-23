@@ -108,6 +108,10 @@ const adapter: AxiosAdapter = async (config) => {
       if (!visibleCodes().includes(code)) return fail(404);
       if (method === "PUT" && resultAction[2]) localStorage.setItem(PRIMARY_KEY, code);
       else if (method === "DELETE" && !resultAction[2]) {
+        const primary = localStorage.getItem(PRIMARY_KEY);
+        const activeCodes = visibleCodes();
+        const mainCode = activeCodes.includes(primary ?? "") ? primary : activeCodes[0];
+        if (code === mainCode) return fail(409);
         localStorage.setItem(
           DELETED_KEY,
           JSON.stringify([...readStored<string[]>(DELETED_KEY, []), code]),

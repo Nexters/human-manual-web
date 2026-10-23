@@ -19,6 +19,12 @@ test("대표 결과를 선택하면 홈·케미 기준으로 유지되고 삭제
   });
   await page.goto("/my/results");
   await page.getByText("다른 결과도 보기", { exact: true }).click();
+  const primaryCard = page.getByRole("article", { name: "팽이 지은", exact: true });
+  const otherCard = page.getByRole("article", { name: "곰인형 선우", exact: true });
+  await expect(primaryCard.getByRole("button", { name: /삭제/ })).toHaveCount(0);
+  await expect(otherCard.getByRole("button", { name: /대표로 설정/ })).toBeVisible();
+  await expect(otherCard.getByRole("button", { name: /삭제/ })).toBeVisible();
+  await expect(page.getByText("홈에 표시 중", { exact: true })).toHaveCount(0);
   await page.screenshot({ path: "/tmp/pakit-result-management.png", fullPage: true });
   await page.getByRole("button", { name: /선우 대표로 설정/ }).click();
   await expect(page.getByRole("button", { name: /선우 대표로 설정/ })).toHaveCount(0);
@@ -32,6 +38,9 @@ test("대표 결과를 선택하면 홈·케미 기준으로 유지되고 삭제
   await page.goto("/my/compatibilities");
   await expect(page.getByText("곰인형 선우", { exact: true })).toBeVisible();
   await page.goto("/my/results");
+  await expect(page.getByRole("button", { name: /선우 삭제/ })).toHaveCount(0);
+  await page.getByText("다른 결과도 보기", { exact: true }).click();
+  await page.getByRole("button", { name: /지은 대표로 설정/ }).click();
   await page.getByRole("button", { name: /선우 삭제/ }).click();
   await page.getByRole("button", { name: "취소", exact: true }).click();
   await expect(page.getByRole("button", { name: /선우 삭제/ })).toBeVisible();
@@ -42,11 +51,12 @@ test("대표 결과를 선택하면 홈·케미 기준으로 유지되고 삭제
   await page.goto("/auth/complete");
   await page.waitForURL("**/my/results");
   await expect(page.getByRole("button", { name: /선우 삭제/ })).toHaveCount(0);
-  await page.getByRole("button", { name: /지은 삭제/ }).click();
-  await page.getByRole("button", { name: "삭제하기", exact: true }).click();
-  await expect(page.getByText("보관된 결과가 없어요", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: /지은 삭제/ })).toHaveCount(0);
   await page.goto("/");
-  await expect(page.getByRole("link", { name: /내 결과 자세히 보기/ })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /지은 내 결과 자세히 보기/ })).toHaveAttribute(
+    "href",
+    "/result/STORYMIN",
+  );
   await page.goto("/result/STORYFRI");
   await expect(page.getByText("결과를 불러오지 못했어요")).toHaveCount(0);
 });
