@@ -60,7 +60,7 @@ export default function RelationshipGuideCheckoutPage() {
         {topBar}
         <div className="flex flex-1 items-center justify-center px-5 text-center">
           <Typography variant="me2" className="text-gray-07">
-            주문 정보를 찾을 수 없어요. 궁합 결과에서 다시 시도해주세요.
+            주문 정보를 찾을 수 없어요. 케미 결과에서 다시 시도해주세요.
           </Typography>
         </div>
       </div>

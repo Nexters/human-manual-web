@@ -108,7 +108,7 @@ export default function HomeScreen({
             variant="outline"
             onClick={result ? () => void copyChemiLink() : onCheckCompatibility}
           >
-            {result ? "친구에게 케미 테스트 보내기" : "친구와 케미 보기"}
+            {result ? "친구와 케미 테스트" : "친구와 케미 보기"}
           </Button>
           {isGuest && result && (
             <div className="pakit-save-prompt">

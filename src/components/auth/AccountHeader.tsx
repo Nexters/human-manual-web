@@ -36,7 +36,7 @@ export default function AccountHeader({
             내 결과
           </NavLink>
           <NavLink className="py-3" to="/my/compatibilities">
-            내 궁합
+            내 케미
           </NavLink>
           <NavLink className="py-3" to="/my/premium">
             프리미엄 결과

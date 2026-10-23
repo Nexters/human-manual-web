@@ -93,7 +93,7 @@ export default function SaveResultPrompt({ resultCode }: { resultCode: string })
           to="/my/results"
           className="flex min-h-[52px] items-center justify-between gap-3 rounded-[14px] bg-[#f5f4f1] px-4 text-[14px] font-medium text-[#57584f]"
         >
-          <span>내 결과와 궁합 모아보기</span>
+          <span>내 결과와 케미 모아보기</span>
           <Chevron />
         </Link>
       ) : (

@@ -10,9 +10,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const TitleOnly: Story = {
-  args: { title: "친구와의 궁합" },
+  args: { title: "친구와의 케미" },
 };
 
 export const WithBack: Story = {
-  args: { title: "친구와의 궁합", onBack: () => {} },
+  args: { title: "친구와의 케미", onBack: () => {} },
 };

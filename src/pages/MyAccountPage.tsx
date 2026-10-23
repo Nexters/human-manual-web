@@ -39,10 +39,10 @@ export default function MyAccountPage({ kind }: { kind: "results" | "compatibili
   return (
     <section className="pakit-account">
       <p className="pakit-kicker">내 보관함</p>
-      <h1>{kind === "results" ? "내 결과" : "내 궁합"}</h1>
+      <h1>{kind === "results" ? "내 결과" : "내 케미"}</h1>
       {loginRequired ? (
         <div className="pakit-account-gate">
-          <p>로그인하면 계정에 연결된 {kind === "results" ? "결과를" : "궁합을"} 볼 수 있어요.</p>
+          <p>로그인하면 계정에 연결된 {kind === "results" ? "결과를" : "케미를"} 볼 수 있어요.</p>
           <Button onClick={startKakaoLogin}>카카오로 로그인</Button>
           <p className="text-sm text-gray-06">공유받은 결과지는 링크로 바로 볼 수 있어요.</p>
         </div>
@@ -57,7 +57,7 @@ export default function MyAccountPage({ kind }: { kind: "results" | "compatibili
         <p role="status">불러오는 중이에요.</p>
       ) : query.data?.items.length === 0 ? (
         <div className="pakit-account-empty">
-          <p>아직 계정에 연결된 {kind === "results" ? "결과가" : "궁합이"} 없어요.</p>
+          <p>아직 계정에 연결된 {kind === "results" ? "결과가" : "케미가"} 없어요.</p>
           <Link to="/?start=1" className="pakit-start-link">
             테스트 시작하기
           </Link>
@@ -88,7 +88,7 @@ export default function MyAccountPage({ kind }: { kind: "results" | "compatibili
                   >
                     <ResultPreview result={item.mine} />
                     <ResultPreview result={item.friend} />
-                    <p className="font-bold">궁합 {item.score}점</p>
+                    <p className="font-bold">케미 {item.score}점</p>
                     <p className="text-xs text-gray-06">
                       {new Date(item.tested_at).toLocaleDateString("ko-KR")}
                     </p>

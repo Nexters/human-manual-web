@@ -38,7 +38,7 @@ test("비로그인 목록은 안내하며 기존 결과는 로그인 없이 조�
   await page.goto("/my/results");
   await expect(page.getByText("로그인하면 계정에 연결된 결과를 볼 수 있어요.")).toBeVisible();
   await page.goto("/my/compatibilities");
-  await expect(page.getByText("로그인하면 계정에 연결된 궁합을 볼 수 있어요.")).toBeVisible();
+  await expect(page.getByText("로그인하면 계정에 연결된 케미를 볼 수 있어요.")).toBeVisible();
   await page.goto("/result/STORYMIN");
   await expect(page.getByText("결과를 불러오지 못했어요")).toHaveCount(0);
   await expect(page.getByText("지은", { exact: false }).first()).toBeVisible();
@@ -59,8 +59,8 @@ test("로그인 → 모든 로컬 코드 중복 제거/거절 → 원래 URL 복
     "href",
     "/result/STORYFRI",
   );
-  await page.getByRole("link", { name: "내 궁합", exact: true }).click();
-  await expect(page.getByRole("link", { name: /궁합 82점/ })).toHaveAttribute(
+  await page.getByRole("link", { name: "내 케미", exact: true }).click();
+  await expect(page.getByRole("link", { name: /케미 82점/ })).toHaveAttribute(
     "href",
     "/compatibility?mine=STORYMIN&friend=STORYFRI",
   );

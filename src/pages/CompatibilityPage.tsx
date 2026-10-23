@@ -104,7 +104,7 @@ export default function CompatibilityPage() {
 
   // headline 은 "찰떡궁합 환상의 장난감" 처럼 항상 "~~ 장난감" 꼴로 온다.
   // 마지막 낱말만 남기고 앞부분을 포인트 컬러로 가른다.
-  const headlineWords = data.headline.trim().split(/\s+/);
+  const headlineWords = data.headline.replaceAll("궁합", "케미").trim().split(/\s+/);
   const headlineNoun = headlineWords.at(-1) ?? "";
   const headlineModifier = headlineWords.slice(0, -1).join(" ");
 

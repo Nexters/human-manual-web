@@ -131,7 +131,7 @@ export function ArchiveTabs({
       {(
         [
           ["results", "내 결과"],
-          ["compatibilities", "내 궁합"],
+          ["compatibilities", "내 케미"],
         ] as const
       ).map(([tab, label]) => (
         <button

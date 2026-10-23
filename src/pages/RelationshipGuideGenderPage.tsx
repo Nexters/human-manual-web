@@ -75,7 +75,7 @@ export default function RelationshipGuideGenderPage() {
     return (
       <div className="flex min-h-dvh flex-col bg-white">
         {topBar}
-        <CenterMessage>궁합 정보를 찾을 수 없어요. 궁합 결과에서 다시 시작해주세요.</CenterMessage>
+        <CenterMessage>케미 정보를 찾을 수 없어요. 케미 결과에서 다시 시작해주세요.</CenterMessage>
       </div>
     );
   }

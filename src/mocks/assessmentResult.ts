@@ -91,7 +91,7 @@ export const mockAssessmentResult: AssessmentSubmissionOutput = {
   },
   compatible_friends: [
     {
-      badge: "찰떡궁합",
+      badge: "찰떡케미",
       noun: "곰인형",
       character_id: "bear",
       image_url: bearLarge,

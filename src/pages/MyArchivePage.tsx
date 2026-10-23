@@ -35,7 +35,7 @@ const compatPath = (mine: string, friend: string) =>
   `/compatibility?mine=${encodeURIComponent(mine)}&friend=${encodeURIComponent(friend)}`;
 
 // ------- 보관함 데이터 ------
-// 로그인하면 계정에 보관된 결과·궁합을, 아니면 이 브라우저에 남은 결과 하나만 쓴다.
+// 로그인하면 계정에 보관된 결과·케미를, 아니면 이 브라우저에 남은 결과 하나만 쓴다.
 function useArchive(tab: Tab) {
   const auth = useAuth();
   const isMember = Boolean(auth.data);
@@ -145,7 +145,7 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
     return (
       <>
         <EmptyState image={tokkiBox} title="보관된 결과가 없어요">
-          로그인하면 결과와 친구 궁합을
+          로그인하면 결과와 친구 케미를
           <br />
           다른 기기에서도 다시 볼 수 있어요.
         </EmptyState>
@@ -190,7 +190,7 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
         </History>
       )}
       <div className="mt-auto pt-6">
-        <PillButton onClick={() => void shareChemi()}>친구에게 궁합 테스트 보내기</PillButton>
+        <PillButton onClick={() => void shareChemi()}>친구에게 케미 테스트 보내기</PillButton>
         <TextLink onClick={() => navigate("/?start=1")}>새 테스트 시작하기</TextLink>
       </div>
     </>
@@ -303,7 +303,7 @@ function CompatibilitiesTab({
       {picking && (
         <div className="mb-6">
           <label htmlFor="basis" className="text-gray-09 mb-2.5 block text-[13px] font-bold">
-            궁합의 기준이 될 결과
+            케미의 기준이 될 결과
           </label>
           <select
             id="basis"
@@ -345,7 +345,7 @@ function CompatibilitiesTab({
           )}
           {others.length > 0 && (
             <History
-              summary={<span className="text-[13px]">이전 결과로 본 궁합 · {others.length}</span>}
+              summary={<span className="text-[13px]">이전 결과로 본 케미 · {others.length}</span>}
             >
               <div className="pt-4">
                 {others.map((c, i) => (
@@ -382,7 +382,7 @@ function CompatibilitiesTab({
           <div className="my-[18px] rounded-[14px] bg-[#fff5dc] p-[15px] text-[12px] leading-[1.6]">
             지금은 이 브라우저의 결과를 보고 있어요.
             <br />
-            로그인하면 저장된 결과와 궁합 기록을 불러올 수 있어요.
+            로그인하면 저장된 결과와 케미 기록을 불러올 수 있어요.
           </div>
           <PillButton tone="line" onClick={startKakaoLogin}>
             로그인해서 불러오기
@@ -393,7 +393,7 @@ function CompatibilitiesTab({
   );
 }
 
-// ------- 내 보관함 (내 결과 / 내 궁합) ------
+// ------- 내 보관함 (내 결과 / 내 케미) ------
 export default function MyArchivePage({ tab }: { tab: Tab }) {
   const navigate = useNavigate();
   const archive = useArchive(tab);
@@ -405,7 +405,7 @@ export default function MyArchivePage({ tab }: { tab: Tab }) {
       <>
         <Eyebrow>MY COLLECTION</Eyebrow>
         <Title>
-          내 궁합<span className="text-main">.</span>
+          내 케미<span className="text-main">.</span>
         </Title>
         <Desc>우리 사이, 어떤 케미가 숨어 있을까요?</Desc>
       </>
