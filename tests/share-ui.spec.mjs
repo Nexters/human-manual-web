@@ -185,3 +185,25 @@ test("친구 결과지의 케미 보기 팝업에서 로그인해 보관한 결�
     .click();
   await expect(page).toHaveURL("/compatibility?mine=STORYMIN&friend=STORYFRI");
 });
+
+test("케미 이력이 없는 내 결과에도 빈 관계 진열장과 초대 팝업을 보여준다", async ({ page }) => {
+  await seedMine(page);
+  await page.goto("/result/STORYMIN");
+  await expect(page.getByText("지은님의 관계 진열장", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("친구와 케미를 보면 이곳에 하나씩 모여요", { exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "친구에게 케미 테스트 공유하기", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "친구에게 보낼 문구" })).toHaveValue(
+    /friend=STORYMIN/,
+  );
+});
+
+test("초대한 친구의 빈 진열장에서는 그 친구와 케미를 보는 흐름으로 연결한다", async ({ page }) => {
+  await page.goto("/result/STORYFRI?friend=STORYFRI");
+  await page.getByRole("button", { name: "선우님과 케미 보기", exact: true }).click();
+  await expect(page.getByRole("button", { name: "새로 테스트하기", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "이미 테스트했다면? 로그인하고 바로 보기", exact: true }),
+  ).toBeVisible();
+});

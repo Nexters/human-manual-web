@@ -36,6 +36,7 @@ const displayName = (friend: CompatibilityRankingItemOutput) => friend.nickname 
 export default function RelationShelf({ nickname, friends, onSelectFriend }: RelationShelfProps) {
   const [visibleCount, setVisibleCount] = useState(LIST_PAGE_SIZE);
 
+  const isEmpty = friends.length === 0;
   const podium = friends.slice(0, PODIUM_COUNT);
   const rest = friends.slice(PODIUM_COUNT);
   const visibleRest = rest.slice(0, visibleCount);
@@ -46,7 +47,11 @@ export default function RelationShelf({ nickname, friends, onSelectFriend }: Rel
       {/* ----- 상단 타이틀 섹션 ----- */}
       <SectionTitle
         title={`${nickname}님의 관계 진열장`}
-        subtitle="가장 가까운 인연부터 차곡차곡 담았어요"
+        subtitle={
+          isEmpty
+            ? "친구와 케미를 보면 이곳에 하나씩 모여요"
+            : "가장 가까운 인연부터 차곡차곡 담았어요"
+        }
       />
 
       {/* ----- 진열장(1~3위) UI ----- */}
@@ -58,6 +63,17 @@ export default function RelationShelf({ nickname, friends, onSelectFriend }: Rel
             className="absolute top-[3.19%] left-[-2.66%] h-[103.44%] w-[105.32%] max-w-none"
           />
         </div>
+        {isEmpty &&
+          PODIUM_SLOTS.map((slot, index) => (
+            <div
+              key={index}
+              aria-hidden="true"
+              className="absolute grid size-[64px] -translate-x-1/2 place-items-center rounded-full border-2 border-dashed border-main/25 bg-white/80 text-[28px] font-bold text-main/35"
+              style={{ left: slot.centerX, top: slot.imageTop + 12 }}
+            >
+              ?
+            </div>
+          ))}
         {podium.map((friend, index) => {
           const slot = PODIUM_SLOTS[index];
           return (

@@ -280,8 +280,8 @@ export default function ResultPage() {
       <Compatible compatibleFriends={compatible_friends} />
 
       {/* ------- 관계 진열장(케미 랭킹) UI ------ */}
-      {/* 랭킹은 부가 정보라 조회 실패나 케미 이력이 없을 땐 섹션을 숨긴다. */}
-      {rankingData && rankingData.rankings.length > 0 && (
+      {/* 조회에 성공한 빈 진열장도 보여주되 조회 실패를 빈 기록으로 표시하지 않는다. */}
+      {rankingData && (
         <RelationShelf
           nickname={resultNickname}
           friends={rankingData.rankings}
