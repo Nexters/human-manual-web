@@ -10,13 +10,11 @@ import { DETAIL_CONTENT, DETAIL_ORDER } from "@/components/compatibility/detailA
 import LongTermTipCard from "@/components/compatibility/LongTermTipCard";
 import RelationshipGuidePurchaseCard from "@/components/compatibility/RelationshipGuidePurchaseCard";
 import NextChemiSection from "@/components/compatibility/NextChemiSection";
-import MyResultModal from "@/components/onboarding/MyResultModal";
 import CompatibilityPageSkeleton from "@/components/compatibility/skeleton";
 import CoupangPartnersAd from "@/components/shared/CoupangPartnersAd";
 import { useCompatibility } from "@/hooks/useCompatibility";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useToast } from "@/hooks/useToast";
-import { useModal } from "@/hooks/useModal";
 import { useFontsReady } from "@/hooks/useFontsReady";
 import { share } from "@/utils/share";
 import { takeResultCode } from "@/lib/resultCode";
@@ -43,10 +41,8 @@ export default function CompatibilityPage() {
 
   const { data, isLoading, isError } = useCompatibility(mine, friend);
   const { open: openToast } = useToast();
-  const { open: openModal, close: closeModal } = useModal();
   // 열람자가 누구인지는 URL 로 알 수 없다. 이 브라우저에 저장된 코드 하나로만 판단한다.
   const savedResultCode = useMyResultStore((state) => state.resultCode);
-  const rememberResultCode = useMyResultStore((state) => state.setResultCode);
   // 저장된 코드가 삭제·만료됐으면 조회가 실패한다. 그때만 코드 없음으로 되돌린다 —
   // 하단 "새 친구와 케미 보기" 가 죽은 코드로 링크를 만들면 안 된다.
   const { data: myResult, isError: myResultError } = useAssessmentResult(savedResultCode ?? "");
@@ -128,30 +124,6 @@ export default function CompatibilityPage() {
       label: "케미페이지_내케미링크복사",
     });
     openToast("내 케미 링크를 복사했어요");
-  };
-
-  // 코드가 이 브라우저에 없지만 다른 기기에서 이미 테스트를 마친 사람용.
-  // 코드를 받아 저장한 뒤 곧바로 링크까지 복사해준다 — 홈으로 튕겨 보내면 흐름이 끊긴다.
-  const openMyCodeModal = () => {
-    openModal({
-      title: "내 코드 입력하기",
-      contents: (
-        <MyResultModal
-          description={
-            <>
-              코드를 입력하면 친구에게 보낼
-              <br />내 케미 테스트 링크를 만들 수 있어요
-            </>
-          }
-          submitLabel="링크 복사하기"
-          onSubmit={(resultCode) => {
-            closeModal();
-            rememberResultCode(resultCode);
-            void handleCopyMyChemiLink(resultCode);
-          }}
-        />
-      ),
-    });
   };
 
   const handleShare = () => {
@@ -301,7 +273,6 @@ export default function CompatibilityPage() {
         hasMyCode={hasMyCode}
         onShareMyChemiLink={() => void handleCopyMyChemiLink(savedResultCode ?? "")}
         onStartTest={() => navigate("/", { state: { startTest: true } })}
-        onEnterCode={openMyCodeModal}
         onShareChemiPage={() => void handleShare()}
       />
 

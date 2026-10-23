@@ -11,9 +11,9 @@ const topics = [
   },
   {
     title: "결과 이용 문의",
-    description: "결과 조회, 결과 코드, 계정 연결",
+    description: "결과 조회, 결과 공유, 계정 연결",
     mark: "?",
-    guide: "결과 코드와 문제가 발생한 화면을 알려주세요. 비밀번호 등 민감한 정보는 보내지 마세요.",
+    guide: "결과지 링크와 문제가 발생한 화면을 알려주세요. 비밀번호 등 민감한 정보는 보내지 마세요.",
   },
 ];
 export default function SupportPage() {

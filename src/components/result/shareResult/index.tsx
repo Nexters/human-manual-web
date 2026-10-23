@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import Typography from "@/components/shared/Typography";
 import Spinner from "@/components/shared/Spinner";
@@ -29,8 +28,6 @@ interface ShareResultProps {
   onSendChemiTest: () => void;
   /** friendNickname 이 있을 때, 케미 페이지로 바로 넘긴다. */
   onViewChemi?: () => void;
-  /** 내 결과 코드 박스 바로 아래에 붙는 영역. */
-  codeFooter?: ReactNode;
 }
 
 // 이 구간의 섹션 헤딩은 결과지의 다른 섹션 헤딩(SectionTitle, 24px)과 달리 Figma에서
@@ -60,7 +57,6 @@ export default function ShareResult({
   friendImageUrl,
   isCheckingChemi = false,
   onSendChemiTest,
-  codeFooter,
   onViewChemi,
 }: ShareResultProps) {
   const { id } = useParams<{ id: string }>();
@@ -73,16 +69,6 @@ export default function ShareResult({
   const ownerLabel = nickname ? `${nickname}님` : "나";
   // 친구 링크로 들어와 테스트를 마친 경우: 첫 버튼이 케미 페이지로 바로 넘기는 버튼이 된다.
   const hasFriend = Boolean(friendNickname);
-
-  const handleCopyCode = async () => {
-    try {
-      await navigator.clipboard.writeText(inviteCode);
-    } catch {
-      // 클립보드 권한이 없는 환경에서도 복사 완료 토스트는 그대로 노출
-    }
-    trackEvent(GA_EVENTS.RESULT.INVITE_CODE_COPY);
-    openToast("코드 번호가 복사되었습니다");
-  };
 
   const handleCopyLink = async () => {
     // 결과 코드가 경로에 담긴 실제 결과지 링크를 복사한다.
@@ -198,39 +184,6 @@ export default function ShareResult({
             </Typography>
           </button>
         </div>
-      </div>
-
-      {/* ------- 3. 코드 보관 ------ */}
-      {/* 로그인이 없어 이 코드가 결과지·케미에 닿는 유일한 열쇠다. 옮겨 적어야 하는 값이라
-          박스만 물들이고 카드로는 감싸지 않는다. */}
-      <div className="mt-12 w-full">
-        <SectionHeading
-          title="내 코드를 저장해두세요"
-          subtitle="코드로 내 결과와 친구 케미를 다시 볼 수 있어요."
-        />
-
-        {/* Figma 기준 "복사" 버튼은 세로 중앙이 아니라 "내 결과 코드" 라벨 줄에 맞춰 위쪽에 붙는다 */}
-        <div className="bg-gray-01 mt-6 flex w-full items-start justify-between gap-3 rounded-[10px] px-5 py-5">
-          <div className="flex flex-col gap-1">
-            <Typography variant="sb3" className="text-gray-06">
-              내 결과 코드
-            </Typography>
-            <Typography variant="h2" as="span" className="text-sub-4">
-              {inviteCode}
-            </Typography>
-          </div>
-          <button
-            type="button"
-            onClick={handleCopyCode}
-            className="text-gray-06 -mt-[2px] flex h-[30px] shrink-0 items-center rounded-[20px] bg-white px-4 transition-opacity hover:opacity-90 active:opacity-80"
-          >
-            <Typography variant="sb3" as="span">
-              복사
-            </Typography>
-          </button>
-        </div>
-
-        {codeFooter && <div className="mt-6">{codeFooter}</div>}
       </div>
     </div>
   );

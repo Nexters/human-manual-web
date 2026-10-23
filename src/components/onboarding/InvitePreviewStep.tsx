@@ -10,7 +10,6 @@ type InvitePreviewStepProps = {
   friendNoun: string;
   friendImageUrl: string;
   onStart: () => void;
-  onCheckExistingCode: () => void;
   onViewFriendResult: () => void;
 };
 
@@ -19,7 +18,6 @@ export default function InvitePreviewStep({
   friendNoun,
   friendImageUrl,
   onStart,
-  onCheckExistingCode,
   onViewFriendResult,
 }: InvitePreviewStepProps) {
   const previewItems = [
@@ -117,15 +115,6 @@ export default function InvitePreviewStep({
         <QuestionCtaButton tone="point" onClick={onStart}>
           테스트하고 케미 보기
         </QuestionCtaButton>
-        <button
-          type="button"
-          onClick={onCheckExistingCode}
-          className="border-point flex h-[54px] w-full items-center justify-center rounded-[10px] border bg-white transition-opacity active:opacity-90"
-        >
-          <Typography variant="h2" as="span" className="text-sub-4">
-            이미 테스트 했다면?
-          </Typography>
-        </button>
       </div>
     </div>
   );

@@ -87,6 +87,33 @@
   width: min(240px, 100%);
   margin: 20px auto 0;
 }
+.pakit-returning-intro {
+  margin-bottom: 24px;
+  word-break: keep-all;
+}
+.pakit-returning-intro h1 {
+  color: #191f28;
+  font-size: 22px;
+  line-height: 1.45;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+}
+.pakit-returning-intro p {
+  margin-top: 8px;
+  color: #6b7684;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.pakit-hero-returning .pakit-hero-character {
+  width: min(220px, 70%);
+  height: 220px;
+  object-fit: contain;
+  margin-top: 4px;
+}
+.pakit-hero-returning .pakit-home-actions {
+  margin-top: 24px;
+  padding-top: 0;
+}
 .pakit-home-actions {
   display: flex;
   flex-direction: column;
@@ -117,6 +144,42 @@
   color: #191f28;
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+.pakit-save-prompt {
+  margin-top: 14px;
+  padding: 20px 18px 18px;
+  border: 1px solid #e8ebff;
+  border-radius: 22px;
+  background: #f7f8ff;
+  text-align: center;
+}
+.pakit-save-notice {
+  margin-bottom: 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #6b7684;
+}
+.pakit-kakao-save {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fee500;
+  color: #191919;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 150ms;
+}
+.pakit-kakao-save:hover {
+  opacity: 0.85;
+}
+.pakit-kakao-save svg {
+  flex-shrink: 0;
 }
 .pakit-drawer {
   position: fixed;

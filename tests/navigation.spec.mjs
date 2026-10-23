@@ -41,7 +41,7 @@ for (const path of pages) {
       );
     }, assessmentVersion);
     await page.goto(path);
-    await expect(page).toHaveURL(path);
+    await expect(page).toHaveURL(path === "/load" ? "/my/results" : path);
     const menu = page.getByRole("button", { name: "메뉴 열기", exact: true });
     await expect(menu).toHaveCount(1);
     await menu.click();

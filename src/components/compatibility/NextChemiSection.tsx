@@ -16,8 +16,6 @@ type NextChemiSectionProps = {
   onShareMyChemiLink: () => void;
   /** (!hasMyCode) "테스트하고 케미 보기" — 온보딩으로 테스트 시작. */
   onStartTest: () => void;
-  /** (!hasMyCode) "이미 테스트 했다면?" — 코드 입력 모달. */
-  onEnterCode: () => void;
   /** "케미 페이지 공유하기" — 이 케미 페이지를 공유한다. */
   onShareChemiPage: () => void;
 };
@@ -27,15 +25,13 @@ type NextChemiSectionProps = {
 // 열람자가 누구인지는 URL 로 알 수 없다 — 이 브라우저에 저장된 결과 코드 하나로만 판단한다.
 //
 // hasMyCode 면(내가 테스트를 마쳤으면) 링크만 공유하면 되니 새 디자인을 그대로 쓴다.
-// 아니면(제3자) 테스트부터 해야 하므로, 결과지 하단·초대 화면과 같은 핑크 버튼 두 개로
-// "테스트하고 케미 보기 / 이미 테스트 했다면?" 을 준다.
+// 아니면(제3자) 테스트부터 시작할 수 있게 안내한다.
 export default function NextChemiSection({
   myNickname,
   myImageUrl,
   hasMyCode,
   onShareMyChemiLink,
   onStartTest,
-  onEnterCode,
   onShareChemiPage,
 }: NextChemiSectionProps) {
   return (
@@ -117,15 +113,6 @@ export default function NextChemiSection({
             >
               <Typography variant="h2" as="span">
                 테스트하고 케미 보기
-              </Typography>
-            </button>
-            <button
-              type="button"
-              onClick={onEnterCode}
-              className="border-point text-sub-4 flex h-[54px] w-full items-center justify-center rounded-[10px] border bg-white transition-opacity hover:opacity-90 active:opacity-80"
-            >
-              <Typography variant="h2" as="span">
-                이미 테스트 했다면?
               </Typography>
             </button>
           </>

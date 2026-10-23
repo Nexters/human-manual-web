@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/useToast";
 import { useAuth, accountQueryKey } from "@/hooks/useAuth";
 import { getMyResults } from "@/api/auth";
 import { useAssessmentResult } from "@/hooks/useAssessment";
@@ -22,6 +23,7 @@ export default function HomeScreen({
 }) {
   const navigate = useNavigate();
   const auth = useAuth();
+  const toast = useToast();
   const code = useMyResultStore((s) => s.resultCode);
   const account = useQuery({
     queryKey: [...accountQueryKey, auth.data?.user_id, "results"],
@@ -29,6 +31,7 @@ export default function HomeScreen({
     enabled: Boolean(auth.data),
     retry: false,
   });
+  const isGuest = !auth.isPending && !auth.isError && !auth.data;
   const latest = account.data?.items[0];
   const detail = useAssessmentResult(latest?.result_code ?? code ?? "");
   const result = latest
@@ -37,6 +40,7 @@ export default function HomeScreen({
         adjective: detail.data?.overview.adjective,
         noun: latest.noun,
         nickname: latest.nickname,
+        image: latest.image_url,
       }
     : code && detail.data
       ? {
@@ -44,22 +48,48 @@ export default function HomeScreen({
           adjective: detail.data.overview.adjective,
           noun: detail.data.overview.noun,
           nickname: detail.data.participant.nickname,
+          image: detail.data.overview.image_url,
         }
       : null;
+  const copyChemiLink = async () => {
+    if (!result) return;
+    const url = new URL("/", window.location.origin);
+    url.searchParams.set("friend", result.code);
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      toast.open("케미 초대 링크를 복사했어요. 친구에게 보내보세요!");
+    } catch {
+      toast.open("링크를 복사하지 못했어요. 다시 시도해주세요.");
+    }
+  };
   return (
     <div className="pakit-home">
-      <section className="pakit-hero">
-        <h1>
-          <img src={logo} alt="Pakit" />
-        </h1>
-        <p className="pakit-tagline">나를 닮은 장난감을 만나다</p>
-        {participantCount !== undefined && (
-          <div className="pakit-participants">
-            <span />
-            {participantCount.toLocaleString("ko-KR")}명이 함께했어요
+      <section className={`pakit-hero${result ? " pakit-hero-returning" : ""}`}>
+        {!result && (
+          <>
+            <h1>
+              <img src={logo} alt="Pakit" />
+            </h1>
+            <p className="pakit-tagline">나를 닮은 장난감을 만나다</p>
+            {participantCount !== undefined && (
+              <div className="pakit-participants">
+                <span />
+                {participantCount.toLocaleString("ko-KR")}명이 함께했어요
+              </div>
+            )}
+          </>
+        )}
+        {result && (
+          <div className="pakit-returning-intro">
+            <h1>나를 닮은 장난감을 만나다</h1>
+            <p>내 성향을 알아보고, 친구와의 케미도 확인해요.</p>
           </div>
         )}
-        <img src={blocks} alt="" className="pakit-hero-character" />
+        <img
+          src={result ? result.image : blocks}
+          alt={result ? `${result.noun} 캐릭터` : ""}
+          className="pakit-hero-character"
+        />
         {result ? (
           <div className="pakit-result-heading">
             {result.adjective && <p>{result.adjective}</p>}
@@ -74,21 +104,48 @@ export default function HomeScreen({
           >
             {result ? "내 결과 보기" : "테스트 시작하기"}
           </Button>
-          <Button variant="outline" onClick={onCheckCompatibility}>
-            친구와 케미 보기
+          <Button
+            variant="outline"
+            onClick={result ? () => void copyChemiLink() : onCheckCompatibility}
+          >
+            {result ? "친구에게 케미 링크 보내기" : "친구와 케미 보기"}
           </Button>
+          {isGuest && result && (
+            <div className="pakit-save-prompt">
+              <p className="pakit-save-notice">로그인하지 않으면 결과가 사라질 수 있어요!</p>
+              <button type="button" className="pakit-kakao-save" onClick={() => startKakaoLogin()}>
+                <svg
+                  aria-hidden="true"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 3C6.48 3 2 6.58 2 11c0 2.81 1.82 5.28 4.57 6.7L5.4 22l5.02-3.1c.52.07 1.05.1 1.58.1 5.52 0 10-3.58 10-8s-4.48-8-10-8Z" />
+                </svg>
+                카카오로 로그인하고 보관하기
+              </button>
+            </div>
+          )}
           <div className="pakit-home-links">
             {result && (
               <button onClick={onStart} className="pakit-text-button">
                 다시 테스트하기
               </button>
             )}
-            <button
-              onClick={result && !auth.data ? startKakaoLogin : onOpenMyResult}
-              className="pakit-text-button"
-            >
-              {result && !auth.data ? "결과 보관하기" : "결과 불러오기"}
-            </button>
+            {isGuest && !result ? (
+              <button
+                type="button"
+                onClick={() => startKakaoLogin("/my/results")}
+                className="pakit-text-button"
+              >
+                이미 테스트했다면? 로그인하고 내 보관함 보기
+              </button>
+            ) : !isGuest ? (
+              <button type="button" onClick={onOpenMyResult} className="pakit-text-button">
+                내 보관함
+              </button>
+            ) : null}
           </div>
         </div>
       </section>

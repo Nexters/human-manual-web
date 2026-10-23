@@ -11,7 +11,6 @@ const meta = {
     hasMyCode: true,
     onShareMyChemiLink: () => {},
     onStartTest: () => {},
-    onEnterCode: () => {},
     onShareChemiPage: () => {},
   },
   decorators: [

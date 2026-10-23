@@ -43,8 +43,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// 내 결과지를 보는 경우. ShareResult가 testStore.resultCode와 URL의 id를 비교해
-// "내 코드" 카드를 보여주므로, 렌더 전에 testStore를 같은 코드로 시딩해둔다.
+// 내 테스트 결과를 보관한 상태로 결과지를 여는 경우.
 export const Default: Story = {
   decorators: [
     (Story) => {

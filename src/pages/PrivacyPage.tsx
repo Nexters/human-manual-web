@@ -23,7 +23,7 @@ export default function PrivacyPage() {
           <div>
             <p className="font-semibold text-gray-08">진단 및 결과 제공</p>
             <PolicyList>
-              <li>항목: 닉네임, MBTI, 질문별 답변, 진단·케미 결과, 결과 코드</li>
+              <li>항목: 닉네임, MBTI, 질문별 답변, 진단·케미 결과, 결과 식별값</li>
               <li>목적: 결과 생성·저장·재열람, 친구와의 케미 분석 및 맞춤 콘텐츠 제공</li>
               <li>보유기간: 삭제 요청, 회원 탈퇴 또는 서비스 종료 시까지</li>
             </PolicyList>
@@ -32,7 +32,8 @@ export default function PrivacyPage() {
             <p className="font-semibold text-gray-08">유료 서비스 주문 및 결제</p>
             <PolicyList>
               <li>
-                항목: 회원 식별값, 주문번호, 결과 코드, 결제승인번호, 결제수단, 금액, 결제일시·상태
+                항목: 회원 식별값, 주문번호, 결과 식별값, 결제승인번호, 결제수단, 금액,
+                결제일시·상태
               </li>
               <li>
                 목적: 결제, 구매내역 및 이용 권한 관리, 취소·환불, 부정 결제 방지 및 분쟁 대응
@@ -104,7 +105,7 @@ export default function PrivacyPage() {
 
       <PolicySection title="4. 브라우저 저장소와 쿠키">
         <p>
-          서비스는 진행 중인 답변, 결과 코드 및 화면 상태를 브라우저 로컬 저장소에 보관하여
+          서비스는 진행 중인 답변, 결과 식별값 및 화면 상태를 브라우저 로컬 저장소에 보관하여
           이어하기와 결과 재열람 기능을 제공합니다. 이용자는 브라우저 설정에서 저장된 정보를 삭제할
           수 있으며, 삭제하면 일부 이어하기 또는 재열람 기능이 제한될 수 있습니다.
         </p>

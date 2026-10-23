@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AccountHeader from "@/components/auth/AccountHeader";
 import logo from "@/assets/img/logo.png";
 import "./home.css";
@@ -8,7 +8,6 @@ export default function SiteHeader({ account = false }: { account?: boolean }) {
   const [visible, setVisible] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const location = useLocation();
-  const navigate = useNavigate();
   useEffect(() => {
     if (visible) dialog.current?.showModal();
     else dialog.current?.close();
@@ -19,10 +18,6 @@ export default function SiteHeader({ account = false }: { account?: boolean }) {
       document.body.style.overflow = previous;
     };
   }, [visible]);
-  const load = () => {
-    setVisible(false);
-    navigate("/load");
-  };
   const links = [
     ["/", "홈"],
     ["/?start=1", "테스트 시작하기"],
@@ -94,9 +89,6 @@ export default function SiteHeader({ account = false }: { account?: boolean }) {
               </Link>
             ))}
           </nav>
-          <button className="pakit-import" onClick={load}>
-            기존 결과 불러오기
-          </button>
           <div className="pakit-menu-policies">
             <Link to="/terms" onClick={() => setVisible(false)}>
               이용약관

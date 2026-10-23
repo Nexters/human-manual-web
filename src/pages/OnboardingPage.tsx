@@ -6,9 +6,7 @@ import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
 import IntroStep from "@/components/onboarding/IntroStep";
 import PartIntroStep from "@/components/onboarding/PartIntroStep";
-import TestStartModal from "@/components/onboarding/TestStartModal";
 import InvitePreviewStep from "@/components/onboarding/InvitePreviewStep";
-import FriendCodeCheckModal from "@/components/onboarding/FriendCodeCheckModal";
 import CompatibilityPageSkeleton from "@/components/compatibility/skeleton";
 import { introOrder, introPreloadImages, type IntroKey } from "@/components/onboarding/introSteps";
 import {
@@ -25,7 +23,6 @@ import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useCompletedTestCount } from "@/hooks/useCompletedTestCount";
 import { useFriendNavigate } from "@/hooks/useFriendNavigate";
 import { useFriendCode } from "@/hooks/useFriendCode";
-import { useModal } from "@/hooks/useModal";
 import { getCompatibility } from "@/api/compatibility";
 import { compatibilityQueryKey } from "@/hooks/useCompatibility";
 import { useMyResultStore } from "@/stores/myResultStore";
@@ -53,7 +50,7 @@ const firstScreenPreloadImages = [
 
 export default function OnboardingPage() {
   const navigate = useFriendNavigate();
-  // 궁합 확인 이동은 이미 완성된 URL(입력받은 코드)을 그대로 써야 하므로,
+  // 궁합 확인 이동은 이미 완성된 URL을 그대로 써야 하므로,
   // URL의 friend 값을 덮어쓰는 useFriendNavigate를 거치지 않는다.
   const navigateToCompatibility = useNavigate();
   // 케미 페이지의 "테스트 시작하기" 처럼, 다른 화면에서 곧바로 테스트를 시작시키는 신호.
@@ -70,9 +67,8 @@ export default function OnboardingPage() {
     isError: friendPreviewError,
   } = useAssessmentResult(friendCode ?? "");
   const participantCount = useCompletedTestCount();
-  const { open, close } = useModal();
   const queryClient = useQueryClient();
-  // 이 브라우저에서 테스트를 마쳤는지. 친구 링크 자동 케미와 코드 자동 채우기의 근거다.
+  // 이 브라우저에서 테스트를 마쳤는지. 친구 링크 자동 케미의 근거다.
   const savedResultCode = useMyResultStore((state) => state.resultCode);
 
   const nickname = useTestStore((state) => state.nickname);
@@ -156,65 +152,6 @@ export default function OnboardingPage() {
     handleStartTest("궁합유입");
   }, [startTestRequested, handleStartTest]);
 
-  const openTestStartModal = useCallback(() => {
-    // 친구 코드를 물고 들어왔는지에 따라 유입 경로가 다르다. 수집 데이터의 연속성을 위해
-    // 1input 팝업이 쓰던 라벨을 그대로 이어 쓴다.
-    const enteredWithFriendCode = friendCode !== null;
-
-    open({
-      title: "지금 바로 테스트하기",
-      contents: (
-        <TestStartModal
-          initialFriendCode={friendCode ?? undefined}
-          onStartTest={() => {
-            close();
-            handleStartTest(enteredWithFriendCode ? "친구초대유입" : "궁합유입");
-          }}
-          onCheckCompatibility={(myCode, friendCodeInput) => {
-            close();
-            trackEvent({
-              ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
-              label: enteredWithFriendCode ? "친구코드팝업_확인버튼" : "궁합팝업_케미결과확인버튼",
-            });
-            navigateToCompatibility(
-              `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(friendCodeInput)}`,
-            );
-          }}
-        />
-      ),
-    });
-  }, [open, close, friendCode, handleStartTest, navigateToCompatibility]);
-
-  // 친구 초대 링크로 들어온 사람이 "이미 테스트 했다면?" 을 누르면, 내 코드만 받는다.
-  // 친구 코드는 URL 에 있으니, TestStartModal(코드 2개) 대신 코드 1개짜리 모달을 연다.
-  // 조회·이동 흐름은 openTestStartModal 의 케미 경로와 동일하다.
-  const openFriendCodeCheckModal = useCallback(() => {
-    if (!friendCode) return;
-    open({
-      contents: (
-        <FriendCodeCheckModal
-          friendCode={friendCode}
-          onCheckCompatibility={(myCode) => {
-            close();
-            trackEvent({
-              ...GA_EVENTS.ONBOARDING.COMPATIBILITY_START,
-              label: "친구코드팝업_확인버튼",
-            });
-            navigateToCompatibility(
-              `/compatibility?mine=${encodeURIComponent(myCode)}&friend=${encodeURIComponent(friendCode)}`,
-            );
-          }}
-        />
-      ),
-    });
-  }, [open, close, friendCode, navigateToCompatibility]);
-
-  // 결과 코드가 결과지에 닿는 유일한 열쇠라, 코드를 들고 온 사람에게 입구를 열어둔다.
-  const openMyResultModal = useCallback(() => {
-    trackEvent(GA_EVENTS.ONBOARDING.MY_RESULT_OPEN);
-    navigate("/load");
-  }, [navigate]);
-
   useImagePreload(firstScreenPreloadImages);
   // 뒤에서 쓰는 커스텀 폰트(Waguri, ThePosterFont 등)도 첫 화면에서 미리 받아둬서,
   // 나중에 해당 화면에 처음 들어갔을 때 기본 폰트가 잠깐 보였다 바뀌는 걸 막는다.
@@ -242,7 +179,6 @@ export default function OnboardingPage() {
           friendNoun={friendPreview.overview.noun}
           friendImageUrl={friendPreview.overview.image_url}
           onStart={() => handleStartTest("친구초대유입")}
-          onCheckExistingCode={openFriendCodeCheckModal}
           onViewFriendResult={() => navigate(`/result/${friendCode}`)}
         />
       );
@@ -256,8 +192,8 @@ export default function OnboardingPage() {
       <HomeScreen
         participantCount={participantCount}
         onStart={() => handleStartTest("일반")}
-        onCheckCompatibility={openTestStartModal}
-        onOpenMyResult={openMyResultModal}
+        onCheckCompatibility={() => navigate("/my/compatibilities")}
+        onOpenMyResult={() => navigate("/my/results")}
       />
     );
   }

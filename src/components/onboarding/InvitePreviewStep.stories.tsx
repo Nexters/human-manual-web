@@ -10,7 +10,6 @@ const meta = {
     friendNoun: "곰인형",
     friendImageUrl: bearLarge,
     onStart: () => {},
-    onCheckExistingCode: () => {},
     onViewFriendResult: () => {},
   },
   parameters: {

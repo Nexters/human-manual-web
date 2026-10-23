@@ -44,7 +44,7 @@ export default function MyAccountPage({ kind }: { kind: "results" | "compatibili
         <div className="pakit-account-gate">
           <p>로그인하면 계정에 연결된 {kind === "results" ? "결과를" : "궁합을"} 볼 수 있어요.</p>
           <Button onClick={startKakaoLogin}>카카오로 로그인</Button>
-          <p className="text-sm text-gray-06">로그인 없이도 홈에서 결과 코드로 조회할 수 있어요.</p>
+          <p className="text-sm text-gray-06">공유받은 결과지는 링크로 바로 볼 수 있어요.</p>
         </div>
       ) : auth.isError || query.isError ? (
         <div className="flex flex-col gap-4">

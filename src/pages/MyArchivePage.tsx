@@ -1,13 +1,11 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMyCompatibilities, getMyResults, type AccountCompatibility } from "@/api/auth";
-import { verifyResultCode } from "@/api/assessment";
 import { accountQueryKey, useAuth } from "@/hooks/useAuth";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useToast } from "@/hooks/useToast";
 import { startKakaoLogin } from "@/lib/auth";
-import { cn } from "@/lib/cn";
 import { useMyResultStore } from "@/stores/myResultStore";
 import { buildChemiTestMessage, canUseSystemShare, share } from "@/utils/share";
 import Spinner from "@/components/shared/Spinner";
@@ -139,7 +137,6 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
           자동으로 이곳에 보관돼요.
         </EmptyState>
         <PillButton onClick={() => navigate("/?start=1")}>테스트 시작하기</PillButton>
-        <TextLink onClick={() => navigate("/load")}>기존 결과 불러오기</TextLink>
       </>
     );
   }
@@ -154,9 +151,6 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
         </EmptyState>
         <div className="flex flex-col gap-3">
           <PillButton onClick={startKakaoLogin}>카카오로 로그인</PillButton>
-          <PillButton tone="line" onClick={() => navigate("/load?step=code")}>
-            결과 코드로 찾기
-          </PillButton>
         </div>
       </>
     );
@@ -173,7 +167,6 @@ function ResultsTab({ isMember, myResults }: { isMember: boolean; myResults: Toy
           </Desc>
           <PillButton onClick={startKakaoLogin}>로그인하고 결과 보관하기</PillButton>
         </section>
-        <TextLink onClick={() => navigate("/load")}>다른 결과 불러오기</TextLink>
       </>
     );
   }
@@ -237,69 +230,6 @@ function PairCard({
   );
 }
 
-function FriendCodeForm({ mineCode }: { mineCode: string }) {
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
-  const [pending, setPending] = useState(false);
-
-  if (!open) {
-    return <TextLink onClick={() => setOpen(true)}>친구 결과 코드 입력하기</TextLink>;
-  }
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    const value = code.trim();
-    if (!value || pending) return;
-    setPending(true);
-    const exists = await verifyResultCode(value);
-    setPending(false);
-    if (!exists) {
-      setError("일치하는 결과가 없어요. 코드를 다시 확인해주세요.");
-      return;
-    }
-    navigate(compatPath(mineCode, value));
-  };
-
-  return (
-    <form onSubmit={handleSubmit} noValidate className="mt-6">
-      <label htmlFor="friend-code" className="text-gray-09 mb-2.5 block text-[13px] font-bold">
-        친구 결과 코드
-      </label>
-      <input
-        id="friend-code"
-        autoFocus
-        value={code}
-        onChange={(e) => {
-          setCode(e.target.value);
-          if (error) setError("");
-        }}
-        placeholder="예: si0KO1L8"
-        autoComplete="off"
-        autoCapitalize="off"
-        spellCheck={false}
-        aria-invalid={Boolean(error)}
-        aria-describedby="friend-code-error"
-        className={cn(
-          "text-gray-09 mb-2.5 w-full rounded-[14px] border bg-white p-4 text-[18px] tracking-[2px] placeholder:tracking-normal",
-          error ? "border-[#c23c60]" : "border-[#d8dbe8]",
-        )}
-      />
-      <p
-        id="friend-code-error"
-        role="alert"
-        className="mb-3 min-h-[26px] text-[12px] text-[#b32d51]"
-      >
-        {error}
-      </p>
-      <PillButton tone="line" type="submit" disabled={!code.trim() || pending}>
-        {pending ? <Spinner className="size-5" /> : "케미 확인하기"}
-      </PillButton>
-    </form>
-  );
-}
-
 function CompatibilitiesTab({
   isMember,
   myResults,
@@ -330,7 +260,6 @@ function CompatibilitiesTab({
             로그인해서 불러오기
           </PillButton>
         )}
-        <TextLink onClick={() => navigate("/load")}>기존 결과 불러오기</TextLink>
       </>
     );
   }
@@ -433,7 +362,6 @@ function CompatibilitiesTab({
           <PillButton className="mt-4" onClick={() => void shareChemi()}>
             친구에게 링크 보내기 ↗
           </PillButton>
-          <FriendCodeForm mineCode={basis.code} />
         </>
       ) : (
         <>
@@ -459,7 +387,6 @@ function CompatibilitiesTab({
           <PillButton tone="line" onClick={startKakaoLogin}>
             로그인해서 불러오기
           </PillButton>
-          <FriendCodeForm mineCode={basis.code} />
         </>
       )}
     </>

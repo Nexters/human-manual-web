@@ -18,15 +18,13 @@ function PurchaseParticipants({ order }: { order: MyPaymentOrder }) {
             label: "나",
             person: pair.data?.mine,
             gender: order.mine_gender,
-            code: order.mine_result_code,
           },
           {
             label: "상대",
             person: pair.data?.friend,
             gender: order.partner_gender,
-            code: order.partner_result_code,
           },
-        ].map(({ label, person, gender, code }) => (
+        ].map(({ label, person, gender }) => (
           <div key={label} className="pakit-premium-person">
             <div className="pakit-premium-avatar">
               {person?.image_url ? (
@@ -43,7 +41,6 @@ function PurchaseParticipants({ order }: { order: MyPaymentOrder }) {
             <p className="pakit-premium-name">
               {person?.nickname || (pair.isPending ? "불러오는 중…" : "이름 정보 없음")}
             </p>
-            <p className="pakit-premium-codes">코드 : {code}</p>
           </div>
         ))}
         <span className="pakit-premium-connection" aria-hidden="true">
