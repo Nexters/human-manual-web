@@ -4,10 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getMyCompatibilities, getMyResults, type AccountCompatibility } from "@/api/auth";
 import { accountQueryKey, useAuth } from "@/hooks/useAuth";
 import { useAssessmentResult } from "@/hooks/useAssessment";
-import { useToast } from "@/hooks/useToast";
+import { useChemiShareModal as useShareChemi } from "@/hooks/useChemiShareModal";
 import { startKakaoLogin } from "@/lib/auth";
 import { useMyResultStore } from "@/stores/myResultStore";
-import { buildChemiTestMessage, canUseSystemShare, share } from "@/utils/share";
 import Spinner from "@/components/shared/Spinner";
 import {
   ArchiveCard,
@@ -94,31 +93,6 @@ function useArchive(tab: Tab) {
     isPending,
     isError,
     retry,
-  };
-}
-
-/** 결과지의 "친구에게 케미 테스트 보내기"와 같은 링크·문구를 쓴다. */
-function useShareChemi(mine?: ToyResult) {
-  const toast = useToast();
-  return async () => {
-    if (!mine) return;
-    const url = new URL("/", window.location.origin);
-    url.searchParams.set("friend", mine.code);
-    try {
-      await navigator.clipboard.writeText(
-        buildChemiTestMessage({ resultName: mine.name, url: url.toString() }),
-      );
-    } catch {
-      // 클립보드 권한이 없어도 공유 시트는 띄운다
-    }
-    toast.open("문구를 복사했어요");
-    if (canUseSystemShare()) {
-      await share({
-        title: `나 '${mine.name}' 나왔어.`,
-        text: "우리 케미는 몇 점일까? 여기서 확인해줘!",
-        url: url.toString(),
-      });
-    }
   };
 }
 
