@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getMyCompatibilities, getMyResults, type AccountCompatibility } from "@/api/auth";
 import { accountQueryKey, useAuth } from "@/hooks/useAuth";
 import { useAssessmentResult } from "@/hooks/useAssessment";
+import { useCompatibilityRanking } from "@/hooks/useCompatibility";
 import { useChemiShareModal as useShareChemi } from "@/hooks/useChemiShareModal";
 import { startKakaoLogin } from "@/lib/auth";
 import { useMyResultStore } from "@/stores/myResultStore";
@@ -176,7 +177,7 @@ function PairCard({
   subtitle,
   onClick,
 }: {
-  item: AccountCompatibility;
+  item: { score: number; friend: { nickname: string | null; image_url: string } };
   subtitle: string;
   onClick: () => void;
 }) {
@@ -191,7 +192,7 @@ function PairCard({
       </span>
       <span className="min-w-0">
         <strong className="text-gray-09 block truncate text-[15px]">
-          {item.friend.nickname}님
+          {item.friend.nickname ?? "친구"}님
         </strong>
         <span className="text-gray-06 block truncate text-[11px]">{subtitle}</span>
       </span>
@@ -219,6 +220,7 @@ function CompatibilitiesTab({
   const basis = myResults.find((r) => r.code === basisCode) ?? myResults[0];
   const basisDetail = useAssessmentResult(basis?.code ?? "");
   const shareChemi = useShareChemi(basis);
+  const localRanking = useCompatibilityRanking(!isMember ? (basis?.code ?? "") : "");
 
   if (!basis) {
     return (
@@ -339,7 +341,39 @@ function CompatibilitiesTab({
         </>
       ) : (
         <>
-          <section className="relative mb-8 rounded-[22px] bg-[#eff0ff] p-6">
+          <div className="mb-3.5 flex items-center justify-between">
+            <h3 className="text-gray-09 text-[16px] font-bold">
+              친구와의 케미{" "}
+              <span className="text-main ml-1.5">{localRanking.data?.total ?? 0}</span>
+            </h3>
+            <span className="text-gray-06 text-[11px]">케미 점수순</span>
+          </div>
+          {localRanking.isPending ? (
+            <div
+              className="flex justify-center py-6"
+              role="status"
+              aria-label="케미 기록 불러오는 중"
+            >
+              <Spinner className="size-5" />
+            </div>
+          ) : localRanking.isError ? (
+            <div role="alert" className="mb-6 text-center">
+              <Desc>케미 기록을 불러오지 못했어요.</Desc>
+              <TextLink onClick={() => void localRanking.refetch()}>다시 시도</TextLink>
+            </div>
+          ) : localRanking.data?.rankings.length ? (
+            localRanking.data.rankings.map((friend) => (
+              <PairCard
+                key={friend.result_code}
+                item={{ friend, score: friend.score }}
+                subtitle={friend.result_name || friend.noun}
+                onClick={() => navigate(compatPath(basis.code, friend.result_code))}
+              />
+            ))
+          ) : (
+            <Desc className="my-3 text-center">이 결과로 본 케미가 아직 없어요.</Desc>
+          )}
+          <section className="relative mt-4 mb-8 rounded-[22px] bg-[#eff0ff] p-6">
             <span aria-hidden className="absolute top-6 right-6 rotate-12 text-[32px]">
               ✳
             </span>
@@ -356,7 +390,7 @@ function CompatibilitiesTab({
           <div className="my-[18px] rounded-[14px] bg-[#fff5dc] p-[15px] text-[12px] leading-[1.6]">
             지금은 이 브라우저의 결과를 보고 있어요.
             <br />
-            로그인하면 저장된 결과와 케미 기록을 불러올 수 있어요.
+            로그인하면 다른 기기에서도 결과와 케미 기록을 다시 볼 수 있어요.
           </div>
           <PillButton tone="line" onClick={startKakaoLogin}>
             로그인해서 불러오기
