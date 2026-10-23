@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import FriendChemiTestModal from "@/components/result/FriendChemiTestModal";
+import { useModal } from "@/hooks/useModal";
+import { buildChemiTestMessage, canUseSystemShare, share } from "@/utils/share";
 import { useToast } from "@/hooks/useToast";
 import { useAuth, accountQueryKey } from "@/hooks/useAuth";
 import { getMyResults } from "@/api/auth";
@@ -24,6 +27,7 @@ export default function HomeScreen({
   const navigate = useNavigate();
   const auth = useAuth();
   const toast = useToast();
+  const { open, close } = useModal();
   const code = useMyResultStore((s) => s.resultCode);
   const account = useQuery({
     queryKey: [...accountQueryKey, auth.data?.user_id, "results"],
@@ -41,6 +45,7 @@ export default function HomeScreen({
         noun: latest.noun,
         nickname: latest.nickname,
         image: latest.image_url,
+        name: latest.result_name || latest.noun,
       }
     : code && detail.data
       ? {
@@ -49,18 +54,50 @@ export default function HomeScreen({
           noun: detail.data.overview.noun,
           nickname: detail.data.participant.nickname,
           image: detail.data.overview.image_url,
+          name: detail.data.overview.result_name || detail.data.overview.noun,
         }
       : null;
-  const copyChemiLink = async () => {
+  const openChemiTest = () => {
     if (!result) return;
     const url = new URL("/", window.location.origin);
     url.searchParams.set("friend", result.code);
-    try {
-      await navigator.clipboard.writeText(url.toString());
-      toast.open("케미 초대 링크를 복사했어요. 친구에게 보내보세요!");
-    } catch {
-      toast.open("링크를 복사하지 못했어요. 다시 시도해주세요.");
-    }
+    const message = buildChemiTestMessage({ resultName: result.name, url: url.toString() });
+    open({
+      title: "친구 케미 테스트",
+      contents: (
+        <FriendChemiTestModal
+          message={message}
+          onShare={async () => {
+            try {
+              await navigator.clipboard.writeText(message);
+              toast.open("문구를 복사했어요");
+            } catch {
+              if (!canUseSystemShare()) {
+                toast.open("문구를 복사하지 못했어요. 다시 시도해주세요.");
+                return;
+              }
+            }
+            if (canUseSystemShare()) {
+              await share({
+                title: `나 '${result.name}' 나왔어.`,
+                text: "우리 케미는 몇 점일까? 여기서 확인해줘!",
+                url: url.toString(),
+              });
+            }
+            close();
+          }}
+          onCopyLink={async () => {
+            try {
+              await navigator.clipboard.writeText(url.toString());
+              toast.open("링크를 복사했어요");
+              close();
+            } catch {
+              toast.open("링크를 복사하지 못했어요. 다시 시도해주세요.");
+            }
+          }}
+        />
+      ),
+    });
   };
   return (
     <div className="pakit-home">
@@ -104,10 +141,7 @@ export default function HomeScreen({
           >
             {result ? "내 결과 보기" : "테스트 시작하기"}
           </Button>
-          <Button
-            variant="outline"
-            onClick={result ? () => void copyChemiLink() : onCheckCompatibility}
-          >
+          <Button variant="outline" onClick={result ? openChemiTest : onCheckCompatibility}>
             {result ? "친구와 케미 테스트" : "친구와 케미 보기"}
           </Button>
           {isGuest && result && (
