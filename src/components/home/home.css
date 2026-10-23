@@ -162,6 +162,9 @@
   flex-direction: column;
   gap: 8px;
 }
+.pakit-chemi-invite > button {
+  border-radius: 12px;
+}
 .pakit-chemi-invite > button,
 .pakit-home-actions > button {
   min-height: 54px;
@@ -173,6 +176,11 @@
   font-weight: 600;
   line-height: 24px;
   letter-spacing: -0.4px;
+}
+.pakit-chemi-invite > button > span {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 500;
+  letter-spacing: normal;
 }
 .pakit-home-actions {
   display: flex;
@@ -227,20 +235,20 @@
   width: 100%;
   min-height: 54px;
   padding: 12px 20px;
-  border-radius: 999px;
+  border-radius: 12px;
   background: #fee500;
-  color: #191919;
+  color: rgb(0 0 0 / 85%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 15px;
   line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: opacity 150ms;
 }
-.pakit-kakao-save:hover {
-  opacity: 0.85;
+.pakit-kakao-save:focus-visible {
+  outline: 2px solid #191919;
+  outline-offset: 3px;
 }
-.pakit-kakao-save svg {
+.pakit-kakao-save img {
   flex-shrink: 0;
 }
 .pakit-drawer {

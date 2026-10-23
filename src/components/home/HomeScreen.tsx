@@ -8,6 +8,7 @@ import { useMyResultStore } from "@/stores/myResultStore";
 import { startKakaoLogin } from "@/lib/auth";
 import blocks from "@/assets/img/splash-blocks.png";
 import logo from "@/assets/img/logo.png";
+import kakaoSymbol from "@/assets/svgs/auth/kakao-symbol.svg";
 import Button from "@/components/shared/Button";
 import ShareNodesIcon from "@/components/shared/icons/ShareNodesIcon";
 
@@ -123,18 +124,12 @@ export default function HomeScreen({
                 className="pakit-kakao-save"
                 onClick={() => startKakaoLogin("/my/results")}
               >
-                <svg
-                  aria-hidden="true"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M12 3C6.48 3 2 6.58 2 11c0 2.81 1.82 5.28 4.57 6.7L5.4 22l5.02-3.1c.52.07 1.05.1 1.58.1 5.52 0 10-3.58 10-8s-4.48-8-10-8Z" />
-                </svg>
-                카카오 로그인하고 보관하기
+                <img src={kakaoSymbol} alt="" width="20" height="20" />
+                카카오 로그인
               </button>
-              <p className="pakit-save-notice">로그인하지 않으면 결과가 사라질 수 있어요!</p>
+              <p className="pakit-save-notice">
+                로그인하지 않으면 결과가 사라질 수 있어요. 로그인하면 자동으로 보관돼요.
+              </p>
             </div>
           )}
           <div className="pakit-home-links">
