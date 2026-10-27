@@ -63,18 +63,18 @@ export default function HomeScreen({
               <img src={logo} alt="Pakit" />
             </h1>
             <p className="pakit-tagline">나를 닮은 장난감을 만나다</p>
-            {participantCount !== undefined && (
-              <div className="pakit-participants">
-                <span />
-                {participantCount.toLocaleString("ko-KR")}명이 함께했어요
-              </div>
-            )}
           </>
         )}
         {result && (
           <div className="pakit-returning-intro">
             <h1>나를 닮은 장난감을 만나다</h1>
             <p>내 성향을 알아보고, 친구와의 케미도 확인해요.</p>
+          </div>
+        )}
+        {participantCount !== undefined && (
+          <div className="pakit-participants">
+            <span aria-hidden="true" />
+            {participantCount.toLocaleString("ko-KR")}명이 함께했어요
           </div>
         )}
         {result ? (

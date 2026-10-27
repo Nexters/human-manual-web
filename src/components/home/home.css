@@ -90,6 +90,10 @@
 .pakit-hero-returning {
   padding-top: 24px;
 }
+.pakit-hero-returning .pakit-participants {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
 .pakit-returning-intro {
   margin-bottom: 16px;
   word-break: keep-all;
