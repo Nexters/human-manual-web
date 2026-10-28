@@ -275,7 +275,6 @@ export default function ResultPage() {
       {/* ------- 핵심 특징 UI ------ */}
       <KeyFeatures
         features={features}
-        imageUrl={overview.image_url}
         storyTitle={character_story.title}
         storyDescription={character_story.description}
       />
