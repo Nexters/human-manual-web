@@ -116,18 +116,21 @@ export default function Hero({
       {/* ----- 하단 CTA 섹션 ----- */}
       <div className="absolute inset-x-0 bottom-0 z-10 flex h-[160px] flex-col items-center justify-end pb-6">
         <div
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent to-gray-00"
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-gray-00/90 via-40% to-gray-00"
           aria-hidden
         />
-        <Typography variant="sb4" className="mb-1 px-5 text-center text-gray-08 break-keep">
-          같은 장난감이 나와도, 설명서는 다 달라요.
+        <Typography variant="sb3" className="mb-2 px-5 text-center font-bold text-gray-09 break-keep">
+          같은 장난감이 나와도,{" "}
+          <span className="underline decoration-point decoration-[4px] underline-offset-4">
+            설명서는 다 달라요.
+          </span>
         </Typography>
         <button
           type="button"
           onClick={handleScrollToContent}
           className="flex flex-col items-center gap-1"
         >
-          <Typography variant="sb4" className="text-gray-08">
+          <Typography variant="sb3" className="text-gray-09">
             나만의 사용 설명서 보러가기
           </Typography>
           <span className="flex flex-col items-center gap-0 -space-y-1">
