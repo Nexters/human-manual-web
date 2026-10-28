@@ -41,6 +41,7 @@ export default function Hero({
   // 값이 실시간 재계산될 수 있어, 그 안의 배경/캐릭터(% 기준 배치)가 함께
   // 흔들린다. 마운트 시점의 높이를 한 번만 측정해 고정 px로 써서 이를 막는다.
   const viewportHeight = useInitialViewportHeight();
+  const characterCenterY = Math.max(420, viewportHeight * 0.58);
   const sectionRef = useRef<HTMLElement>(null);
 
   // 히어로가 화면을 꽉 채워서 아래에 뭐가 더 있는지 안 보인다. 화살표를 눌러 바로 다음
@@ -68,7 +69,7 @@ export default function Hero({
     <section
       ref={sectionRef}
       className="relative w-full overflow-hidden"
-      style={{ minHeight: viewportHeight }}
+      style={{ minHeight: characterCenterY + 300 }}
     >
       <img
         src={resultBg}
@@ -99,11 +100,11 @@ export default function Hero({
         </div>
       </div>
 
-      {/* ----- 중앙 팽이 & 태그 섹션 -----
-          top-[58%]는 뷰포트 높이에 비례해서, 화면이 짧은 기기(특히 안드로이드)에서는
-          위 타이틀 블록(고정 px 높이)과 겹칠 수 있다. max()로 최소 420px는 항상
-          확보하고, 그보다 58%가 더 큰(=화면이 넉넉한) 경우에만 비율대로 내려간다. */}
-      <div className="absolute left-1/2 top-[max(420px,58%)] z-10 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2">
+      {/* 캐릭터 아래에는 태그와 안내 문구에 필요한 공간만 확보한다. */}
+      <div
+        className="absolute left-1/2 z-10 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2"
+        style={{ top: characterCenterY }}
+      >
         <img src={imageUrl} alt={title} className="h-full w-full object-contain" />
         {tags.map((tag, idx) => (
           <HeroTag key={idx} className={TAG_POSITIONS[idx]}>
@@ -113,18 +114,21 @@ export default function Hero({
       </div>
 
       {/* ----- 하단 CTA 섹션 ----- */}
-      <div className="absolute inset-x-0 bottom-0 z-10 flex h-[192px] flex-col items-center justify-end pb-8">
+      <div className="absolute inset-x-0 bottom-0 z-10 flex h-[160px] flex-col items-center justify-end pb-6">
         <div
           className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent to-gray-00"
           aria-hidden
         />
+        <Typography variant="sb4" className="mb-1 px-5 text-center text-gray-08 break-keep">
+          같은 장난감이 나와도, 설명서는 다 달라요.
+        </Typography>
         <button
           type="button"
           onClick={handleScrollToContent}
           className="flex flex-col items-center gap-1"
         >
-          <Typography variant="sb3" className="text-gray-08">
-            장난감 설명서 보러가기
+          <Typography variant="sb4" className="text-gray-08">
+            나만의 사용 설명서 보러가기
           </Typography>
           <span className="flex flex-col items-center gap-0 -space-y-1">
             <ChevronLeftIcon className="rotate-180 w-3 h-3 text-gray-08" />
