@@ -101,3 +101,33 @@ test("대표 결과는 오래된 브라우저 값보다 우선하며 초대·추
   await page.getByRole("button", { name: "지은님과 케미 보기", exact: true }).click();
   await expect(page).toHaveURL("/compatibility?mine=STORYFRI&friend=STORYMIN");
 });
+
+test("옛날 결과에만 안내를 표시하고 새 테스트로 이동한다", async ({ page }) => {
+  await page.addInitScript(() => {
+    sessionStorage.setItem("pakit-auth-mock-session", "1");
+    localStorage.setItem("pakit-auth-mock-linked", JSON.stringify(["STORYMIN", "STORYFRI"]));
+    localStorage.setItem("pakit-auth-mock-primary", "STORYMIN");
+  });
+  await page.goto("/my/results");
+  const current = page.getByRole("article", { name: "팽이 지은", exact: true });
+  await expect(current.getByRole("button", { name: /옛날 결과 안내/ })).toHaveCount(0);
+  await page.getByText("다른 결과도 보기", { exact: true }).click();
+  const legacy = page.getByRole("article", { name: "곰인형 선우", exact: true });
+  const badge = legacy.getByRole("button", { name: /옛날 결과 안내/ });
+  await badge.click();
+  const dialog = page.getByRole("dialog", { name: "초기부터 패킷과 함께해주셨군요!" });
+  await expect(dialog).toBeVisible();
+  await expect(page).toHaveURL("/my/results");
+  await expect(dialog).toContainText("프리미엄 분석 등 일부 기능은 이용하기 어려워요.");
+  await expect(dialog.getByRole("button", { name: "닫기", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "닫기", exact: true }).click();
+  await expect(dialog).toHaveCount(0);
+  await legacy.getByRole("button", { name: /대표로 설정/ }).click();
+  const primaryBadge = page.getByRole("button", { name: /선우 옛날 결과 안내/ });
+  await expect(primaryBadge).toBeVisible();
+  await primaryBadge.click();
+  await dialog.getByRole("button", { name: "새 테스트 시작하기", exact: true }).click();
+  await expect(page).toHaveURL("/?start=1");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "SKIP", exact: true })).toBeVisible();
+});

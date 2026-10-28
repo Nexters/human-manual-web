@@ -40,6 +40,7 @@ function findResult(code: string): AccountResult | null {
     character_id: person.character_id,
     image_url: person.image_url,
     created_at: CREATED_AT,
+    is_legacy: code === "STORYFRI",
   };
 }
 function respond(config: InternalAxiosRequestConfig, status: number, data: unknown) {

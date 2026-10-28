@@ -71,6 +71,7 @@ function useArchive(tab: Tab) {
         noun: r.noun,
         image: r.image_url,
         date: formatShortDate(r.created_at),
+        isLegacy: r.is_legacy,
       }))
     : local.data
       ? [

@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigationType } from "react-router-dom";
-import BusinessFooter from "@/components/shared/BusinessFooter";
 import { authMockEnabled } from "@/lib/authMockMode";
 import SiteHeader from "@/components/home/SiteHeader";
 import { useAuth } from "@/hooks/useAuth";
@@ -43,7 +42,6 @@ export default function AppLayout() {
       <main className="flex-1">
         <Outlet />
       </main>
-      {location.pathname === "/" && <BusinessFooter />}
     </div>
   );
 }

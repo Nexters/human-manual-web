@@ -10,6 +10,7 @@ export type AccountResult = {
   character_id: string;
   image_url: string;
   created_at: string;
+  is_legacy?: boolean;
 };
 export type AccountCompatibility = {
   mine: AccountResult;

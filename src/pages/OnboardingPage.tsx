@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import HomeScreen from "@/components/home/HomeScreen";
+import BusinessFooter from "@/components/shared/BusinessFooter";
 import { splashImages } from "@/constants/splashAssets";
 import NameInputStep from "@/components/onboarding/NameInputStep";
 import IntroStep from "@/components/onboarding/IntroStep";
@@ -240,12 +241,15 @@ export default function OnboardingPage() {
 
   if (step === "splash-cta") {
     return (
-      <HomeScreen
-        participantCount={participantCount}
-        onStart={() => handleStartTest("일반")}
-        onCheckCompatibility={() => navigate("/my/compatibilities")}
-        onOpenMyResult={() => navigate("/my/results")}
-      />
+      <>
+        <HomeScreen
+          participantCount={participantCount}
+          onStart={() => handleStartTest("일반")}
+          onCheckCompatibility={() => navigate("/my/compatibilities")}
+          onOpenMyResult={() => navigate("/my/results")}
+        />
+        <BusinessFooter />
+      </>
     );
   }
 

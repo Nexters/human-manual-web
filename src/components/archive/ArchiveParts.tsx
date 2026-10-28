@@ -1,6 +1,8 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { useAssessmentResult } from "@/hooks/useAssessment";
+import { useNavigate } from "react-router-dom";
+import { useModal } from "@/hooks/useModal";
 
 export type ToyResult = {
   code: string;
@@ -9,6 +11,7 @@ export type ToyResult = {
   noun: string;
   image: string;
   date?: string;
+  isLegacy?: boolean;
 };
 
 export function ChevronDown({ className }: { className?: string }) {
@@ -165,6 +168,26 @@ export function ArchiveCard({
   actions?: ReactNode;
 }) {
   const detail = useAssessmentResult(result.code);
+  const navigate = useNavigate();
+  const { open, close } = useModal();
+  const showLegacyNotice = () =>
+    open({
+      title: "초기부터 패킷과 함께해주셨군요!",
+      contents: (
+        <div className="text-center">
+          <Desc>
+            패킷 업데이트로 옛날 결과는 기본 결과만 확인할 수 있고, 프리미엄 분석 등 일부 기능은
+            이용하기 어려워요.
+          </Desc>
+          <Desc className="mt-3">모든 기능을 이용하려면 새 테스트를 한 번 진행해주세요.</Desc>
+        </div>
+      ),
+      confirmLabel: "새 테스트 시작하기",
+      onConfirm: () => {
+        close();
+        navigate("/?start=1");
+      },
+    });
   return (
     <article
       aria-label={`${result.noun} ${result.nickname}`}
@@ -213,7 +236,23 @@ export function ArchiveCard({
         </span>
         <Arrow className="text-gray-06 shrink-0 text-[27px]" />
       </button>
-      {actions && <div className="flex items-center justify-end gap-2 px-4 pb-3">{actions}</div>}
+      {(result.isLegacy === true || actions) && (
+        <div className="flex flex-wrap items-center justify-end gap-2 px-4 pb-3">
+          {result.isLegacy === true && (
+            <button
+              type="button"
+              onClick={showLegacyNotice}
+              aria-label={`${result.noun} ${result.nickname} 옛날 결과 안내`}
+              aria-haspopup="dialog"
+              className="mr-auto flex min-h-10 cursor-pointer items-center gap-1.5 rounded-full bg-amber-50 px-3 text-[12px] font-medium text-amber-800 focus-visible:outline-2 focus-visible:outline-amber-700"
+            >
+              <span aria-hidden="true">ⓘ</span>
+              옛날 결과
+            </button>
+          )}
+          {actions}
+        </div>
+      )}
     </article>
   );
 }
