@@ -65,6 +65,21 @@ test("저장된 내 결과로 초대 링크의 케미를 자동 조회하고 다
   await expect(page.getByRole("textbox")).toHaveCount(0);
 });
 
+test("케미 페이지의 두 결과지는 초대 문맥 없이 각자의 기본 결과지로 이동한다", async ({ page }) => {
+  await seedMine(page);
+  const compatibilityUrl = "/compatibility?mine=STORYMIN&friend=STORYFRI";
+
+  await page.goto(compatibilityUrl);
+  const resultButtons = page.getByRole("button", { name: "결과지 보기", exact: true });
+  await expect(resultButtons).toHaveCount(2);
+  await resultButtons.nth(0).click();
+  await expect(page).toHaveURL("/result/STORYMIN");
+
+  await page.goto(compatibilityUrl);
+  await page.getByRole("button", { name: "결과지 보기", exact: true }).nth(1).click();
+  await expect(page).toHaveURL("/result/STORYFRI");
+});
+
 test("보관함과 구매 결과에는 코드가 노출되지 않는다", async ({ page }) => {
   await seedMine(page);
   await page.addInitScript(() => {

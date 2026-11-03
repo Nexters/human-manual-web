@@ -19,7 +19,6 @@ import { useFontsReady } from "@/hooks/useFontsReady";
 import { share } from "@/utils/share";
 import { takeResultCode } from "@/lib/resultCode";
 import { usePrimaryResult } from "@/hooks/usePrimaryResult";
-import { appendFriendParam } from "@/lib/friendParam";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
 import { PRETENDARD_FONT_SPEC } from "@/constants/fonts";
@@ -179,7 +178,7 @@ export default function CompatibilityPage() {
             noun={data.mine.noun}
             image={data.mine.image_url}
             imageAlt={`${data.mine.noun} 캐릭터`}
-            onViewResult={() => navigate(appendFriendParam(`/result/${mine}`, friend))}
+            onViewResult={() => navigate(`/result/${mine}`)}
           />
           <div className="flex h-[134px] items-center justify-center">
             <Typography variant="h2" className="text-gray-03">
@@ -191,7 +190,7 @@ export default function CompatibilityPage() {
             noun={data.friend.noun}
             image={data.friend.image_url}
             imageAlt={`${data.friend.noun} 캐릭터`}
-            onViewResult={() => navigate(appendFriendParam(`/result/${friend}`, mine))}
+            onViewResult={() => navigate(`/result/${friend}`)}
           />
         </div>
 
