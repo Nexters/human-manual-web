@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Typography from "@/components/shared/Typography";
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
 import { cn } from "@/lib/cn";
@@ -10,6 +11,7 @@ type DetailAccordionItemProps = {
   description: string;
   isOpen: boolean;
   onToggle: () => void;
+  children?: ReactNode;
 };
 
 // ------- 우리 사이 더 자세히 보기, 아코디언 한 칸 ------
@@ -21,6 +23,7 @@ export default function DetailAccordionItem({
   description,
   isOpen,
   onToggle,
+  children,
 }: DetailAccordionItemProps) {
   return (
     <div className="rounded-[10px] bg-white">
@@ -49,6 +52,7 @@ export default function DetailAccordionItem({
           <Typography variant="me3" className="text-gray-07 break-keep">
             {description}
           </Typography>
+          {children}
         </div>
       )}
     </div>

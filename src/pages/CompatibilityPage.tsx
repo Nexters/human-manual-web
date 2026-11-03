@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import TopBar from "@/components/shared/TopBar";
 import InfoCard from "@/components/shared/InfoCard";
@@ -48,9 +48,10 @@ export default function CompatibilityPage() {
   const { data: myResult, isError: myResultError } = useAssessmentResult(savedResultCode ?? "");
   const hasMyCode = Boolean(savedResultCode) && !myResultError;
   const fontsReady = useFontsReady(COMPATIBILITY_PAGE_FONT_SPECS);
+  const relationshipGuideRef = useRef<HTMLDivElement>(null);
 
-  // 아코디언은 각 칸이 독립적으로 열리고 닫힌다.
-  const [openKeys, setOpenKeys] = useState<Set<DetailKey>>(new Set());
+  // 상세 내용을 바로 읽을 수 있도록 모두 펼치고, 각 칸은 독립적으로 접을 수 있다.
+  const [openKeys, setOpenKeys] = useState<Set<DetailKey>>(() => new Set(DETAIL_ORDER));
   const toggleDetail = (key: DetailKey) => {
     setOpenKeys((prev) => {
       const next = new Set(prev);
@@ -208,7 +209,7 @@ export default function CompatibilityPage() {
               우리 사이 더 자세히 보기
             </Typography>
             <Typography variant="me2" className="text-gray-07">
-              카드를 열어 우리 사이를 자세히 살펴봐요
+              우리 사이를 자세히 살펴봐요
             </Typography>
           </div>
 
@@ -225,7 +226,33 @@ export default function CompatibilityPage() {
                   description={detail.description}
                   isOpen={openKeys.has(key)}
                   onToggle={() => toggleDetail(key)}
-                />
+                >
+                  {key === "conflict" && (
+                    <div className="border-gray-02 mt-4 border-t pt-4">
+                      <Typography variant="sb4" className="text-gray-09 break-keep">
+                        우리 사이에 서운함은 왜 생길까요?
+                      </Typography>
+                      <div aria-hidden="true" className="my-3 flex flex-col gap-2 blur-[4px]">
+                        <div className="bg-gray-03 h-3 w-4/5 rounded" />
+                        <div className="bg-gray-03 h-3 w-3/5 rounded" />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          relationshipGuideRef.current?.scrollIntoView({
+                            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                              ? "instant"
+                              : "smooth",
+                            block: "start",
+                          })
+                        }
+                        className="text-sub-4 rounded py-2 text-left text-[14px] font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+                      >
+                        우리만의 화해법 보러가기
+                      </button>
+                    </div>
+                  )}
+                </DetailAccordionItem>
               );
             })}
           </div>
@@ -258,12 +285,14 @@ export default function CompatibilityPage() {
           description={data.relationship_tip.description}
         />
 
-        <RelationshipGuidePurchaseCard
-          mineNickname={data.mine.nickname}
-          friendNickname={data.friend.nickname}
-          hasPurchased={hasPurchasedRelationshipReport}
-          onPurchase={handleRelationshipGuideAction}
-        />
+        <div ref={relationshipGuideRef} className="scroll-mt-20">
+          <RelationshipGuidePurchaseCard
+            mineNickname={data.mine.nickname}
+            friendNickname={data.friend.nickname}
+            hasPurchased={hasPurchasedRelationshipReport}
+            onPurchase={handleRelationshipGuideAction}
+          />
+        </div>
       </div>
 
       {/* ------- 다른 친구랑 케미 보기 ------ */}
