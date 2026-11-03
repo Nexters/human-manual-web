@@ -33,6 +33,7 @@ import { useMyResultStore } from "@/stores/myResultStore";
 import { findFirstIncompleteOrder, useTestStore } from "@/stores/testStore";
 import { trackEvent } from "@/lib/google-analytics";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
+import { HOME_NAVIGATION_EVENT } from "@/lib/homeNavigation";
 import notebookBg from "@/assets/img/notebook-bg.jpg";
 import partIntroBg from "@/assets/img/part-intro-bg.jpg";
 import characterNotebook from "@/assets/gif/character-notebook.gif";
@@ -85,6 +86,7 @@ export default function OnboardingPage() {
 
   const [step, setStep] = useState<Step>("splash-cta");
   const [name, setName] = useState(nickname);
+  const startTestConsumed = useRef(false);
 
   // 친구 링크로 들어왔는데 내 코드가 이미 이 브라우저에 있으면, 초대 화면을 거치지 않고
   // 둘의 케미를 바로 연다. 자기 자신과의 케미는 성립하지 않으므로 같은 코드는 제외한다.
@@ -158,8 +160,16 @@ export default function OnboardingPage() {
   // 앱 밖(친구 링크를 열어준 카톡 등)으로 바로 나가버린다.
   useEffect(() => {
     const handlePopState = () => setStep("splash-cta");
+    const handleHomeNavigation = () => {
+      setStep("splash-cta");
+      startTestConsumed.current = false;
+    };
     window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+    window.addEventListener(HOME_NAVIGATION_EVENT, handleHomeNavigation);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener(HOME_NAVIGATION_EVENT, handleHomeNavigation);
+    };
   }, []);
 
   // 로컬스토리지에 남아있는 이전 진행 상황을 지우고 새 테스트를 시작한다.
@@ -180,7 +190,6 @@ export default function OnboardingPage() {
   );
 
   // 신호는 한 번만 소비한다. handleStartTest 가 히스토리를 쌓으므로 재실행되면 안 된다.
-  const startTestConsumed = useRef(false);
   useEffect(() => {
     if (!startTestRequested || startTestConsumed.current) return;
     startTestConsumed.current = true;

@@ -72,3 +72,31 @@ test("결과 화면을 스크롤해도 메뉴와 뒤로가기 버튼이 겹치�
   await page.keyboard.press("Escape");
   await expect(page.getByRole("navigation", { name: "전체 메뉴", exact: true })).toBeHidden();
 });
+
+test("테스트 진행 중 로고와 메뉴의 홈 링크로 첫 화면에 돌아간다", async ({ page }) => {
+  await page.goto("/?start=1");
+  await expect(
+    page.getByText("안녕하세요! 저는 당신만의 장난감을", { exact: false }),
+  ).toBeVisible();
+
+  await page.getByRole("link", { name: "Pakit 홈", exact: true }).first().click();
+  await expect(page).toHaveURL("/");
+  await expect(page.getByRole("button", { name: "테스트 시작하기", exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "메뉴 열기", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "전체 메뉴", exact: true })
+    .getByRole("link", { name: "테스트 시작하기", exact: true })
+    .click();
+  await expect(
+    page.getByText("안녕하세요! 저는 당신만의 장난감을", { exact: false }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "메뉴 열기", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "전체 메뉴", exact: true })
+    .getByRole("link", { name: "홈", exact: true })
+    .click();
+  await expect(page).toHaveURL("/");
+  await expect(page.getByRole("button", { name: "테스트 시작하기", exact: true })).toBeVisible();
+});

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import AccountHeader from "@/components/auth/AccountHeader";
 import logo from "@/assets/img/logo.png";
+import { notifyHomeNavigation } from "@/lib/homeNavigation";
 import "./home.css";
 
 export default function SiteHeader({ account = false }: { account?: boolean }) {
@@ -48,7 +49,7 @@ export default function SiteHeader({ account = false }: { account?: boolean }) {
         <AccountHeader menu={menuButton} showAuth={false} />
       ) : (
         <header className="pakit-header">
-          <Link to="/" aria-label="Pakit 홈">
+          <Link to="/" aria-label="Pakit 홈" onClick={notifyHomeNavigation}>
             <img src={logo} alt="Pakit" />
           </Link>
           {menuButton}
@@ -64,7 +65,16 @@ export default function SiteHeader({ account = false }: { account?: boolean }) {
       >
         <div className="pakit-drawer-inner">
           <div className="pakit-drawer-head">
-            <img src={logo} alt="Pakit" />
+            <Link
+              to="/"
+              aria-label="Pakit 홈"
+              onClick={() => {
+                notifyHomeNavigation();
+                setVisible(false);
+              }}
+            >
+              <img src={logo} alt="Pakit" />
+            </Link>
             <button className="pakit-icon" aria-label="메뉴 닫기" onClick={() => setVisible(false)}>
               <svg
                 width="24"
@@ -83,7 +93,10 @@ export default function SiteHeader({ account = false }: { account?: boolean }) {
                 key={to}
                 to={to}
                 aria-current={location.pathname === to ? "page" : undefined}
-                onClick={() => setVisible(false)}
+                onClick={() => {
+                  if (to === "/") notifyHomeNavigation();
+                  setVisible(false);
+                }}
               >
                 {label}
               </Link>
