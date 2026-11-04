@@ -46,11 +46,13 @@ export default function ResultPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const auth = useAuth();
-  // 결과지 주인과 초대한 사람이 같으면 친구 결과지를 구경하는 초대 유입이다.
   const urlFriendCode = useFriendCode();
   const friendCode = urlFriendCode === id ? null : urlFriendCode;
   const { code: myResultCode, isPending: primaryPending } = usePrimaryResult();
-  const viewingInviter = Boolean(urlFriendCode === id && myResultCode !== id);
+  // 로그인 여부와 관계없이 계정 대표 결과 또는 로컬 결과가 현재 결과와 다르면
+  // 친구의 결과지를 구경하는 중이다. 페이지 주인은 URL의 결과로 유지하고,
+  // 내 결과는 케미 상대 역할에만 사용한다.
+  const viewingSomeoneElse = Boolean(id && myResultCode !== id);
   const { data: viewerResult, isLoading: viewerLoading } = useAssessmentResult(myResultCode ?? "");
 
   const { data, isPending, isError, refetch } = useAssessmentResult(id ?? "");
@@ -73,7 +75,7 @@ export default function ResultPage() {
     trackEvent({ ...GA_EVENTS.RESULT.VIEW, label: data.overview.noun });
   }, [data, id]);
 
-  if (isPending || !fontsReady) {
+  if (isPending || !fontsReady || primaryPending) {
     return <ResultPageSkeleton />;
   }
 
@@ -102,23 +104,24 @@ export default function ResultPage() {
   // 남의 캐릭터에 내 이름이 붙는다.
   const resultNickname = data.participant.nickname;
   const heroTitle = resultNickname ? `${overview.noun} ${resultNickname}` : overview.noun;
-  const friendNickname = viewingInviter
+  const friendNickname = viewingSomeoneElse
     ? viewerResult?.participant.nickname
     : friendCode
       ? friendData?.participant.nickname
       : undefined;
-  const friendImageUrl = viewingInviter
+  const friendImageUrl = viewingSomeoneElse
     ? viewerResult?.overview.image_url
     : friendCode
       ? friendData?.overview.image_url
       : undefined;
-  const chemiMine = viewingInviter || (friendCode && myResultCode) ? myResultCode : id;
-  const chemiFriend = viewingInviter ? id : friendCode;
+  const chemiMine = viewingSomeoneElse ? myResultCode : id;
+  const chemiFriend = viewingSomeoneElse ? id : friendCode;
 
-  const inviteResult = auth.data ? viewerResult : undefined;
+  const inviteResult = viewerResult;
   const inviteResultName = inviteResult?.overview.result_name ?? overview.result_name;
-  // 새 케미 초대는 계정의 대표 결과를 사용한다. 결과지 자체의 공유는 현재 결과를 유지한다.
-  const inviteCode = auth.data ? (myResultCode ?? id) : id;
+  // 새 케미 초대는 로그인 여부와 관계없이 내 대표 결과를 사용한다.
+  // 친구 결과지를 보는 중에는 초대 UI 대신 그 친구와 내 케미를 안내한다.
+  const inviteCode = myResultCode ?? id;
 
   // 링크에 내 결과 코드를 담아 보내면, 받은 친구는 코드를 입력하지 않아도 케미를 볼 수 있다.
   const chemiTestUrl = (() => {
@@ -306,19 +309,13 @@ export default function ResultPage() {
 
       {/* ------- 결과지 공유 UI ------ */}
       <ShareResult
-        nickname={
-          viewingInviter ? resultNickname : (inviteResult?.participant.nickname ?? resultNickname)
-        }
-        imageUrl={
-          viewingInviter
-            ? overview.image_url
-            : (inviteResult?.overview.image_url ?? overview.image_url)
-        }
+        nickname={resultNickname}
+        imageUrl={overview.image_url}
         friendNickname={friendNickname}
         friendImageUrl={friendImageUrl}
         isCheckingChemi={checkingChemi || viewerLoading || primaryPending}
         invitation={
-          viewingInviter
+          viewingSomeoneElse
             ? {
                 hasMyResult: Boolean(viewerResult),
                 onStart: openInvitedChemiOptions,

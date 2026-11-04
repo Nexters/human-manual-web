@@ -24,6 +24,13 @@ async function seedMine(page) {
   });
 }
 
+async function seedLoggedInMine(page) {
+  await page.addInitScript(() => {
+    sessionStorage.setItem("pakit-auth-mock-session", "1");
+    localStorage.setItem("pakit-auth-mock-linked", JSON.stringify(["STORYMIN"]));
+  });
+}
+
 test("결과지 코드 UI를 제거해도 결과 공유와 케미 초대 링크는 복사한다", async ({ page }) => {
   await seedMine(page);
   await page.goto("/result/STORYMIN");
@@ -80,6 +87,28 @@ test("케미 페이지의 두 결과지는 초대 문맥 없이 각자의 기본
   await expect(page).toHaveURL("/result/STORYFRI");
 });
 
+for (const viewer of [
+  { label: "로컬 결과", seed: seedMine },
+  { label: "로그인 대표 결과", seed: seedLoggedInMine },
+]) {
+  test(`${viewer.label}가 있으면 친구 결과지는 친구 기준으로 내 결과와 케미를 연결한다`, async ({
+    page,
+  }) => {
+    await viewer.seed(page);
+    await page.goto("/result/STORYFRI");
+
+    await expect(page.getByText("선우님", { exact: true }).first()).toBeVisible();
+    await expect(page.getByText("지은님", { exact: true }).first()).toBeVisible();
+    await page.getByRole("button", { name: "↗ 이 결과지 공유", exact: true }).click();
+    await expect
+      .poll(() => page.evaluate(() => window.copiedText))
+      .toBe("http://127.0.0.1:4173/result/STORYFRI");
+
+    await page.getByRole("button", { name: "선우님과 내 케미 보기", exact: true }).click();
+    await expect(page).toHaveURL("/compatibility?mine=STORYMIN&friend=STORYFRI");
+  });
+}
+
 test("보관함과 구매 결과에는 코드가 노출되지 않는다", async ({ page }) => {
   await seedMine(page);
   await page.addInitScript(() => {
@@ -116,7 +145,7 @@ test("초대 미리보기에서 친구 결과지를 구경한 뒤 테스트해�
   await expect(
     page.getByRole("button", { name: "친구에게 케미 테스트 공유하기", exact: true }),
   ).toHaveCount(0);
-  await expect(page.getByRole("button", { name: /결과지 공유/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "↗ 이 결과지 공유", exact: true })).toBeVisible();
   await start.click();
   await expect(page.getByRole("button", { name: "카카오 로그인", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "새로 테스트하기", exact: true }).click();
@@ -124,10 +153,22 @@ test("초대 미리보기에서 친구 결과지를 구경한 뒤 테스트해�
   await expect(page.getByText("선우님이 함께 케미를 보고 싶어 해요")).toHaveCount(0);
 });
 
+test("내 결과 없이 기본 친구 결과지를 열면 친구 기준의 케미와 결과 공유를 안내한다", async ({
+  page,
+}) => {
+  await page.goto("/result/STORYFRI");
+  await expect(page.getByText("선우님과 나의 케미를 알아볼까요?", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "선우님과 케미 보기", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "↗ 이 결과지 공유", exact: true }).click();
+  await expect
+    .poll(() => page.evaluate(() => window.copiedText))
+    .toBe("http://127.0.0.1:4173/result/STORYFRI");
+});
+
 test("초대한 친구의 결과지에서는 저장된 내 결과와 친구의 케미를 조회한다", async ({ page }) => {
   await seedMine(page);
   await page.goto("/result/STORYFRI?friend=STORYFRI");
-  await page.getByRole("button", { name: "선우님과 케미 보기", exact: true }).click();
+  await page.getByRole("button", { name: "선우님과 내 케미 보기", exact: true }).click();
   await expect(page).toHaveURL("/compatibility?mine=STORYMIN&friend=STORYFRI");
 });
 
@@ -147,8 +188,22 @@ test("내 초대 링크로 내 결과지를 보면 자기 자신과의 케미 �
 test("초대받아 테스트를 마친 내 결과지에서는 기존 케미 확인을 유지한다", async ({ page }) => {
   await seedMine(page);
   await page.goto("/result/STORYMIN?friend=STORYFRI");
+  await expect(page.getByText("선우님과 나의 케미를 확인해볼까요?", { exact: true })).toBeVisible();
+  await expect(page.getByText("두 사람의 결과가 모두 준비됐어요.", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "선우님과 케미 바로 확인", exact: true }).click();
   await expect(page).toHaveURL("/compatibility?mine=STORYMIN&friend=STORYFRI");
+});
+
+test("초대받아 테스트를 마친 결과지에서 다시 테스트하면 초대를 유지하고 새 테스트를 시작한다", async ({
+  page,
+}) => {
+  await seedMine(page);
+  await page.goto("/result/STORYMIN?friend=STORYFRI");
+  await page.getByRole("button", { name: "테스트 하기", exact: true }).click();
+  await expect(page).toHaveURL("/?start=1&friend=STORYFRI");
+  await expect(
+    page.getByText("안녕하세요! 저는 당신만의 장난감을", { exact: false }),
+  ).toBeVisible();
 });
 
 test("이미 테스트했다면 로그인 후 다른 기기에 보관한 결과로 바로 케미를 연다", async ({ page }) => {
@@ -192,7 +247,7 @@ test("친구 결과지의 케미 보기 팝업에서 로그인해 보관한 결�
     localStorage.setItem("pakit-auth-mock-linked", JSON.stringify(["STORYMIN"]));
   });
   await page.goto("/result/STORYFRI?friend=STORYFRI");
-  await page.getByRole("button", { name: "선우님과 케미 보기", exact: true }).click();
+  await page.getByRole("button", { name: "선우님과 내 케미 보기", exact: true }).click();
   await page.getByRole("button", { name: "카카오 로그인", exact: true }).click();
   await expect(page).toHaveURL("/compatibility?mine=STORYMIN&friend=STORYFRI");
 });

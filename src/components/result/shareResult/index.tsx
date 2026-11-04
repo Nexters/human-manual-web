@@ -89,7 +89,7 @@ export default function ShareResult({
   const handleRetry = () => {
     trackEvent(GA_EVENTS.RESULT.RETRY);
     resetTest();
-    navigate("/");
+    navigate("/?start=1");
   };
 
   return (
@@ -99,14 +99,18 @@ export default function ShareResult({
         title={
           invitation
             ? `${ownerLabel}과 나의 케미를 알아볼까요?`
-            : "친구와의 진짜 케미를 알아볼까요?"
+            : hasFriend && friendNickname
+              ? `${friendNickname}님과 나의 케미를 확인해볼까요?`
+              : "친구와의 진짜 케미를 알아볼까요?"
         }
         subtitle={
           invitation
             ? invitation.hasMyResult
               ? "내 결과로 둘의 케미를 바로 확인해보세요."
               : "새로 테스트하거나 보관된 결과로 케미를 확인해보세요."
-            : "친구를 초대해 둘의 케미를 확인해보세요."
+            : hasFriend
+              ? "두 사람의 결과가 모두 준비됐어요."
+              : "친구를 초대해 둘의 케미를 확인해보세요."
         }
       />
 
@@ -160,7 +164,7 @@ export default function ShareResult({
               <Spinner className="size-6" />
             ) : (
               <Typography variant="h2" as="span">
-                {ownerLabel}과 케미 보기
+                {ownerLabel}과{invitation.hasMyResult ? " 내" : ""} 케미 보기
               </Typography>
             )}
           </button>
@@ -192,7 +196,17 @@ export default function ShareResult({
         )}
 
         {/* Figma 폭 비율 129:210 ≈ 37:63 */}
-        {!invitation && (
+        {invitation ? (
+          <button
+            type="button"
+            onClick={handleCopyLink}
+            className="border-main-light text-main flex h-[54px] w-full items-center justify-center rounded-[10px] border-[1.5px] bg-white transition-opacity hover:opacity-90 active:opacity-80"
+          >
+            <Typography variant="h2" as="span">
+              ↗ 이 결과지 공유
+            </Typography>
+          </button>
+        ) : (
           <div className="flex w-full gap-3">
             <button
               type="button"

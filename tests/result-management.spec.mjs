@@ -61,7 +61,7 @@ test("대표 결과를 선택하면 홈·케미 기준으로 유지되고 삭제
   await expect(page.getByText("결과를 불러오지 못했어요")).toHaveCount(0);
 });
 
-test("대표 결과는 오래된 브라우저 값보다 우선하며 초대·추가 케미에도 동일하게 적용된다", async ({
+test("대표 결과는 오래된 브라우저 값보다 우선하며 친구 결과의 케미 상대가 된다", async ({
   page,
 }) => {
   await page.addInitScript(() => {
@@ -92,13 +92,15 @@ test("대표 결과는 오래된 브라우저 값보다 우선하며 초대·추
   await page.getByRole("button", { name: "새 친구와 케미 보기", exact: true }).click();
   await expect.poll(() => page.evaluate(() => window.copiedText)).toContain("friend=STORYFRI");
   await page.goto("/result/STORYMIN");
-  await page.getByRole("button", { name: "친구에게 케미 테스트 공유하기", exact: true }).click();
-  await expect(page.getByRole("textbox", { name: "친구에게 보낼 문구" })).toHaveValue(
-    /friend=STORYFRI/,
-  );
-  await page.getByRole("button", { name: "링크만 복사하기", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "지은님과 내 케미 보기", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "↗ 이 결과지 공유", exact: true }).click();
+  await expect
+    .poll(() => page.evaluate(() => window.copiedText))
+    .toBe("http://127.0.0.1:4173/result/STORYMIN");
   await page.goto("/result/STORYMIN?friend=STORYMIN");
-  await page.getByRole("button", { name: "지은님과 케미 보기", exact: true }).click();
+  await page.getByRole("button", { name: "지은님과 내 케미 보기", exact: true }).click();
   await expect(page).toHaveURL("/compatibility?mine=STORYFRI&friend=STORYMIN");
 });
 

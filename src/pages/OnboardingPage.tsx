@@ -96,7 +96,7 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     const pair = `${savedResultCode}:${friendCode}`;
-    if (!canAutoChemi || autoChemiTried.current === pair) return;
+    if (startTestRequested || !canAutoChemi || autoChemiTried.current === pair) return;
     autoChemiTried.current = pair;
 
     const mine = savedResultCode as string;
@@ -131,6 +131,7 @@ export default function OnboardingPage() {
     navigateToCompatibility,
     rememberResultCode,
     autoChemiFailed,
+    startTestRequested,
   ]);
 
   const handleRestoreResult = () => {
@@ -211,8 +212,9 @@ export default function OnboardingPage() {
     // 자동 케미로 넘어가는 중이면 초대 화면이 잠깐 보였다 사라지는 걸 막는다.
     // 도착지가 케미 페이지이므로 그 스켈레톤을 그대로 보여준다.
     if (
-      (canAutoChemi && !autoChemiFailed) ||
-      (!savedResultCode && (auth.isPending || accountResults.isLoading))
+      !startTestRequested &&
+      ((canAutoChemi && !autoChemiFailed) ||
+        (!savedResultCode && (auth.isPending || accountResults.isLoading)))
     ) {
       return <CompatibilityPageSkeleton />;
     }
