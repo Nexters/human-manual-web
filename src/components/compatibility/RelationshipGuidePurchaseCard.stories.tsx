@@ -11,6 +11,8 @@ const meta = {
     mineNickname: "지은",
     friendNickname: "선우",
     onPurchase: () => undefined,
+    onRetestMine: () => undefined,
+    onRequestFriendRetest: () => undefined,
   },
   decorators: [
     (Story) => (
@@ -30,5 +32,24 @@ export const LongNicknames: Story = {
   args: {
     mineNickname: "사랑스러운테디베어",
     friendNickname: "빙글빙글팽이대장",
+  },
+};
+
+export const MineLegacy: Story = {
+  args: {
+    mineIsLegacy: true,
+  },
+};
+
+export const FriendLegacy: Story = {
+  args: {
+    friendIsLegacy: true,
+  },
+};
+
+export const BothLegacy: Story = {
+  args: {
+    mineIsLegacy: true,
+    friendIsLegacy: true,
   },
 };

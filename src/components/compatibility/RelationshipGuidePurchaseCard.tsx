@@ -4,7 +4,11 @@ type RelationshipGuidePurchaseCardProps = {
   mineNickname: string;
   friendNickname: string;
   hasPurchased?: boolean;
+  mineIsLegacy?: boolean;
+  friendIsLegacy?: boolean;
   onPurchase: () => void;
+  onRetestMine: () => void;
+  onRequestFriendRetest: () => void;
 };
 
 const lockedTopics = [
@@ -83,7 +87,11 @@ export default function RelationshipGuidePurchaseCard({
   mineNickname,
   friendNickname,
   hasPurchased = false,
+  mineIsLegacy = false,
+  friendIsLegacy = false,
   onPurchase,
+  onRetestMine,
+  onRequestFriendRetest,
 }: RelationshipGuidePurchaseCardProps) {
   if (hasPurchased) {
     return (
@@ -110,6 +118,83 @@ export default function RelationshipGuidePurchaseCard({
             맞춤 관계 설명서 바로 보기
           </Typography>
         </button>
+      </section>
+    );
+  }
+
+  if (mineIsLegacy || friendIsLegacy) {
+    const bothNeedRetest = mineIsLegacy && friendIsLegacy;
+    const title = bothNeedRetest
+      ? "맞춤 설명서에는 두 사람의 상세 답변이 필요해요"
+      : mineIsLegacy
+        ? `맞춤 설명서에는 ${mineNickname}님의 상세 답변이 필요해요`
+        : `맞춤 설명서에는 ${friendNickname}님의 상세 답변이 필요해요`;
+    const description = bothNeedRetest
+      ? "지금 본 무료 케미는 요약 결과로 볼 수 있지만, 맞춤 설명서는 두 사람이 어떤 답을 골랐는지까지 함께 분석해요. 두 사람의 예전 결과에는 그 답변이 남아 있지 않아요."
+      : mineIsLegacy
+        ? `지금 본 무료 케미는 요약 결과로 볼 수 있지만, 맞춤 설명서는 어떤 답을 골랐는지까지 함께 분석해요. ${mineNickname}님의 예전 결과에는 그 답변이 남아 있지 않아요.`
+        : `지금 본 무료 케미는 요약 결과로 볼 수 있지만, 맞춤 설명서는 어떤 답을 골랐는지까지 함께 분석해요. ${friendNickname}님의 예전 결과에는 그 답변이 남아 있지 않아요.`;
+    const nextStep = bothNeedRetest
+      ? `먼저 ${mineNickname}님이 3분 테스트를 완료한 뒤 ${friendNickname}님에게 요청할 수 있어요.`
+      : mineIsLegacy
+        ? `${friendNickname}님은 다시 하지 않아도 돼요. ${mineNickname}님만 3분 테스트를 하면 바로 이어서 볼 수 있어요.`
+        : `${mineNickname}님은 다시 하지 않아도 돼요. ${friendNickname}님만 3분 테스트를 하면 바로 이어서 볼 수 있어요.`;
+    const actionLabel = mineIsLegacy
+      ? bothNeedRetest
+        ? "내 3분 테스트 먼저 하기"
+        : "내 3분 테스트 다시 하기"
+      : `${friendNickname}님에게 3분 테스트 부탁하기`;
+    const onAction = mineIsLegacy ? onRetestMine : onRequestFriendRetest;
+
+    return (
+      <section className="border-point overflow-hidden rounded-[24px] border bg-gradient-to-b from-white to-[#fff9fc] px-5 py-7">
+        <div className="bg-sub-5 text-sub-4 inline-flex max-w-full rounded-full px-3 py-2 text-[12px] leading-none font-semibold tracking-[-0.48px]">
+          <span className="truncate">
+            ✦ {mineNickname}님과 {friendNickname}님의 관계 사용법
+          </span>
+        </div>
+
+        <div className="mt-5 rounded-[18px] border border-[#f1e5ec] bg-white px-4 py-5">
+          <Typography variant="h2" className="text-gray-09 break-keep">
+            {title}
+          </Typography>
+          <Typography variant="me3" className="mt-2 text-gray-06 break-keep">
+            {description}
+          </Typography>
+
+          <div className="mt-4 flex flex-col gap-2 rounded-[14px] bg-[#fff7fb] px-3.5 py-3">
+            <div className="flex items-start gap-2">
+              <span aria-hidden="true" className="text-sub-4 mt-px text-[14px] font-bold">
+                ✓
+              </span>
+              <Typography variant="me4" className="text-gray-07 break-keep">
+                지금 본 무료 케미는 그대로 유지돼요.
+              </Typography>
+            </div>
+            <div className="flex items-start gap-2">
+              <span aria-hidden="true" className="text-sub-4 mt-px text-[14px] font-bold">
+                →
+              </span>
+              <Typography variant="me4" className="text-gray-07 break-keep">
+                {nextStep}
+              </Typography>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={onAction}
+          className="bg-sub-4 mt-5 flex h-[58px] w-full items-center justify-center rounded-[14px] px-3 text-white shadow-[0_10px_22px_rgba(255,58,180,0.18)] transition-opacity hover:opacity-90 active:opacity-80"
+        >
+          <Typography variant="h2" as="span" className="break-keep">
+            {actionLabel}
+          </Typography>
+        </button>
+
+        <Typography variant="me4" className="mt-3 text-center text-gray-04 break-keep">
+          새 결과가 생기면 이 케미에서 바로 설명서를 만들 수 있어요
+        </Typography>
       </section>
     );
   }

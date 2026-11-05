@@ -3,6 +3,7 @@ export interface CompatibilityPersonOutput {
   noun: string;
   character_id: string;
   image_url: string;
+  is_legacy: boolean;
 }
 
 export interface SynergyOutput {

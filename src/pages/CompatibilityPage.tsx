@@ -16,7 +16,7 @@ import { useCompatibility } from "@/hooks/useCompatibility";
 import { useAssessmentResult } from "@/hooks/useAssessment";
 import { useToast } from "@/hooks/useToast";
 import { useFontsReady } from "@/hooks/useFontsReady";
-import { share } from "@/utils/share";
+import { canUseSystemShare, share } from "@/utils/share";
 import { takeResultCode } from "@/lib/resultCode";
 import { usePrimaryResult } from "@/hooks/usePrimaryResult";
 import { trackEvent } from "@/lib/google-analytics";
@@ -133,6 +133,22 @@ export default function CompatibilityPage() {
       text: data.description,
       url: window.location.href,
     });
+  };
+
+  const handleRetestMine = () => {
+    navigate(`/?friend=${encodeURIComponent(friend)}&start=1`);
+  };
+
+  const handleRequestFriendRetest = async () => {
+    const url = new URL("/", window.location.origin);
+    url.searchParams.set("friend", mine);
+    url.searchParams.set("start", "1");
+    const usesSystemShare = canUseSystemShare();
+
+    await share({
+      text: `${data.friend.nickname}님, 우리 새 결과로 케미 다시 봐요!\n${url.toString()}`,
+    });
+    if (!usesSystemShare) openToast("새 테스트 요청 링크를 복사했어요");
   };
 
   const hasPurchasedRelationshipReport =
@@ -289,7 +305,11 @@ export default function CompatibilityPage() {
             mineNickname={data.mine.nickname}
             friendNickname={data.friend.nickname}
             hasPurchased={hasPurchasedRelationshipReport}
+            mineIsLegacy={data.mine.is_legacy}
+            friendIsLegacy={data.friend.is_legacy}
             onPurchase={handleRelationshipGuideAction}
+            onRetestMine={handleRetestMine}
+            onRequestFriendRetest={() => void handleRequestFriendRetest()}
           />
         </div>
       </div>
