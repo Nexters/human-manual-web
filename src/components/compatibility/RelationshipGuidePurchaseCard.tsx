@@ -124,16 +124,11 @@ export default function RelationshipGuidePurchaseCard({
 
   if (mineIsLegacy || friendIsLegacy) {
     const bothNeedRetest = mineIsLegacy && friendIsLegacy;
-    const title = bothNeedRetest
-      ? "맞춤 설명서에는 두 사람의 상세 답변이 필요해요"
+    const versionNoticeTitle = bothNeedRetest
+      ? "두 사람의 테스트가 업데이트 이전 버전이에요"
       : mineIsLegacy
-        ? `맞춤 설명서에는 ${mineNickname}님의 상세 답변이 필요해요`
-        : `맞춤 설명서에는 ${friendNickname}님의 상세 답변이 필요해요`;
-    const description = bothNeedRetest
-      ? "지금 본 무료 케미는 요약 결과로 볼 수 있지만, 맞춤 설명서는 두 사람이 어떤 답을 골랐는지까지 함께 분석해요. 두 사람의 예전 결과에는 그 답변이 남아 있지 않아요."
-      : mineIsLegacy
-        ? `지금 본 무료 케미는 요약 결과로 볼 수 있지만, 맞춤 설명서는 어떤 답을 골랐는지까지 함께 분석해요. ${mineNickname}님의 예전 결과에는 그 답변이 남아 있지 않아요.`
-        : `지금 본 무료 케미는 요약 결과로 볼 수 있지만, 맞춤 설명서는 어떤 답을 골랐는지까지 함께 분석해요. ${friendNickname}님의 예전 결과에는 그 답변이 남아 있지 않아요.`;
+        ? `${mineNickname}님의 테스트가 업데이트 이전 버전이에요`
+        : `${friendNickname}님의 테스트가 업데이트 이전 버전이에요`;
     const nextStep = bothNeedRetest
       ? `먼저 ${mineNickname}님이 3분 테스트를 완료한 뒤 ${friendNickname}님에게 요청할 수 있어요.`
       : mineIsLegacy
@@ -154,12 +149,30 @@ export default function RelationshipGuidePurchaseCard({
           </span>
         </div>
 
-        <div className="mt-5 rounded-[18px] border border-[#f1e5ec] bg-white px-4 py-5">
+        <Typography variant="h1" className="mt-5 text-gray-09 break-keep">
+          그런데 왜 우리는 가끔
+          <br />
+          <span className="text-sub-4">같은 순간에 엇갈릴까요?</span>
+        </Typography>
+
+        <Typography variant="me3" className="mt-3 text-gray-07 break-keep">
+          {mineNickname}님과 {friendNickname}님이 함께 있을 때만 보이는 관계의 흐름이 있어요.
+          반복되는 서운함부터 서로에게 잘 닿는 말과 행동까지 두 사람의 답변으로 자세히 풀어드려요.
+        </Typography>
+
+        <ul className="mt-6 flex flex-col gap-2">
+          {lockedTopics.map((topic) => (
+            <LockedTopic key={topic.title} {...topic} />
+          ))}
+        </ul>
+
+        <div className="mt-6 rounded-[18px] border border-[#f1e5ec] bg-white px-4 py-5">
           <Typography variant="h2" className="text-gray-09 break-keep">
-            {title}
+            {versionNoticeTitle}
           </Typography>
           <Typography variant="me3" className="mt-2 text-gray-06 break-keep">
-            {description}
+            무료 케미는 요약 결과로 볼 수 있지만, 맞춤 설명서는 최신 테스트의 상세 답변을 함께
+            분석해 만들어요.
           </Typography>
 
           <div className="mt-4 flex flex-col gap-2 rounded-[14px] bg-[#fff7fb] px-3.5 py-3">
