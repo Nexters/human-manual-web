@@ -2,7 +2,7 @@ import PolicyPageLayout, { PolicyList, PolicySection } from "@/components/policy
 
 export default function PrivacyPage() {
   return (
-    <PolicyPageLayout title="개인정보처리방침" effectiveDate="2026년 10월 7일">
+    <PolicyPageLayout title="개인정보처리방침" effectiveDate="2026년 10월 28일">
       <PolicySection title="1. 개인정보 처리자">
         <p>
           언더스탠드라인(이하 “회사”)은 Pakit 서비스를 운영하며 이용자의 개인정보를 적법하고
@@ -45,14 +45,11 @@ export default function PrivacyPage() {
             <p className="font-semibold text-gray-08">인공지능 기반 유료 콘텐츠 생성</p>
             <PolicyList>
               <li>
-                항목: 닉네임, 성별, 질문별 답변, 진단·케미 결과 및 유료 콘텐츠 생성에 필요한 관계
-                정보
+                항목: 닉네임, 성별, MBTI, 질문별 답변과 성향 분석, 진단·케미 결과 및 생성된 유료
+                콘텐츠
               </li>
               <li>목적: OpenAI API를 이용한 맞춤형 유료 콘텐츠 생성</li>
-              <li>
-                보유기간: 회사는 해당 유료 콘텐츠의 이용기간 동안 보관하며, OpenAI의 기본 안전성
-                모니터링 로그는 최대 30일간 보관될 수 있음
-              </li>
+              <li>보유기간: 회원 탈퇴 또는 삭제 요청 시까지(법정 보관 기록 제외)</li>
             </PolicyList>
           </div>
           <div>
@@ -88,18 +85,10 @@ export default function PrivacyPage() {
       </PolicySection>
 
       <PolicySection title="3. 개인정보 처리의 법적 근거">
-        <PolicyList>
-          <li>회원가입, 진단, 구매 및 콘텐츠 제공: 계약의 체결·이행과 이용자의 요청에 따른 조치</li>
-          <li>
-            OpenAI API를 이용한 맞춤형 유료 콘텐츠 생성: 이용자가 요청한 유료 서비스 계약의 이행
-          </li>
-          <li>결제·환불 및 거래기록 보관: 전자상거래 등 관계 법령상 의무 준수</li>
-          <li>보안, 부정 이용 방지 및 오류 대응: 안전한 서비스 운영을 위한 회사의 정당한 이익</li>
-          <li>별도의 동의를 받는 처리: 이용자가 동의한 범위</li>
-        </PolicyList>
         <p>
-          회사는 처리 목적에 필요한 최소한의 개인정보만 처리하며, 목적이 변경되는 경우 관계 법령에
-          따라 별도 동의를 받거나 필요한 조치를 합니다.
+          회원·결과 관리와 콘텐츠 제공은 계약의 체결·이행을 위해, 거래기록 보관은 법령상 의무에 따라
+          처리합니다. 보안 처리는 이용자의 권리보다 명백히 우선하는 정당한 이익이 있는 범위에서
+          하며, 동의가 필요한 처리는 별도 동의를 받습니다.
         </p>
       </PolicySection>
 
@@ -114,13 +103,18 @@ export default function PrivacyPage() {
           브라우저에서 쿠키를 차단하거나 삭제할 수 있으며, 쿠키 차단은 필수적인 서비스 이용에 영향을
           주지 않습니다.
         </p>
+        <p>
+          결과 화면에는 쿠팡 파트너스 광고가 표시됩니다. 광고 로딩·클릭 시 쿠팡 측으로 접속정보가
+          전송될 수 있으며, 해당 업체의 개인정보처리방침이 적용됩니다. 브라우저의 쿠키·추적 방지
+          설정으로 제어할 수 있습니다.
+        </p>
       </PolicySection>
 
       <PolicySection title="5. 개인정보의 제3자 제공">
         <p>
-          회사는 이용자의 개인정보를 원칙적으로 외부에 제공하지 않습니다. 다만 이용자가 사전에
-          동의한 경우, 계약 이행을 위해 필요한 범위에서 관계 법령상 허용되는 경우 또는 법령에 따라
-          요구되는 경우에는 필요한 범위에서 제공할 수 있습니다.
+          회사는 이용자의 동의 또는 법령상 근거 없이 개인정보를 제3자에게 제공하지 않습니다.
+          이용자가 공유한 결과 링크로는 다른 사람이 해당 결과를 열람하고 케미 분석에 이용할 수
+          있습니다.
         </p>
       </PolicySection>
 
@@ -153,11 +147,25 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong>OpenAI(미국)</strong>: 인공지능 기반 유료 콘텐츠 생성 요청 시 닉네임, 성별,
-            질문별 답변, 진단·케미 결과와 생성 결과를 이전하며 기본 안전성 모니터링을 위해 최대 30일
-            보관하는 것이 원칙입니다. 해당 상품을 구매하거나 생성을 요청하지 않으면 이전되지 않지만
-            유료 콘텐츠는 이용할 수 없습니다.
+            MBTI, 답변 기반 성향 분석과 생성 결과를 이전하며 기본 안전성 모니터링 로그는 원칙적으로
+            최대 30일 보관합니다(법적 의무·보안상 필요한 예외 제외). 해당 상품을 구매하거나 생성을
+            요청하지 않으면 이전되지 않지만 유료 콘텐츠는 이용할 수 없습니다.
           </li>
         </PolicyList>
+        <p>
+          이전받는 자의 개인정보 문의: Google LLC —{" "}
+          <a
+            className="underline"
+            href="https://support.google.com/policies/troubleshooter/7575787?hl=ko"
+          >
+            개인정보 문의 창구
+          </a>
+          , OpenAI —{" "}
+          <a className="underline" href="https://privacy.openai.com/">
+            개인정보 요청 창구
+          </a>
+          .
+        </p>
         <p>
           OpenAI API로 전송된 데이터는 회사가 별도로 데이터 공유에 동의하지 않는 한 모델 학습에
           사용되지 않습니다.
@@ -178,6 +186,10 @@ export default function PrivacyPage() {
       </PolicySection>
 
       <PolicySection title="9. 이용자의 권리와 행사 방법">
+        <p>
+          내 결과 목록의 삭제는 목록에서 숨기는 기능이며, 서버 데이터 파기나 공유 링크 차단을 뜻하지
+          않습니다. 결과·답변의 실제 삭제와 회원 탈퇴는 아래 고객센터로 요청할 수 있습니다.
+        </p>
         <p>
           이용자는 자신의 개인정보에 대해 열람, 정정, 삭제, 처리정지 및 동의 철회를 요청할 수
           있습니다. 요청은 고객센터 이메일 pakit2027@gmail.com으로 접수할 수 있으며, 회사는 본인

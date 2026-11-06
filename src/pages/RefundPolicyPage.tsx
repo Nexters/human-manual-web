@@ -2,7 +2,7 @@ import PolicyPageLayout, { PolicyList, PolicySection } from "@/components/policy
 
 export default function RefundPolicyPage() {
   return (
-    <PolicyPageLayout title="취소·환불 정책" effectiveDate="2026년 10월 7일">
+    <PolicyPageLayout title="취소·환불 정책" effectiveDate="2026년 10월 28일">
       <PolicySection title="1. 적용 범위 및 상품별 제공 조건">
         <PolicyList>
           <li>
@@ -22,16 +22,17 @@ export default function RefundPolicyPage() {
 
       <PolicySection title="2. 청약철회의 원칙">
         <p>
-          이용자는 계약내용에 관한 안내를 받은 날부터 7일 이내에 청약철회를 요청할 수 있습니다. 다만
-          구매한 디지털콘텐츠의 제공이 시작되지 않은 경우에 한합니다.
+          이용자는 계약내용에 관한 서면을 받은 날부터 7일 이내에 청약철회를 요청할 수 있습니다.
+          공급이 더 늦게 이루어진 경우에는 공급받거나 공급이 시작된 날부터 계산합니다.
+          디지털콘텐츠의 청약철회 제한은 아래 제3조에 따릅니다.
         </p>
       </PolicySection>
 
       <PolicySection title="3. 디지털콘텐츠 제공 개시와 청약철회 제한">
         <p>
-          결제 승인 직후 회원 계정에서 즉시 열람 가능한 상태로 제공되는 디지털콘텐츠는 이용자가 결제
-          전에 즉시 제공 사실과 청약철회 제한 가능성을 별도로 확인하고 결제하여 제공이 시작된
-          경우에는 단순 변심에 따른 청약철회가 제한될 수 있습니다.
+          디지털콘텐츠는 제공이 시작된 경우 단순 변심에 따른 청약철회가 제한될 수 있습니다. 회사는
+          구매 전에 제한 사실을 표시하고 미리보기 등 법령상 필요한 조치를 합니다. 분할 가능한 콘텐츠
+          중 제공이 시작되지 않은 부분은 제외합니다.
         </p>
         <p>
           다만 회사가 관계 법령에서 요구하는 청약철회 제한 표시 또는 필요한 조치를 하지 않은
@@ -54,25 +55,7 @@ export default function RefundPolicyPage() {
         </p>
       </PolicySection>
 
-      <PolicySection title="5. 환불이 제한될 수 있는 경우">
-        <PolicyList>
-          <li>제3조에 따라 콘텐츠 제공이 시작된 후 단순 변심으로 환불을 요청하는 경우</li>
-          <li>
-            서비스가 정상적으로 제공되고 있음에도 이용자의 기기, 브라우저 또는 네트워크 환경에서만
-            일시적인 이용 장애가 발생하며, 회사가 합리적인 해결 방법을 안내한 경우
-          </li>
-          <li>
-            허위 자료 제출, 결제수단 도용 또는 이미 환불된 거래에 대한 중복 환불 요구 등 부정한 환불
-            시도가 확인된 경우
-          </li>
-        </PolicyList>
-        <p>
-          위 사유가 있더라도 회사의 귀책사유가 있거나 관계 법령에서 환불을 인정하는 경우에는 해당
-          법령을 우선 적용합니다.
-        </p>
-      </PolicySection>
-
-      <PolicySection title="6. 환불 요청과 확인 절차">
+      <PolicySection title="5. 환불 요청과 확인 절차">
         <p>
           고객센터 이메일 pakit2027@gmail.com으로 회원 계정 식별정보, 주문번호, 결제일시, 결제금액
           및 요청 사유를 알려주세요. 회사는 부정 환불 방지와 정확한 처리를 위해 결제승인 정보 또는
@@ -81,11 +64,12 @@ export default function RefundPolicyPage() {
         </p>
       </PolicySection>
 
-      <PolicySection title="7. 환불 방법, 처리기간 및 이용 권한">
+      <PolicySection title="6. 환불 방법, 처리기간 및 이용 권한">
         <p>
           환불이 승인되면 원칙적으로 결제에 사용한 카카오페이 결제수단으로 취소합니다. 회사는
-          청약철회 요청을 받은 날 또는 환불 사유가 확인된 날부터 3영업일 이내에 환급에 필요한 조치를
-          진행합니다. 실제 환급 시점은 카카오페이 또는 카드사의 처리 일정에 따라 달라질 수 있습니다.
+          디지털콘텐츠의 적법한 청약철회 의사표시를 받은 날부터 3영업일 이내에 대금을 환급합니다. 그
+          밖의 환불도 관계 법령에서 정한 기한에 처리합니다. 실제 환급 시점은 카카오페이 또는
+          카드사의 처리 일정에 따라 달라질 수 있습니다.
         </p>
         <p>
           전액 환불 또는 결제 취소가 완료되면 해당 유료 콘텐츠의 이용 권한은 종료됩니다. 환불 처리
@@ -93,7 +77,7 @@ export default function RefundPolicyPage() {
         </p>
       </PolicySection>
 
-      <PolicySection title="8. 기타">
+      <PolicySection title="7. 기타">
         <p>
           이 정책에서 정하지 않은 사항은 「전자상거래 등에서의 소비자보호에 관한 법률」,
           「콘텐츠산업 진흥법」, 「약관의 규제에 관한 법률」 등 관계 법령과 소비자분쟁해결기준을
