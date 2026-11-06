@@ -88,11 +88,14 @@ export default function Hero({
         </div>
 
         <div className="flex flex-col items-center gap-1 text-center">
-          <Typography variant="sb2" className="text-white break-keep">
+          <Typography
+            variant="sb2"
+            className="text-[22px] leading-[1.35] font-semibold text-white break-keep"
+          >
             {subtitle}
           </Typography>
           <p
-            className="text-[40px] leading-[1] font-normal tracking-[-0.04em] text-white break-keep"
+            className="text-[30px] leading-[1.2] font-normal tracking-[-0.04em] text-white break-keep"
             style={{ fontFamily: "'Waguri', var(--font-sans)" }}
           >
             {title}
@@ -119,7 +122,10 @@ export default function Hero({
           className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-gray-00/90 via-40% to-gray-00"
           aria-hidden
         />
-        <Typography variant="sb3" className="mb-2 px-5 text-center font-bold text-gray-09 break-keep">
+        <Typography
+          variant="sb3"
+          className="mb-2 px-5 text-center font-bold text-gray-09 break-keep"
+        >
           같은 장난감이 나와도,{" "}
           <span className="underline decoration-point decoration-[4px] underline-offset-4">
             설명서는 다 달라요.
