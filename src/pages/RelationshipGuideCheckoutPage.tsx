@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import TopBar from "@/components/shared/TopBar";
 import Typography from "@/components/shared/Typography";
@@ -38,6 +38,16 @@ export default function RelationshipGuideCheckoutPage() {
     partnerGender: genderSelection?.partnerGender ?? "",
   });
   const canPay = isTermsAgreed && isImmediateProvisionAgreed && !isPaying;
+  const purchasedOrderId =
+    data?.relationship_report?.status === "READY" ||
+    data?.relationship_report?.status === "PAID_PENDING_REPORT"
+      ? data.relationship_report.order_id
+      : null;
+
+  useEffect(() => {
+    if (!purchasedOrderId) return;
+    navigate(`/my/premium/${encodeURIComponent(purchasedOrderId)}`, { replace: true });
+  }, [navigate, purchasedOrderId]);
 
   const handleBack = () => {
     navigate(reportPaths.gender(mine, friend));
@@ -87,6 +97,15 @@ export default function RelationshipGuideCheckoutPage() {
   }
 
   if (isLoading) {
+    return (
+      <div className="flex min-h-dvh flex-col bg-white">
+        {topBar}
+        <LoadingView />
+      </div>
+    );
+  }
+
+  if (purchasedOrderId) {
     return (
       <div className="flex min-h-dvh flex-col bg-white">
         {topBar}
