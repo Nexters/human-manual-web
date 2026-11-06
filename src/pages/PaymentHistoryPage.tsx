@@ -1,13 +1,78 @@
 import KakaoLoginButton from "@/components/auth/KakaoLoginButton";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { isUnauthorized } from "@/api/auth";
+import { getMyCompatibilities, isUnauthorized, type AccountCompatibility } from "@/api/auth";
 import { getMyPayments } from "@/api/payment";
 import Button from "@/components/shared/Button";
 import { accountQueryKey, useAuth } from "@/hooks/useAuth";
 import { startKakaoLogin } from "@/lib/auth";
 import { useCompatibility } from "@/hooks/useCompatibility";
 import type { MyPaymentOrder } from "@/types/payment";
+
+const withHonorific = (nickname: string) => (nickname.endsWith("님") ? nickname : `${nickname}님`);
+
+function CompatibilityCandidates({ items }: { items: AccountCompatibility[] }) {
+  return (
+    <section className="mt-8 border-t border-gray-02 pt-8">
+      <h2 className="text-gray-09 text-[22px] leading-[1.4] font-bold tracking-[-0.6px] break-keep">
+        케미 너머, 우리 사이를 더 깊이 알아보세요
+      </h2>
+      <p className="text-gray-06 mt-3 text-[14px] leading-[1.65] break-keep">
+        반복되는 서운함과 서로에게 잘 닿는 말까지 우리만의 맞춤 설명서로 풀어드려요.
+      </p>
+
+      <h3 className="text-gray-09 mt-9 text-[17px] font-bold">누구와의 관계를 더 알아볼까요?</h3>
+      <ul className="mt-4 flex flex-col gap-4" aria-label="더 깊이 알아볼 케미 목록">
+        {items.map((item, index) => {
+          const key = `${item.mine.result_code}-${item.friend.result_code}-${item.tested_at}-${index}`;
+          const path = `/compatibility?mine=${encodeURIComponent(item.mine.result_code)}&friend=${encodeURIComponent(item.friend.result_code)}#relationship-guide`;
+
+          return (
+            <li
+              key={key}
+              className="rounded-[22px] border border-gray-02 bg-white p-5 shadow-[0_4px_16px_#25386408]"
+            >
+              <div className="flex items-center gap-3">
+                {[item.mine, item.friend].map((person, personIndex) => (
+                  <div
+                    key={person.result_code}
+                    className="flex min-w-0 flex-1 items-center gap-2.5"
+                  >
+                    {personIndex === 1 && (
+                      <span className="text-gray-04 shrink-0 text-[14px]" aria-hidden="true">
+                        ×
+                      </span>
+                    )}
+                    <span className="grid size-11 shrink-0 place-items-center rounded-full bg-gray-01">
+                      {person.image_url ? (
+                        <img src={person.image_url} alt="" className="size-9 object-contain" />
+                      ) : (
+                        <span className="text-gray-05" aria-hidden="true">
+                          ?
+                        </span>
+                      )}
+                    </span>
+                    <strong className="text-gray-09 min-w-0 truncate text-[14px] font-bold">
+                      {person.nickname}
+                    </strong>
+                  </div>
+                ))}
+              </div>
+
+              <p className="text-main mt-4 text-[13px] font-bold">케미 {item.score}점</p>
+              <Link
+                to={path}
+                className="bg-main mt-4 flex min-h-12 items-center justify-center rounded-[14px] px-4 text-[14px] font-bold text-white"
+              >
+                {withHonorific(item.friend.nickname)}과 더 깊은 케미 보기
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
 
 function PurchaseParticipants({ order }: { order: MyPaymentOrder }) {
   const pair = useCompatibility(order.mine_result_code, order.partner_result_code);
@@ -86,8 +151,15 @@ export default function PaymentHistoryPage({
     enabled: Boolean(auth.data),
     retry: false,
   });
+  const compatibilities = useQuery({
+    queryKey: [...accountQueryKey, auth.data?.user_id, "compatibilities"],
+    queryFn: getMyCompatibilities,
+    enabled: Boolean(auth.data) && premium,
+    retry: false,
+  });
   const loginRequired =
     (!auth.isPending && !auth.isError && !auth.data) || isUnauthorized(payments.error);
+  const compatibilityItems = compatibilities.data?.items ?? [];
 
   return (
     <section
@@ -124,6 +196,17 @@ export default function PaymentHistoryPage({
         <p className="py-10 text-center text-sm text-gray-06" role="status">
           {premium ? "프리미엄 결과를" : "결제 내역을"} 불러오는 중이에요.
         </p>
+      ) : payments.data.items.length === 0 && premium && compatibilities.isPending ? (
+        <p className="py-10 text-center text-sm text-gray-06" role="status">
+          함께 본 케미를 불러오는 중이에요.
+        </p>
+      ) : payments.data.items.length === 0 && premium && compatibilities.isError ? (
+        <div className="pakit-account-gate" role="alert">
+          <p>함께 본 케미를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</p>
+          <Button onClick={() => void compatibilities.refetch()}>다시 시도</Button>
+        </div>
+      ) : payments.data.items.length === 0 && premium && compatibilityItems.length > 0 ? (
+        <CompatibilityCandidates items={compatibilityItems} />
       ) : payments.data.items.length === 0 ? (
         <div className="pakit-account-empty">
           <p className="font-bold text-gray-09">

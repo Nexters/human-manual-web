@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import TopBar from "@/components/shared/TopBar";
 import InfoCard from "@/components/shared/InfoCard";
@@ -48,6 +48,13 @@ export default function CompatibilityPage() {
   const hasMyCode = Boolean(savedResultCode) && !myResultError;
   const fontsReady = useFontsReady(COMPATIBILITY_PAGE_FONT_SPECS);
   const relationshipGuideRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!data || !fontsReady || window.location.hash !== "#relationship-guide") return;
+    requestAnimationFrame(() => {
+      relationshipGuideRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, [data, fontsReady]);
 
   // 상세 내용을 바로 읽을 수 있도록 모두 펼치고, 각 칸은 독립적으로 접을 수 있다.
   const [openKeys, setOpenKeys] = useState<Set<DetailKey>>(() => new Set(DETAIL_ORDER));
@@ -300,7 +307,7 @@ export default function CompatibilityPage() {
           description={data.relationship_tip.description}
         />
 
-        <div ref={relationshipGuideRef} className="scroll-mt-20">
+        <div id="relationship-guide" ref={relationshipGuideRef} className="scroll-mt-20">
           <RelationshipGuidePurchaseCard
             mineNickname={data.mine.nickname}
             friendNickname={data.friend.nickname}
