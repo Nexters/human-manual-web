@@ -226,11 +226,6 @@ export default function RelationshipGuidePurchaseCard({
         <span className="text-sub-4">같은 순간에 엇갈릴까요?</span>
       </Typography>
 
-      <Typography variant="me3" className="mt-3 text-gray-07 break-keep">
-        {mineNickname}님과 {friendNickname}님이 함께 있을 때만 보이는 관계의 흐름이 있어요. 서로를
-        오해하기 쉬운 순간부터 더 편해지는 방법까지 한 번에 담아드려요.
-      </Typography>
-
       <ul className="mt-6 flex flex-col gap-2">
         {lockedTopics.map((topic) => (
           <LockedTopic key={topic.title} {...topic} />
@@ -263,9 +258,14 @@ export default function RelationshipGuidePurchaseCard({
           </Typography>
         </button>
 
-        <Typography variant="me4" className="mt-3 text-center text-gray-04">
-          한 번 결제하면 저장된 설명서를 계속 볼 수 있어요
-        </Typography>
+        <div className="mt-3 text-center text-gray-05">
+          <Typography variant="me4" className="break-keep">
+            🔒 맞춤 관계 설명서는 결제한 나만 볼 수 있어요.
+          </Typography>
+          <Typography variant="me4" className="mt-0.5 break-keep">
+            상대방에게는 내용이 공개되지 않아요.
+          </Typography>
+        </div>
       </div>
     </section>
   );
