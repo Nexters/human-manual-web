@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { isUnauthorized } from "@/api/auth";
 import { getCompatibility } from "@/api/compatibility";
-import { generatePaidRomanticReport, getMyPayments } from "@/api/payment";
+import { generatePaidRomanticReport, getMyPayments, isReportInProgress } from "@/api/payment";
 import ReportLoading from "@/components/relationshipReport/ReportLoading";
 import ReportView from "@/components/relationshipReport/ReportView";
 import { parseReport } from "@/components/relationshipReport/parseReport";
@@ -30,7 +30,9 @@ export default function PremiumReportPage() {
       return { pair, report: parseReport(report.content) };
     },
     enabled: Boolean(auth.data) && Boolean(orderId),
-    retry: false,
+    // 다른 탭이나 결제 직후 요청이 먼저 생성을 잡고 있으면 끝날 때까지 기다렸다 다시 묻는다.
+    retry: (failureCount, error) => isReportInProgress(error) && failureCount < 30,
+    retryDelay: 5_000,
     staleTime: Infinity,
     refetchOnWindowFocus: false,
   });

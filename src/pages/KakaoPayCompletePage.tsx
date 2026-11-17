@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import TopBar from "@/components/shared/TopBar";
 import Typography from "@/components/shared/Typography";
 import ReportLoading from "@/components/relationshipReport/ReportLoading";
-import { generatePaidRomanticReport, getPaymentOrder } from "@/api/payment";
+import { generatePaidRomanticReport, getPaymentOrder, isReportInProgress } from "@/api/payment";
 
 type ViewState = "loading" | "canceled" | "failed";
 
@@ -49,7 +49,12 @@ export default function KakaoPayCompletePage() {
         // 나중에 복원해도 결제 세션이 아닌 저장된 결과를 다시 불러올 수 있다.
         navigate(`/my/premium/${encodeURIComponent(orderId)}`, { replace: true });
       })
-      .catch(() => {
+      .catch((error: unknown) => {
+        if (isReportInProgress(error)) {
+          // 새로고침 등으로 먼저 시작된 생성이 아직 돌고 있다. 결과 화면이 기다렸다 받아온다.
+          navigate(`/my/premium/${encodeURIComponent(orderId)}`, { replace: true });
+          return;
+        }
         setFailureMessage("결제 확인 또는 설명서 생성에 실패했어요. 잠시 후 다시 시도해주세요.");
         setState("failed");
       });

@@ -22,6 +22,13 @@ const PAYMENT_RESULT_ERROR_CODES = new Set([
   "PAYMENT_PARTNER_RESULT_RETEST_REQUIRED",
 ]);
 
+// 서버가 생성 권리를 선점한 요청에만 AI를 호출한다. 그 사이 들어온 요청은 이 코드를 받는다.
+export function isReportInProgress(error: unknown): boolean {
+  if (!axios.isAxiosError(error)) return false;
+  const detail = (error.response?.data as ErrorResponse | undefined)?.error;
+  return detail?.code === "RELATIONSHIP_REPORT_IN_PROGRESS";
+}
+
 export function getPaymentResultErrorMessage(error: unknown): string | null {
   if (!axios.isAxiosError(error)) return null;
   const detail = (error.response?.data as ErrorResponse | undefined)?.error;
