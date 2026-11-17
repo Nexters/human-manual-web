@@ -34,7 +34,10 @@
     <meta property="og:site_name" content="Pakit" />
     <!-- og:url 을 고정하면 카카오톡 등에서 미리보기 카드를 눌렀을 때 공유한 결과지 링크가
          아니라 이 주소로 이동해버린다. 크롤러가 요청한 URL 을 그대로 쓰도록 비워둔다. -->
-    <meta property="og:image" content="https://pakit.kr/og-image-compatibility.jpg" />
+    <!-- 카카오톡은 HTML 과 이미지를 따로 캐싱한다. 같은 파일명으로 이미지만 갈아끼우면
+         캐시 초기화를 해도 옛날 이미지가 계속 나간다. 카드를 바꿀 때는 반드시
+         파일명(-v3, -v4 …)도 같이 올려 URL 을 새로 만들 것. -->
+    <meta property="og:image" content="https://pakit.kr/og-main-v2.jpg" />
     <meta property="og:image:width" content="2400" />
     <meta property="og:image:height" content="1200" />
     <meta property="og:image:alt" content="나를 이렇게 정확하게 설명한다고?" />
@@ -45,7 +48,7 @@
       name="twitter:description"
       content="총 41억 가지 유형. 하나뿐인 내 사용 설명서. 친구와의 케미까지 무료로 3분."
     />
-    <meta name="twitter:image" content="https://pakit.kr/og-image-compatibility.jpg" />
+    <meta name="twitter:image" content="https://pakit.kr/og-main-v2.jpg" />
     <meta name="twitter:image:alt" content="나를 이렇게 정확하게 설명한다고?" />
   </head>
   <body>

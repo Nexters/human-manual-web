@@ -43,7 +43,7 @@ async function fetchCompatibility(mine: string, friend: string): Promise<Compati
 }
 
 function fallbackResponse(origin: string): Response {
-  return Response.redirect(new URL("/og-image-compatibility.jpg", origin), 302);
+  return Response.redirect(new URL("/og-main-v2.jpg", origin), 302);
 }
 
 async function fetchFont(origin: string, path: string): Promise<ArrayBuffer | null> {
