@@ -24,6 +24,7 @@ import {
 } from "@/stores/testStore";
 import { useMyResultStore } from "@/stores/myResultStore";
 import { trackEvent } from "@/lib/google-analytics";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 import { GA_EVENTS } from "@/lib/google-analytics/event";
 
 const parseOrder = (raw: string | undefined): number | null => {
@@ -120,6 +121,9 @@ const QuestionPage = () => {
     try {
       const result = await submitAssessment(buildSubmission({ nickname, answers, mbti }));
       trackEvent(GA_EVENTS.QUESTION.SUBMIT_COMPLETE);
+      // 광고 최적화 목표로 쓸 핵심 전환. 이 신호가 없으면 Meta 는 "링크를 누르는 사람"
+      // 까지만 찾아주고 "테스트를 끝내는 사람"은 못 찾는다.
+      trackMetaEvent("CompleteRegistration");
       setResultCode(result.result_code);
       rememberResultCode(result.result_code);
       navigate("/unboxing");

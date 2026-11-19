@@ -4,6 +4,7 @@ import { authMockEnabled } from "@/lib/authMockMode";
 import SiteHeader from "@/components/home/SiteHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { trackPageView } from "@/lib/google-analytics";
+import { trackMetaPageView } from "@/lib/meta-pixel";
 
 // 내 보관함은 화면 안에 내 결과·내 궁합 탭이 있어 계정 탭 없이 로고와 메뉴만 둔다.
 const ARCHIVE_PATHS = ["/my/results", "/my/compatibilities"];
@@ -15,6 +16,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     trackPageView(location.pathname + location.search);
+    trackMetaPageView();
   }, [location]);
 
   // 새 화면으로 갈 때는 맨 위에서 시작한다. 케미 페이지의 "케미 보기" 처럼 화면 아래쪽

@@ -20,6 +20,36 @@
       gtag("config", "%VITE_GOOGLE_ANALYTICS%");
     </script>
 
+    <!-- Meta Pixel. ID 는 브라우저 JS 에 그대로 노출되는 공개값이라 하드코딩한다.
+         SPA 라우팅 전환 시의 PageView 는 AppLayout 에서 따로 보낸다. -->
+    <script>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = "2.0";
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+      fbq("init", "1578679130614973");
+      fbq("track", "PageView");
+    </script>
+    <noscript
+      ><img
+        height="1"
+        width="1"
+        style="display: none"
+        src="https://www.facebook.com/tr?id=1578679130614973&ev=PageView&noscript=1"
+    /></noscript>
+
     <meta
       name="description"
       content="질문에 답하고 나만의 장난감 캐릭터를 배송받아보세요. 친구와의 케미도 확인할 수 있어요."

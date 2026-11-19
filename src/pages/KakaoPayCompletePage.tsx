@@ -4,6 +4,7 @@ import TopBar from "@/components/shared/TopBar";
 import Typography from "@/components/shared/Typography";
 import ReportLoading from "@/components/relationshipReport/ReportLoading";
 import { generatePaidRomanticReport, getPaymentOrder, isReportInProgress } from "@/api/payment";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 
 type ViewState = "loading" | "canceled" | "failed";
 
@@ -41,6 +42,13 @@ export default function KakaoPayCompletePage() {
           setState("failed");
           return null;
         }
+        // 승인된 주문에서만 보낸다. 금액을 실어야 광고 관리자에서 광고비 대비
+        // 매출(ROAS)이 바로 보인다.
+        trackMetaEvent("Purchase", {
+          value: order.amount,
+          currency: order.currency,
+          content_name: order.product_name,
+        });
         return generatePaidRomanticReport(orderId);
       })
       .then((generated) => {
