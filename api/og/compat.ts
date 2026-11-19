@@ -1,5 +1,10 @@
+import { createElement as h } from "react";
+
 import { ImageResponse } from "@vercel/og";
 
+// Vercel 빌더는 .tsx 서버리스 함수 번들에만 루트 package.json("type":"module")을
+// 넣지 않는다(.ts 에는 넣는다). 그러면 ESM 으로 컴파일된 함수를 Node 가 CJS 로 읽어
+// SyntaxError 로 죽는다. 그래서 이 파일은 .ts 로 두고 JSX 대신 createElement 를 쓴다.
 export const config = { runtime: "nodejs" };
 
 const CACHE_CONTROL = "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400";
@@ -80,34 +85,37 @@ function CharacterColumn({
   noun: string;
   name: string;
 }) {
-  return (
-    <div style={{ display: "flex", position: "absolute", left: 0, top: 0 }}>
-      <div
-        style={{
-          position: "absolute",
-          left: centerX - CIRCLE / 2,
-          top: V(130.77),
-          width: CIRCLE,
-          height: CIRCLE,
-          borderRadius: CIRCLE,
-          background: "rgba(255,255,255,0.3)",
-          display: "flex",
-        }}
-      />
-      {/* 캐릭터 (회전 없음). 원 중앙에 놓는다. */}
-      <img
-        src={imageSrc}
-        width={CHAR_BOX}
-        height={CHAR_BOX}
-        style={{
-          position: "absolute",
-          left: centerX - CHAR_BOX / 2,
-          top: V(130.77) + CIRCLE / 2 - CHAR_BOX / 2,
-          objectFit: "contain",
-        }}
-      />
-      <div
-        style={{
+  return h(
+    "div",
+    { style: { display: "flex", position: "absolute", left: 0, top: 0 } },
+    h("div", {
+      style: {
+        position: "absolute",
+        left: centerX - CIRCLE / 2,
+        top: V(130.77),
+        width: CIRCLE,
+        height: CIRCLE,
+        borderRadius: CIRCLE,
+        background: "rgba(255,255,255,0.3)",
+        display: "flex",
+      },
+    }),
+    // 캐릭터 (회전 없음). 원 중앙에 놓는다.
+    h("img", {
+      src: imageSrc,
+      width: CHAR_BOX,
+      height: CHAR_BOX,
+      style: {
+        position: "absolute",
+        left: centerX - CHAR_BOX / 2,
+        top: V(130.77) + CIRCLE / 2 - CHAR_BOX / 2,
+        objectFit: "contain",
+      },
+    }),
+    h(
+      "div",
+      {
+        style: {
           position: "absolute",
           left: centerX - (91.711 * H) / 2,
           top: V(290.52),
@@ -123,12 +131,14 @@ function CharacterColumn({
           letterSpacing: -0.8 * H,
           color: "#6B7684",
           whiteSpace: "nowrap",
-        }}
-      >
-        {noun}
-      </div>
-      <div
-        style={{
+        },
+      },
+      noun,
+    ),
+    h(
+      "div",
+      {
+        style: {
           position: "absolute",
           left: centerX,
           top: V(332.19),
@@ -140,11 +150,10 @@ function CharacterColumn({
           color: "#FFFFFF",
           textShadow: NAME_SHADOW,
           whiteSpace: "nowrap",
-        }}
-      >
-        {name}
-      </div>
-    </div>
+        },
+      },
+      name,
+    ),
   );
 }
 
@@ -168,95 +177,101 @@ export async function GET(request: Request) {
   const centerX = 600;
 
   return new ImageResponse(
-    <div
-      style={{
-        display: "flex",
-        width: "100%",
-        height: "100%",
-        position: "relative",
-        fontFamily: "Pretendard",
-      }}
-    >
-      <img
-        src={`${origin}/og/kemi-bg.jpg`}
-        width={1200}
-        height={630}
-        style={{ position: "absolute", top: 0, left: 0 }}
-      />
-
-      {/* 상단 중앙: headline + description */}
-      <div
-        style={{
-          position: "absolute",
-          top: V(34),
-          left: 0,
+    h(
+      "div",
+      {
+        style: {
+          display: "flex",
           width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
+          height: "100%",
+          position: "relative",
+          fontFamily: "Pretendard",
+        },
+      },
+      h("img", {
+        src: `${origin}/og/kemi-bg.jpg`,
+        width: 1200,
+        height: 630,
+        style: { position: "absolute", top: 0, left: 0 },
+      }),
+      // 상단 중앙: headline + description
+      h(
+        "div",
+        {
+          style: {
+            position: "absolute",
+            top: V(34),
+            left: 0,
+            width: "100%",
             display: "flex",
-            fontSize: 28 * H,
+            flexDirection: "column",
+            alignItems: "center",
+          },
+        },
+        h(
+          "div",
+          {
+            style: {
+              display: "flex",
+              fontSize: 28 * H,
+              fontWeight: 700,
+              letterSpacing: -1.12 * H,
+              color: "#FFFFFF",
+              textShadow: TITLE_SHADOW,
+              whiteSpace: "nowrap",
+            },
+          },
+          data.headline,
+        ),
+        h(
+          "div",
+          {
+            style: {
+              display: "flex",
+              marginTop: 4 * H,
+              fontSize: 18 * H,
+              letterSpacing: -0.72 * H,
+              color: "#F9FAFB",
+              textShadow: TITLE_SHADOW,
+              whiteSpace: "nowrap",
+            },
+          },
+          data.description,
+        ),
+      ),
+      // 왼쪽: 내 캐릭터
+      CharacterColumn({
+        centerX: centerX - COL_DX,
+        imageSrc: data.mine.image_url,
+        noun: data.mine.noun,
+        name: data.mine.nickname,
+      }),
+      // ×
+      h(
+        "div",
+        {
+          style: {
+            position: "absolute",
+            left: centerX,
+            top: V(205.62),
+            transform: "translateX(-50%)",
+            display: "flex",
+            fontSize: 30 * H,
             fontWeight: 700,
-            letterSpacing: -1.12 * H,
             color: "#FFFFFF",
-            textShadow: TITLE_SHADOW,
-            whiteSpace: "nowrap",
-          }}
-        >
-          {data.headline}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            marginTop: 4 * H,
-            fontSize: 18 * H,
-            letterSpacing: -0.72 * H,
-            color: "#F9FAFB",
-            textShadow: TITLE_SHADOW,
-            whiteSpace: "nowrap",
-          }}
-        >
-          {data.description}
-        </div>
-      </div>
-
-      {/* 왼쪽: 내 캐릭터 */}
-      <CharacterColumn
-        centerX={centerX - COL_DX}
-        imageSrc={data.mine.image_url}
-        noun={data.mine.noun}
-        name={data.mine.nickname}
-      />
-
-      {/* × */}
-      <div
-        style={{
-          position: "absolute",
-          left: centerX,
-          top: V(205.62),
-          transform: "translateX(-50%)",
-          display: "flex",
-          fontSize: 30 * H,
-          fontWeight: 700,
-          color: "#FFFFFF",
-          textShadow: NAME_SHADOW,
-        }}
-      >
-        ×
-      </div>
-
-      {/* 오른쪽: 친구 캐릭터 */}
-      <CharacterColumn
-        centerX={centerX + COL_DX}
-        imageSrc={data.friend.image_url}
-        noun={data.friend.noun}
-        name={data.friend.nickname}
-      />
-    </div>,
+            textShadow: NAME_SHADOW,
+          },
+        },
+        "×",
+      ),
+      // 오른쪽: 친구 캐릭터
+      CharacterColumn({
+        centerX: centerX + COL_DX,
+        imageSrc: data.friend.image_url,
+        noun: data.friend.noun,
+        name: data.friend.nickname,
+      }),
+    ),
     {
       width: 1200,
       height: 630,

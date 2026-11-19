@@ -36,3 +36,5 @@ src/assets/_originals/
 # Browser test artifacts
 playwright-report/
 test-results/
+.vercel
+.env*.local

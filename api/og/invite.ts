@@ -1,5 +1,10 @@
+import { createElement as h } from "react";
+
 import { ImageResponse } from "@vercel/og";
 
+// Vercel 빌더는 .tsx 서버리스 함수 번들에만 루트 package.json("type":"module")을
+// 넣지 않는다(.ts 에는 넣는다). 그러면 ESM 으로 컴파일된 함수를 Node 가 CJS 로 읽어
+// SyntaxError 로 죽는다. 그래서 이 파일은 .ts 로 두고 JSX 대신 createElement 를 쓴다.
 export const config = { runtime: "nodejs" };
 
 const CACHE_CONTROL = "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400";
@@ -73,55 +78,60 @@ function CharacterColumn({
   name: string;
   placeholder?: boolean;
 }) {
-  return (
-    <div style={{ display: "flex", position: "absolute", left: 0, top: 0 }}>
-      {/* 원형 반투명 배경 */}
-      <div
-        style={{
-          position: "absolute",
-          left: centerX - CIRCLE / 2,
-          top: V(130.77),
-          width: CIRCLE,
-          height: CIRCLE,
-          borderRadius: CIRCLE,
-          background: "rgba(255,255,255,0.3)",
-          display: "flex",
-        }}
-      />
-      {/* 캐릭터 (회전 없음 — 앱 결과지와 동일하게 정면). 원 중앙에 놓는다.
-          placeholder(곰돌이)는 시안(2972:18667)에서 흰색 실루엣 + 회색 물음표.
-          bear-white.png 는 알파는 유지하고 RGB 만 순백으로 만든 파일. */}
-      <img
-        src={imageSrc}
-        width={placeholder ? 131 * H : CHAR_BOX}
-        height={placeholder ? 132 * H : CHAR_BOX}
-        style={{
-          position: "absolute",
-          left: centerX - (placeholder ? (131 * H) / 2 : CHAR_BOX / 2),
-          top: V(130.77) + CIRCLE / 2 - (placeholder ? (132 * H) / 2 : CHAR_BOX / 2),
-          objectFit: "contain",
-        }}
-      />
-      {placeholder && (
-        <div
-          style={{
-            position: "absolute",
-            left: centerX,
-            top: V(130.77) + CIRCLE / 2,
-            transform: "translate(-50%, -50%)",
-            display: "flex",
-            fontSize: 28 * H,
-            fontWeight: 700,
-            letterSpacing: -1.121 * H,
-            color: "#B0B8C1",
-          }}
-        >
-          ?
-        </div>
-      )}
-      {/* noun pill */}
-      <div
-        style={{
+  return h(
+    "div",
+    { style: { display: "flex", position: "absolute", left: 0, top: 0 } },
+    // 원형 반투명 배경
+    h("div", {
+      style: {
+        position: "absolute",
+        left: centerX - CIRCLE / 2,
+        top: V(130.77),
+        width: CIRCLE,
+        height: CIRCLE,
+        borderRadius: CIRCLE,
+        background: "rgba(255,255,255,0.3)",
+        display: "flex",
+      },
+    }),
+    // 캐릭터 (회전 없음 — 앱 결과지와 동일하게 정면). 원 중앙에 놓는다.
+    // placeholder(곰돌이)는 시안(2972:18667)에서 흰색 실루엣 + 회색 물음표.
+    // bear-white.png 는 알파는 유지하고 RGB 만 순백으로 만든 파일.
+    h("img", {
+      src: imageSrc,
+      width: placeholder ? 131 * H : CHAR_BOX,
+      height: placeholder ? 132 * H : CHAR_BOX,
+      style: {
+        position: "absolute",
+        left: centerX - (placeholder ? (131 * H) / 2 : CHAR_BOX / 2),
+        top: V(130.77) + CIRCLE / 2 - (placeholder ? (132 * H) / 2 : CHAR_BOX / 2),
+        objectFit: "contain",
+      },
+    }),
+    placeholder
+      ? h(
+          "div",
+          {
+            style: {
+              position: "absolute",
+              left: centerX,
+              top: V(130.77) + CIRCLE / 2,
+              transform: "translate(-50%, -50%)",
+              display: "flex",
+              fontSize: 28 * H,
+              fontWeight: 700,
+              letterSpacing: -1.121 * H,
+              color: "#B0B8C1",
+            },
+          },
+          "?",
+        )
+      : null,
+    // noun pill
+    h(
+      "div",
+      {
+        style: {
           position: "absolute",
           left: centerX - (91.711 * H) / 2,
           top: V(290.52),
@@ -137,13 +147,15 @@ function CharacterColumn({
           letterSpacing: -0.8 * H,
           color: "#6B7684",
           whiteSpace: "nowrap",
-        }}
-      >
-        {noun}
-      </div>
-      {/* 이름 */}
-      <div
-        style={{
+        },
+      },
+      noun,
+    ),
+    // 이름
+    h(
+      "div",
+      {
+        style: {
           position: "absolute",
           left: centerX,
           top: V(332.19),
@@ -155,11 +167,10 @@ function CharacterColumn({
           color: "#FFFFFF",
           textShadow: NAME_SHADOW,
           whiteSpace: "nowrap",
-        }}
-      >
-        {name}
-      </div>
-    </div>
+        },
+      },
+      name,
+    ),
   );
 }
 
@@ -183,96 +194,104 @@ export async function GET(request: Request) {
   const centerX = 600;
 
   return new ImageResponse(
-    <div
-      style={{
-        display: "flex",
-        width: "100%",
-        height: "100%",
-        position: "relative",
-        fontFamily: "Pretendard",
-      }}
-    >
-      <img
-        src={`${origin}/og/kemi-bg.jpg`}
-        width={1200}
-        height={630}
-        style={{ position: "absolute", top: 0, left: 0 }}
-      />
-
-      {/* 상단 중앙: 제목 + 부제 */}
-      <div
-        style={{
-          position: "absolute",
-          top: V(34),
-          left: 0,
+    h(
+      "div",
+      {
+        style: {
+          display: "flex",
           width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <div
-          style={{
+          height: "100%",
+          position: "relative",
+          fontFamily: "Pretendard",
+        },
+      },
+      h("img", {
+        src: `${origin}/og/kemi-bg.jpg`,
+        width: 1200,
+        height: 630,
+        style: { position: "absolute", top: 0, left: 0 },
+      }),
+      // 상단 중앙: 제목 + 부제
+      h(
+        "div",
+        {
+          style: {
+            position: "absolute",
+            top: V(34),
+            left: 0,
+            width: "100%",
             display: "flex",
-            fontSize: 28 * H,
+            flexDirection: "column",
+            alignItems: "center",
+          },
+        },
+        h(
+          "div",
+          {
+            style: {
+              display: "flex",
+              fontSize: 28 * H,
+              fontWeight: 700,
+              letterSpacing: -1.12 * H,
+              color: "#FFFFFF",
+              textShadow: TITLE_SHADOW,
+              whiteSpace: "nowrap",
+            },
+          },
+          participant.nickname,
+          "님과의 케미를 보고 싶다면?",
+        ),
+        h(
+          "div",
+          {
+            style: {
+              display: "flex",
+              marginTop: 4 * H,
+              fontSize: 18 * H,
+              letterSpacing: -0.72 * H,
+              color: "#F9FAFB",
+              textShadow: TITLE_SHADOW,
+              whiteSpace: "nowrap",
+            },
+          },
+          participant.nickname,
+          "님과 나는 어떤 사이일까요?",
+        ),
+      ),
+      // 왼쪽: 내 캐릭터
+      CharacterColumn({
+        centerX: centerX - COL_DX,
+        imageSrc: overview.image_url,
+        noun: overview.noun,
+        name: participant.nickname,
+      }),
+      // ×
+      h(
+        "div",
+        {
+          style: {
+            position: "absolute",
+            left: centerX,
+            top: V(205.62),
+            transform: "translateX(-50%)",
+            display: "flex",
+            fontSize: 30 * H,
             fontWeight: 700,
-            letterSpacing: -1.12 * H,
             color: "#FFFFFF",
-            textShadow: TITLE_SHADOW,
-            whiteSpace: "nowrap",
-          }}
-        >
-          {participant.nickname}님과의 케미를 보고 싶다면?
-        </div>
-        <div
-          style={{
-            display: "flex",
-            marginTop: 4 * H,
-            fontSize: 18 * H,
-            letterSpacing: -0.72 * H,
-            color: "#F9FAFB",
-            textShadow: TITLE_SHADOW,
-            whiteSpace: "nowrap",
-          }}
-        >
-          {participant.nickname}님과 나는 어떤 사이일까요?
-        </div>
-      </div>
-
-      {/* 왼쪽: 내 캐릭터 */}
-      <CharacterColumn
-        centerX={centerX - COL_DX}
-        imageSrc={overview.image_url}
-        noun={overview.noun}
-        name={participant.nickname}
-      />
-
-      {/* × */}
-      <div
-        style={{
-          position: "absolute",
-          left: centerX,
-          top: V(205.62),
-          transform: "translateX(-50%)",
-          display: "flex",
-          fontSize: 30 * H,
-          fontWeight: 700,
-          color: "#FFFFFF",
-          textShadow: NAME_SHADOW,
-        }}
-      >
-        ×
-      </div>
-
-      {/* 오른쪽: 곰돌이 (아직 상대를 모름) */}
-      <CharacterColumn
-        centerX={centerX + COL_DX}
-        imageSrc={`${origin}/og/bear-white.png`}
-        noun="???"
-        name="나"
-        placeholder
-      />
-    </div>,
+            textShadow: NAME_SHADOW,
+          },
+        },
+        "×",
+      ),
+      // 오른쪽: 곰돌이 (아직 상대를 모름)
+      CharacterColumn({
+        centerX: centerX + COL_DX,
+        imageSrc: `${origin}/og/bear-white.png`,
+        noun: "???",
+        name: "나",
+        placeholder: true,
+      }),
+    ),
     {
       width: 1200,
       height: 630,

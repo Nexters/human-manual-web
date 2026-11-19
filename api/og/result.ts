@@ -1,5 +1,10 @@
+import { createElement as h } from "react";
+
 import { ImageResponse } from "@vercel/og";
 
+// Vercel 빌더는 .tsx 서버리스 함수 번들에만 루트 package.json("type":"module")을
+// 넣지 않는다(.ts 에는 넣는다). 그러면 ESM 으로 컴파일된 함수를 Node 가 CJS 로 읽어
+// SyntaxError 로 죽는다. 그래서 이 파일은 .ts 로 두고 JSX 대신 createElement 를 쓴다.
 export const config = { runtime: "nodejs" };
 
 // 같은 코드는 결과가 바뀌지 않으므로 길게 캐시한다.
@@ -128,94 +133,103 @@ export async function GET(request: Request) {
   const tags = overview.tags ?? [];
 
   return new ImageResponse(
-    <div
-      style={{
-        display: "flex",
-        width: "100%",
-        height: "100%",
-        position: "relative",
-        fontFamily: "Pretendard",
-      }}
-    >
-      <img
-        src={`${origin}/og/result-bg.jpg`}
-        width={1200}
-        height={630}
-        style={{ position: "absolute", top: 0, left: 0 }}
-      />
-
-      {/* 캐릭터 — 앱 결과지처럼 정면, 회전 없음. 시안대로 중앙~우측에 크게.
-          캐릭터 PNG 는 1020x1020 정사각(캐릭터마다 여백 다름). */}
-      <img
-        src={overview.image_url}
-        width={CHAR.size}
-        height={CHAR.size}
-        style={{
+    h(
+      "div",
+      {
+        style: {
+          display: "flex",
+          width: "100%",
+          height: "100%",
+          position: "relative",
+          fontFamily: "Pretendard",
+        },
+      },
+      h("img", {
+        src: `${origin}/og/result-bg.jpg`,
+        width: 1200,
+        height: 630,
+        style: { position: "absolute", top: 0, left: 0 },
+      }),
+      // 캐릭터 — 앱 결과지처럼 정면, 회전 없음. 시안대로 중앙~우측에 크게.
+      // 캐릭터 PNG 는 1020x1020 정사각(캐릭터마다 여백 다름).
+      h("img", {
+        src: overview.image_url,
+        width: CHAR.size,
+        height: CHAR.size,
+        style: {
           position: "absolute",
           top: CHAR.top,
           left: CHAR.left,
           objectFit: "contain",
-        }}
-      />
-
-      {/* 좌측 텍스트 블록 — 시안: left 57*1.5, top 45*1.5 부터 세로로 쌓임 */}
-      <div
-        style={{
-          position: "absolute",
-          top: 45 * SCALE,
-          left: 57 * SCALE,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-        }}
-      >
-        <div
-          style={{
+        },
+      }),
+      // 좌측 텍스트 블록 — 시안: left 57*1.5, top 45*1.5 부터 세로로 쌓임
+      h(
+        "div",
+        {
+          style: {
+            position: "absolute",
+            top: 45 * SCALE,
+            left: 57 * SCALE,
             display: "flex",
-            background: "#B4F861",
-            borderRadius: 15 * SCALE,
-            padding: `${6 * SCALE}px ${14 * SCALE}px`,
-            fontSize: 18 * SCALE,
-            fontWeight: 700,
-            letterSpacing: -0.72 * SCALE,
-            color: "#333D4B",
-          }}
-        >
-          {overview.rarity}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            marginTop: 18 * SCALE,
-            fontSize: 20 * SCALE,
-            fontWeight: 700,
-            letterSpacing: -0.8 * SCALE,
-            color: "#FFFFFF",
-            textShadow: TEXT_SHADOW,
-          }}
-        >
-          {overview.adjective}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            marginTop: 6 * SCALE,
-            fontSize: 40 * SCALE,
-            lineHeight: 1,
-            letterSpacing: -1.6 * SCALE,
-            color: "#FFFFFF",
-            fontFamily: waguri ? "WAGURI" : "Pretendard",
-            textShadow: TEXT_SHADOW,
-          }}
-        >
-          {overview.noun} {participant.nickname}
-        </div>
-      </div>
-
-      {/* 태그 3개 — 앱 결과지처럼 캐릭터 모서리에 붙인다. anchor 로 pill 의 어느
-          모서리를 (left,top)에 맞출지 정한다(right/bottom 기준이면 pill 크기와
-          무관하게 캐릭터에 붙는다). */}
-      {tags.slice(0, 3).map((tag, i) => {
+            flexDirection: "column",
+            alignItems: "flex-start",
+          },
+        },
+        h(
+          "div",
+          {
+            style: {
+              display: "flex",
+              background: "#B4F861",
+              borderRadius: 15 * SCALE,
+              padding: `${6 * SCALE}px ${14 * SCALE}px`,
+              fontSize: 18 * SCALE,
+              fontWeight: 700,
+              letterSpacing: -0.72 * SCALE,
+              color: "#333D4B",
+            },
+          },
+          overview.rarity,
+        ),
+        h(
+          "div",
+          {
+            style: {
+              display: "flex",
+              marginTop: 18 * SCALE,
+              fontSize: 20 * SCALE,
+              fontWeight: 700,
+              letterSpacing: -0.8 * SCALE,
+              color: "#FFFFFF",
+              textShadow: TEXT_SHADOW,
+            },
+          },
+          overview.adjective,
+        ),
+        h(
+          "div",
+          {
+            style: {
+              display: "flex",
+              marginTop: 6 * SCALE,
+              fontSize: 40 * SCALE,
+              lineHeight: 1,
+              letterSpacing: -1.6 * SCALE,
+              color: "#FFFFFF",
+              fontFamily: waguri ? "WAGURI" : "Pretendard",
+              textShadow: TEXT_SHADOW,
+            },
+          },
+          overview.noun,
+          " ",
+          participant.nickname,
+        ),
+      ),
+      // 태그 3개 — 앱 결과지처럼 캐릭터 모서리에 붙인다. anchor 로 pill 의 어느
+      // 모서리를 (left,top)에 맞출지 정한다(right/bottom 기준이면 pill 크기와
+      // 무관하게 캐릭터에 붙는다).
+      tags.slice(0, 3).map((tag, i) => {
         const a = TAG_ANCHORS[i];
         const pos =
           a.anchor === "tr"
@@ -223,13 +237,9 @@ export async function GET(request: Request) {
             : a.anchor === "bl"
               ? { bottom: 630 - a.top, left: a.left }
               : { bottom: 630 - a.top, right: 1200 - a.left };
-        return (
-          <div key={tag} style={{ ...TAG_STYLE, ...pos }}>
-            {tag}
-          </div>
-        );
-      })}
-    </div>,
+        return h("div", { key: tag, style: { ...TAG_STYLE, ...pos } }, tag);
+      }),
+    ),
     {
       width: 1200,
       height: 630,
