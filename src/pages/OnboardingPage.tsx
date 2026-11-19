@@ -36,7 +36,7 @@ import { GA_EVENTS } from "@/lib/google-analytics/event";
 import { HOME_NAVIGATION_EVENT } from "@/lib/homeNavigation";
 import notebookBg from "@/assets/img/notebook-bg.jpg";
 import partIntroBg from "@/assets/img/part-intro-bg.jpg";
-import characterNotebook from "@/assets/gif/character-notebook.gif";
+import characterNotebook from "@/assets/gif/character-notebook.webp";
 
 type Step = "splash-cta" | IntroKey | "name-input" | "part-intro";
 

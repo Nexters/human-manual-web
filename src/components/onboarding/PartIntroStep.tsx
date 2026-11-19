@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import ChevronLeftIcon from "@/components/shared/icons/ChevronLeftIcon";
 import Typography from "@/components/shared/Typography";
 import partIntroBg from "@/assets/img/part-intro-bg.jpg";
-import characterNotebook from "@/assets/gif/character-notebook.gif";
+import characterNotebook from "@/assets/gif/character-notebook.webp";
 
 type PartIntroStepProps = {
   onBack: () => void;

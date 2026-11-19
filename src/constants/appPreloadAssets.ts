@@ -1,6 +1,6 @@
 import { questionAsset, characterAsset } from "@/constants/assets";
-import unboxingClosedGif from "@/assets/gif/unboxing.gif";
-import deliveryBunnyGif from "@/assets/gif/delivery-bunny.gif";
+import unboxingClosedGif from "@/assets/gif/unboxing.webp";
+import deliveryBunnyGif from "@/assets/gif/delivery-bunny.webp";
 import roomBg from "@/assets/img/backgrounds/room-bg.png";
 import resultCheckIcon from "@/assets/img/result/check.png";
 import resultErrorIcon from "@/assets/img/result/error.png";

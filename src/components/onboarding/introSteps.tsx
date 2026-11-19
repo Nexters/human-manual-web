@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import onboardingBg from "@/assets/img/onboarding-bg.jpg";
-import characterGreeting from "@/assets/gif/character-greeting.gif";
-import characterSurprised from "@/assets/gif/character-surprised.gif";
-import characterGuide from "@/assets/gif/character-guide.gif";
+import characterGreeting from "@/assets/gif/character-greeting.webp";
+import characterSurprised from "@/assets/gif/character-surprised.webp";
+import characterGuide from "@/assets/gif/character-guide.webp";
 
 export type IntroKey = "greeting" | "surprised" | "guide";
 
